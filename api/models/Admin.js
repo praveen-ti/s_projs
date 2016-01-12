@@ -40,7 +40,7 @@ module.exports = {
         adminType: {
             type: 'string',
             //required: true,
-            enum: ['super', 'sub'],
+            enum: ['super_admin', 'sub_admin'],
             defaultsTo: 'sub',
         },
 

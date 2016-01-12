@@ -62,7 +62,7 @@ console.log("user token >>>>>>>>>>");
     checkToken: function(token, callback) {
 
         var today = new Date();
-        Token.query('SELECT * FROM zen_token WHERE token = ? AND expiryDate > ?',[token,today], function(err, results) {
+        Usertoken.query('SELECT * FROM usertoken WHERE token = ? AND expiryDate > ?',[token,today], function(err, results) {
 
             if (err) {
 

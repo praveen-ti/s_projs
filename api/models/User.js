@@ -6,9 +6,6 @@
 */
 
 module.exports = {
-  //tableName : 'zen_user',
-  //autoCreatedAt: false,
-  //autoUpdatedAt: false,
 
   attributes: {
 

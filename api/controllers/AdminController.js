@@ -104,7 +104,14 @@ module.exports = {
                         if(tokenCheck.status == 1)
                             {
                                  var password   = crypto.createHash('md5').update(req.body.password).digest("hex");
-                                 var values = {username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, password: password, adminType: req.body.adminType, blockStatus: req.body.blockStatus};
+                                 var values = {
+                                                username            :       req.body.username,
+                                                firstname           :       req.body.firstname,
+                                                lastname            :       req.body.lastname,
+                                                password            :       password,
+                                                adminType           :       req.body.adminType,
+                                                blockStatus         :       req.body.blockStatus
+                                              };
                                  Admin.create(values).exec(function(err, result){
                                         if (err)
                                         {
@@ -149,7 +156,14 @@ module.exports = {
                                     else
                                     {
                                         console.log(result);
-                                        var values = {username: req.body.username, firstname: req.body.firstname, lastname: req.body.lastname, password: req.body.password, adminType: req.body.adminType, blockStatus: req.body.blockStatus};
+                                        var values = {
+                                                       username         :       req.body.username,
+                                                       firstname        :       req.body.firstname,
+                                                       lastname         :       req.body.lastname,
+                                                       password         :       req.body.password,
+                                                       adminType        :       req.body.adminType,
+                                                       blockStatus      :       req.body.blockStatus
+                                                      };
                                         //return res.json(200, {status: 1, message: 'success'});
                                         var criteria = {id: result.id};
                                         Admin.update(criteria, values).exec(function(err, updatedAdmin) {
@@ -227,7 +241,10 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                 var values = {adminId: req.body.adminId, privilegeId: req.body.privilegeId};
+                                 var values = {
+                                                adminId         :       req.body.adminId,
+                                                privilegeId     :       req.body.privilegeId
+                                               };
                                  Admin_privilege_log.create(values).exec(function(err, result){
                                         if (err)
                                         {
@@ -380,11 +397,14 @@ module.exports = {
                                                         Admin Login
  ====================================================================================================================================*/
 
-    admin_login: function(req, res){
+    adminLogin: function(req, res){
 
         //var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         var password = req.body.password;
-        var values = {username: req.body.username, password: password};
+        var values = {
+                        username: req.body.username,
+                        password: password
+                     };
 
         // Get Admin details
         Admin.findOne(values).exec(function(err, result){
@@ -423,7 +443,7 @@ module.exports = {
 /*===================================================================================================================================
                                                         Admin Logout
  ====================================================================================================================================*/
-    admin_logout: function(req, res){
+    adminLogout: function(req, res){
 
         AdmintokenService.deleteToken(req.body.token, function(err, result) {
             if(err) {

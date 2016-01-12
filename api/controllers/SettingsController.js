@@ -24,7 +24,10 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                 var values = {key: req.body.key, value: req.body.value};
+                                 var values = {
+                                                key         :    req.body.key,
+                                                value       :    req.body.value
+                                               };
                                  Settings.create(values).exec(function(err, result){
                                         if (err)
                                         {

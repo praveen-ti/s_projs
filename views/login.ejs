@@ -1,0 +1,36 @@
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="js/ftt.js"></script>
+<script>
+ if (typeof(Storage) == "undefined" ) {
+            alert("Your browser does not support HTML5 localStorage. Try upgrading.");
+    }
+    else {
+        console.log("Both localStorage and sessionStorage support is there.");
+    }
+</script>
+<div>
+
+
+</div>
+
+<form name="login_form" method="POST" action="user/login">
+    <div>
+        Username<input type="text" name="email" required>
+    </div>
+    <div>
+        Password<input type="password" name="password" required>
+    </div>
+    <div>
+      <input type="submit">
+    </div>
+</form>
+
+
+ <% if(req.session.error == "undefined user") { %>
+         <%= req.session.error %>
+    <% } %>
+
+
+
+</body>

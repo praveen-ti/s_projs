@@ -1,0 +1,26 @@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+   jQuery(window).load(function() {
+        console.log("Ready----> JQuery");
+    });
+</script>
+<body>
+
+Welcome to Home Page
+<div>
+   <!--  <% if(JSON.stringify(session.token)) { %> <%= JSON.stringify(session.token) %> <% } %> -->
+
+<%= req.session.token %>
+    <% if(typeof(req.session.token) == "undefined") { %>
+         <%= req.session.token %>
+         <script>
+            console.log("undefined to Login");
+            window.location.href = 'login';
+         </script>
+    <% } %>
+</div>
+<a href="user/logout">Logout</a>
+</body>
+

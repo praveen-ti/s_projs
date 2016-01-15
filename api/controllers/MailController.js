@@ -512,10 +512,49 @@ var jsonFolderDetails = JSON.parse(folderDetails);
     },
 
 
+
 /*===================================================================================================================================
-                                                   update user's Mail Settings
+                                                   Get user's Mail Preferences
  ====================================================================================================================================*/
-updateUserMailSettings : function(req, res) {
+
+getUserSettings : function(req, res) {
+
+        UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                Usersettings.findOne({userId: tokenCheck.tokenDetails.userId}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        console.log(result);
+                                        return res.json(200, {status: 1, data: result});
+                                    }
+
+                                });
+
+                            }
+                        else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+/*===================================================================================================================================
+                                                   update user's Settings
+ ====================================================================================================================================*/
+updateUserSettings : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -529,11 +568,19 @@ updateUserMailSettings : function(req, res) {
 
                             {
 
-//var settingsDetails = '{"settingsDetails" : {"mailNotificationPeriod": "'+req.body.mailNotificationPeriod+'","newMailNotify": "'+req.body.newMailNotify+'" }}';
-//var jsonSettingsDetails = JSON.parse(settingsDetails);
-//console.log(jsonSettingsDetails);
+var settingsDetails = '{"settingsDetails" : {"searchProfileStatus": "'+req.body.searchProfileStatus+
+                                            '","sensualAdStatus": "'+req.body.sensualAdStatus+
+                                            '","autoLogin": "'+req.body.autoLogin+
+                                            '","setOffLine": "'+req.body.setOffLine+
+                                            '","favouriteMailStatus": "'+req.body.favouriteMailStatus+
+                                            '","provisitMailStatus": "'+req.body.provisitMailStatus+
+                                            '","newMailStatus": "'+req.body.newMailStatus+
+                                            '","pollMailStatus": "'+req.body.pollMailStatus+
+                                            '" }}';
+var jsonSettingsDetails = JSON.parse(settingsDetails);
+console.log(jsonSettingsDetails);
 
-                                 User.findOne({id: tokenCheck.tokenDetails.userId}).exec(function findCB(err, result) {
+                                 Usersettings.findOne({userId: tokenCheck.tokenDetails.userId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -541,12 +588,19 @@ updateUserMailSettings : function(req, res) {
                                     else
                                     {
                                         var values = {
-                                                        firstname : req.body.name
+                                                        searchProfileStatus     : jsonSettingsDetails.settingsDetails.searchProfileStatus,
+                                                        sensualAdStatus         : jsonSettingsDetails.settingsDetails.sensualAdStatus,
+                                                        autoLogin               : jsonSettingsDetails.settingsDetails.autoLogin,
+                                                        setOffLine              : jsonSettingsDetails.settingsDetails.setOffLine,
+                                                        favouriteMailStatus     : jsonSettingsDetails.settingsDetails.favouriteMailStatus,
+                                                        provisitMailStatus      : jsonSettingsDetails.settingsDetails.provisitMailStatus,
+                                                        newMailStatus           : jsonSettingsDetails.settingsDetails.newMailStatus,
+                                                        pollMailStatus          : jsonSettingsDetails.settingsDetails.pollMailStatus,
                                                      };
 
                                         var criteria = {id: result.id};
 
-                                        User.update(criteria, values).exec(function(err, updatedSettings) {
+                                        Usersettings.update(criteria, values).exec(function(err, updatedSettings) {
                                             if(err)
                                             {
                                                 return res.json(200, {status: 2, error_details: err});
@@ -570,10 +624,6 @@ updateUserMailSettings : function(req, res) {
                    }
          });
     },
-
-/*===================================================================================================================================
-                                                   Get user's Mail Preferences
- ====================================================================================================================================*/
 
 
 

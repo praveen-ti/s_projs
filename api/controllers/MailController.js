@@ -161,7 +161,10 @@ var jsonFolderId = JSON.parse(folderId);
 //console.log(jsonFolderId.folderId.id);
 
 
-var messages = '{"messages" : [{"id":'+req.body.msgId+'},{"id":2}]}';
+var messages = '{"messages" : [{'+
+                              '"id":'+req.body.msgId+',"senderId":'+req.body.senderId+',"receiverId":'+req.body.receiverId+'},'+
+                              '{"id":2,"senderId":"2","receiverId":"3"}'+
+                              ']}';
 var jsonData = JSON.parse(messages);
 messageArray = [];
 for (var i = 0; i < jsonData.messages.length; i++) {
@@ -178,6 +181,7 @@ var msgid = messageArray;
                                switch (switchKey)
                                     {
                                            case 'sendertrash':
+
                                                query += "senderStatus = 'trash' ";
                                            break;
 
@@ -568,17 +572,17 @@ updateUserSettings : function(req, res) {
 
                             {
 
-var settingsDetails = '{"settingsDetails" : {"searchProfileStatus": "'+req.body.searchProfileStatus+
-                                            '","sensualAdStatus": "'+req.body.sensualAdStatus+
-                                            '","autoLogin": "'+req.body.autoLogin+
-                                            '","setOffLine": "'+req.body.setOffLine+
-                                            '","favouriteMailStatus": "'+req.body.favouriteMailStatus+
-                                            '","provisitMailStatus": "'+req.body.provisitMailStatus+
-                                            '","newMailStatus": "'+req.body.newMailStatus+
-                                            '","pollMailStatus": "'+req.body.pollMailStatus+
-                                            '" }}';
-var jsonSettingsDetails = JSON.parse(settingsDetails);
-console.log(jsonSettingsDetails);
+                                var settingsDetails = '{"settingsDetails" : {"searchProfileStatus": "'+req.body.searchProfileStatus+
+                                                                            '","sensualAdStatus": "'+req.body.sensualAdStatus+
+                                                                            '","autoLogin": "'+req.body.autoLogin+
+                                                                            '","setOffLine": "'+req.body.setOffLine+
+                                                                            '","favouriteMailStatus": "'+req.body.favouriteMailStatus+
+                                                                            '","provisitMailStatus": "'+req.body.provisitMailStatus+
+                                                                            '","newMailStatus": "'+req.body.newMailStatus+
+                                                                            '","pollMailStatus": "'+req.body.pollMailStatus+
+                                                                            '" }}';
+                                var jsonSettingsDetails = JSON.parse(settingsDetails);
+                                console.log(jsonSettingsDetails);
 
                                  Usersettings.findOne({userId: tokenCheck.tokenDetails.userId}).exec(function findCB(err, result) {
                                     if(err)

@@ -135,5 +135,67 @@ var jsonChat = JSON.parse(chat);
          });
     },
 
+/*===================================================================================================================================
+                                                   Get Full Conversation
+ ====================================================================================================================================*/
+
+
+ getEachChat : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                                   var query =  "SELECT *"+
+                                                " FROM  chat"+
+                                                " WHERE  conversationId ="+ req.body.cnvrId+
+                                                " ORDER BY createdAt DESC";
+                                     console.log(query);
+                                   var queryStatus="UPDATE chat SET viewStatus = 'true' WHERE conversationId ="+ req.body.cnvrId;
+                                    console.log(queryStatus);
+                                    Chat.query(query, function(err, result) {
+                                               if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    Conversation.query(queryStatus, function(err, resultStatus) {
+                                                            if(err)
+                                                            {
+                                                                return res.json(200, {status: 2, error_details: err});
+                                                            }
+                                                            else
+                                                            {
+                                                                console.log(result);
+                                                                return res.json(200, {status: 1, message: 'success', result: resultStatus});
+                                                            }
+                                                    });
+                                                }
+                                     });
+
+
+                              }
+                              else
+                              {
+                                    return res.json(200, {status: 3, message: 'token expired'});
+                              }
+
+                    }
+                });
+
+            },
+
+
+
+
+
 };
 

@@ -151,6 +151,7 @@ updateMailStatus : function(req, res) {
                             {
 
                                var switchKey   = req.param('update');
+                               console.log(switchKey);
                                //var msgid       = req.param('id');
                                //var senderid    = req.param('senderid');
                                //var receiverid  = req.param('receiverid');
@@ -170,7 +171,7 @@ messageArray = [];
 for (var i = 0; i < jsonData.messages.length; i++) {
      var message = jsonData.messages[i];
      messageArray.push(message.id);
-    //console.log(message.id);
+    console.log(message.id);
 }
 
 var msgid = messageArray;
@@ -180,41 +181,59 @@ var msgid = messageArray;
 
                                switch (switchKey)
                                     {
-                                           case 'sendertrash':
 
-                                               query += "senderStatus = 'trash' ";
-                                           break;
+                                           case 'draft':
 
-                                           case 'senderdraft':
                                                query += "senderStatus = 'draft' ";
+
                                            break;
 
-                                           case 'sendersent':
+                                           case 'sent':
+
                                                query += "senderStatus = 'sent' ";
+
                                            break;
 
-                                           case 'senderdelete':
-                                               query += "senderStatus = 'delete' ";
+                                           case 'trash':
+
+                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
+                                                        query += "senderStatus = 'trash' ";
+                                                    }
+                                                    else
+                                                    {
+                                                        query += "receiverStatus = 'trash' ";
+                                                    }
+
                                            break;
 
-                                           case 'senderfolder':
-                                               query += "senderStatus = 'folder' senderFolderId = "+jsonFolderId.folderId.id;
+                                           case 'delete':
+
+                                                   if(req.body.senderId == tokenCheck.tokenDetails.userId){
+                                                        query += "senderStatus = 'delete' ";
+                                                    }
+                                                    else
+                                                    {
+                                                        query += "receiverStatus = 'delete' ";
+                                                    }
+
                                            break;
 
-                                           case 'receivertrash':
-                                               query += "receiverStatus = 'trash' ";
-                                           break;
+                                           case 'folder':
 
-                                           case 'receiverdelete':
-                                               query += "receiverStatus = 'delete' ";
-                                           break;
+                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
+                                                         query += "senderStatus = 'folder' senderFolderId = "+jsonFolderId.folderId.id;
+                                                    }
+                                                    else
+                                                    {
+                                                        query += "receiverStatus = 'folder', receiverFolderId = "+jsonFolderId.folderId.id;
+                                                    }
 
-                                           case 'receiverfolder':
-                                               query += "receiverStatus = 'folder', receiverFolderId = "+jsonFolderId.folderId.id;
                                            break;
 
                                            case 'viewstatus':
+
                                                query += "viewStatus = 'true' ";
+
                                            break;
 
                                      }

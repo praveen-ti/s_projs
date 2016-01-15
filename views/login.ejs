@@ -16,7 +16,7 @@
 
 <form name="login_form" method="POST" action="user/login">
     <div>
-        Username<input type="text" name="email" required>
+        Username<input type="text" name="username" required>
     </div>
     <div>
         Password<input type="password" name="password" required>
@@ -27,9 +27,7 @@
 </form>
 
 
- <% if(req.session.error == "undefined user") { %>
-         <%= req.session.error %>
-    <% } %>
+
 
 
 

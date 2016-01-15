@@ -60,7 +60,7 @@ console.log("user token >>>>>>>>>>");
 
     // Function to check whether a token is expired or not
     checkToken: function(token, callback) {
-
+console.log(">>>>>>>>>>>>>>>>>>");
         var today = new Date();
         Usertoken.query('SELECT * FROM usertoken WHERE token = ? AND expiryDate > ?',[token,today], function(err, results) {
 

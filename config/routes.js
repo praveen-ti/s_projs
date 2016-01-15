@@ -46,6 +46,10 @@ module.exports.routes = {
         view: 'login'
   },
 
+  '/logout'                    : {
+        view: 'login'
+  },
+
  /* 'POST /user/login'   : {
        controller: "User",
        action    : "login",
@@ -56,6 +60,16 @@ module.exports.routes = {
         view: 'login_home'
   },
 
+'/admin/getSubadminList'                    : {
+        controller: "Admin",
+        action    : "getSubadminList"
+         //cors: {
+         //    origin: "origin: 'http://localhost:2000',",
+             //credentials: true
+         //  }
+           //cors: true,
+        //view: 'login'
+  },
 
 
   /***************************************************************************

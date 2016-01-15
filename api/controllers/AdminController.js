@@ -26,7 +26,7 @@ module.exports = {
                             {
                                 console.log("Checktoken");
                                 console.log(tokenCheck);
-                                    var query ="SELECT * FROM admin WHERE adminType =  'sub' ORDER BY createdAt DESC";
+                                    var query ="SELECT * FROM admin WHERE adminType =  'sub_admin' ORDER BY createdAt DESC";
                                     Admin.query(query, function(err, result) {
                                         if(err)
                                         {
@@ -56,16 +56,19 @@ module.exports = {
     getSubadminDetails : function(req, res) {
 
        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
+console.log(req.body.token);
                     if(err)
                     {
+                                                 console.log("Error ");
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+
                     }
                     else
                     {
+                        console.log("Inside else  ");
                         if(tokenCheck.status == 1)
                             {
-                                Admin.findOne({id: req.body.adminId}).exec(function findCB(err, result) {
+                                Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -80,6 +83,7 @@ module.exports = {
                             }
                             else
                             {
+                                console.log("mmmm");
                                 return res.json(200, {status: 3, message: 'token expired'});
                             }
                     }
@@ -399,13 +403,14 @@ module.exports = {
 
     adminLogin: function(req, res){
 
-        //var password = crypto.createHash('md5').update(req.body.password).digest("hex");
-        var password = req.body.password;
+        var password = crypto.createHash('md5').update(req.body.password).digest("hex");
+        //var password = req.body.password;
         var values = {
                         username: req.body.username,
                         password: password
                      };
-
+console.log(req.body.username);
+console.log(password);
         // Get Admin details
         Admin.findOne(values).exec(function(err, result){
             if (err) {
@@ -429,7 +434,15 @@ module.exports = {
                             return res.json(200, {status: 2, message: 'some error occured', error: details});
                         } else {
 
-                            return res.json(200, {status: 1, message: 'succes', details: details});
+                            console.log(details);
+
+                            //return res.view('login_home');
+                            //res.redirect('login_home');
+                            // res.view('login_home', {status: 1, message: 'succes', details: details});
+                             req.session.authenticated = true;
+                             req.session.token      = details.token.token;
+
+                             return res.json(200, {status: 1, message: 'succes', details: details});
                         }
                     });
 
@@ -444,19 +457,51 @@ module.exports = {
                                                         Admin Logout
  ====================================================================================================================================*/
     adminLogout: function(req, res){
-
-        AdmintokenService.deleteToken(req.body.token, function(err, result) {
+    console.log(req.body.username);
+        AdmintokenService.deleteToken(req.session.token, function(err, result) {
             if(err) {
                  return res.json(200, {status: 2, message: 'some error occured', error_details: result});
             } else {
                  //req.session.destroy();
-                 return res.json(200, {status: 1, message: 'success', result: result});
-
+                 return res.json(200, {status: 1, message: 'success', result: result, rr: req.body.username});
+                 //res.view('login');
             }
         });
 
     },
 
+
+/*================================================================================================================================
+                                        Socket - Check
+ =================================================================================================================================*/
+           dbcheck:function (req,res){
+
+                sails.models.Admin.DbVersionCheck(function(result){
+                        return res.json(200, { success: 'Success' ,response:result});
+                });
+
+            },
+
+            subscribeToFunRoom: function(req, res) {
+                  //r roomName = req.param('roomName');
+                  //console.log(req);
+                  roomName = req.body.roomName;
+                  sails.sockets.join(req.socket, roomName);
+                  sails.sockets.broadcast(roomName, { msg: 'Hi there!' });
+                  res.json({
+                    messages: 'Subscribed to a fun room called '+roomName+'!'
+                  });
+                  //sails.sockets.emit(friendId, 'privateMessage', {from: req.session.userId, msg: 'Hi!'});
+                  //sails.sockets.broadcast(1, { msg: 'Hi there!' });
+            },
+
+            indexcheck:function (req,res){
+                    result = {};
+                    result.message = req.body.message;
+
+                    //return res.json(200, { success: 'Success' ,response: result});
+
+            }
 
 };
 

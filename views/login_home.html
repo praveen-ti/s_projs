@@ -1,11 +1,84 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://localhost:1360/js/dependencies/sails.io.js"></script>
+
 
 <script>
-   jQuery(window).load(function() {
-        console.log("Ready----> JQuery");
+   jQuery(document).ready(function(){
+    jQuery("#logout").click(function(){
+          //var idr ={username: jQuery('#username').val(), password: jQuery('#password').val()};
+          var idr = {username: "hi"};
+          console.log(">>>>>>>>");
+            jQuery.ajax({
+               type: "POST",
+               data: idr,
+               url: "admin/adminLogout",
+               success: function(reponse){
+                   console.log("reponse");
+                   console.log(reponse);
+                   //jQuery('.answer').html(reponse);
+                   //window.location = "/logout";
+               }
+            });
+
     });
+});
+
 </script>
 
 
+
+  <script type="text/javascript">
+
+    // `io` is available as a global.
+    // `io.socket` will connect automatically, but at this point in the DOM, it is not ready yet
+    // (think of $(document).ready() from jQuery)
+    //
+    // Fortunately, this library provides an abstraction to avoid this issue.
+    // Requests you make before `io` is ready will be queued and replayed automatically when the socket connects.
+    // To disable this behavior or configure other things, you can set properties on `io.sails`.
+    // You have one cycle of the event loop to set `io.sails.autoConnect` to false before the auto-connection
+    // behavior starts.
+    io.sails.url = "http://localhost:1360";
+    data = {"roomName" :1 };
+    //var socket = io.connect();
+
+    //io.socket.on('connect', function socketConnected(){
+
+
+        io.socket.on('message', function messageReceived(messages){
+            console.log(messages);
+             jQuery("#response").append('<h3>'+messages.msg+'</h3><br>');
+            });
+
+    //});
+
+    io.socket.get('/admin/subscribeToFunRoom', {roomName:'Two'}, function (resData, jwres){
+      // ...
+
+      console.log('Sails responded with: ', resData);
+      console.log('with headers: ', jwres.headers);
+      console.log('and with status code: ', jwres.statusCode);
+    });
+
+
+    /*io.socket.get('/settings/dbcheck', function serverResponded (body, JWR) {
+
+      // JWR ==> "JSON WebSocket Response"
+      console.log('Sails responded with: ', body);
+      console.log('with headers: ', JWR.headers);
+      console.log('and with status code: ', JWR.statusCode);
+
+      // first argument `body` === `JWR.body`
+      // (just for convenience, and to maintain familiar usage, a la `JQuery.get()`)
+    });*/
+    // When a socket message about a user is received, display it
+    //io.socket.on('message', function(data) {
+      //  console.log(data);
+    //});
+  </script>
+
+
+
 Welcome to Home Page
-<a href="user/logout">Logout</a>
+<a href="" id="logout">Logout</a>

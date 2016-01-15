@@ -12,7 +12,7 @@ module.exports = {
 /*===================================================================================================================================
                                                         User Sign up
  ====================================================================================================================================*/
-    user_signup: function(req, res){
+    userSignup: function(req, res){
 
          var password   = crypto.createHash('md5').update(req.body.password).digest("hex");
          values = {name: req.body.name, email: req.body.email, password: password, gender: req.body.gender, profile_pic: "", email_verify_status: 0, email_verify_code: 0, mrship_type: 2, online_status: 0, therapeutic_desc: req.body.therapeutic_desc, sensual_desc: req.body.sensual_desc, latitude: "", longitude: "", location_adress: "", fraud_status: ""};
@@ -70,7 +70,7 @@ module.exports = {
                                                         User Login
  ====================================================================================================================================*/
 
-    user_login: function(req, res){
+    userLogin: function(req, res){
 
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         var values = {email: req.body.email, password: password};
@@ -148,7 +148,7 @@ module.exports = {
 /*===================================================================================================================================
                                                         User Logout
  ====================================================================================================================================*/
-    user_logout: function(req, res){
+    userLogout: function(req, res){
 
         UsertokenService.deleteToken(req.body.token, function(err, result) {
             if(err) {

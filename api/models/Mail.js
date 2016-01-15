@@ -40,23 +40,21 @@ module.exports = {
 
         senderFolderId: {
             type: 'integer',
-            defaultsTo: 0,
         },
 
        receiverFolderId: {
             type: 'integer',
-            defaultsTo: 0,
         },
 
         senderStatus: {
             type: 'string',
-            enum: ['inbox', 'sent', 'drafts', 'deleted'],
+            enum: ['sent', 'draft', 'trash', 'folder','delete'],
             defaultsTo: 'sent',
         },
 
         receiverStatus: {
             type: 'string',
-            enum: ['inbox', 'sent', 'drafts', 'deleted'],
+            enum: ['inbox', 'trash', 'folder','delete'],
             defaultsTo: 'inbox',
         },
 

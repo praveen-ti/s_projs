@@ -192,6 +192,7 @@ getChatList : function(req, res) {
                                                                 console.log("Receiver");
                                                                  queryUser+= "id = "+result[0].receiverId;
                                                              }
+                                                                 //To get user's details
                                                                  User.query(queryUser, function(err, resultUser) {
                                                                           if(err)
                                                                             {

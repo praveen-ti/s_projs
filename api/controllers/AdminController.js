@@ -26,7 +26,9 @@ module.exports = {
                             {
                                 console.log("Checktoken");
                                 console.log(tokenCheck);
-                                    var query ="SELECT * FROM admin WHERE adminType =  'sub_admin' ORDER BY createdAt DESC";
+                                    var adminRole = "sub_admin";
+
+                                    var query ="SELECT * FROM admin WHERE adminType =  '"+adminRole+"' ORDER BY createdAt DESC";
                                     Admin.query(query, function(err, result) {
                                         if(err)
                                         {

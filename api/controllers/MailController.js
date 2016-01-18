@@ -11,11 +11,11 @@ module.exports = {
 
 
 /*===================================================================================================================================
-                                                   Send mail(only when click send)
+                                                   Save mail
  ====================================================================================================================================*/
 
 
-    sendMail : function(req, res) {
+    saveMail : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 

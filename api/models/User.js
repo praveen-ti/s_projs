@@ -16,89 +16,95 @@ module.exports = {
         },
 
         username: {
-            type: 'string',
-            required: true,
+            type: 'string'
         },
 
         firstname: {
-            type: 'string',
-            required: true,
+            type: 'string'
         },
 
         lastname: {
-            type: 'string',
-            required: true,
+            type: 'string'
         },
 
-         email: {
+        email: {
             type: 'email',
             required: true,
             unique: true
         },
 
         password: {
-            type: 'string',
-            required: true,
+            type: 'string'
         },
 
         passwordResetKey: {
-            type: 'string',
-            required: true,
+            type: 'string'
         },
 
         status: {
             type: 'string',
-            required: true,
+            enum : ['active', 'inactive'],
+            defaultsTo: 'active'
         },
 
-         profilePic: {
-            type: 'string',
+        profilePic: {
+            type: 'string'
             //defaultsTo: 'images/photo.jpg',
         },
 
         emailVerificationStatus: {
             type: 'string',
-
+            enum : ['verified', 'notverified'],
+            defaultsTo: 'verified'
         },
 
         emailVerificationKey: {
-            type: 'string',
+            type: 'string'
         },
 
         subscriptionPackageId: {
-            type: 'integer',
-            required: true,
+            type: 'integer'
+        },
+
+        subscriptionType: {
+            type: 'string',
+            enum : ['free', 'paid'],
+            defaultsTo: 'free'
         },
 
         subscriptionExpiredDate: {
-            type: 'datetime',
-            required: true,
+            type: 'datetime'
         },
 
-        subscriptionPackageId: {
-            type: 'integer',
-            required: true,
+        adPackageId: {
+            type: 'integer'
         },
 
         adExpiredDate: {
-            type: 'datetime',
-            required: true,
+            type: 'datetime'
         },
 
         massageFrequency: {
             type: 'string',
-
+            enum: ['daily', 'weekly', 'monthly'],
+            defaultsTo: 'weekly'
         },
 
-         referralBenefit: {
+        referralBenefit: {
             type: 'string',
-
+            enum: ['claimable', 'claimed'],
+            defaultsTo: 'claimable'
         },
 
          blacklisted: {
             type: 'string',
-
+            enum: ['no', 'yes'],
+            defaultsTo: 'no'
         },
+
+        createdAt: {
+            type: 'datetime'
+        }
   }
 };
 

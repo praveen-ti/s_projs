@@ -29,6 +29,7 @@ var chat = '{"chat" : {"message": "'+req.body.message+
                        '", "senderId" : '+tokenCheck.tokenDetails.userId+
                        ', "receiverId" : '+req.body.receiverId+
                        ', "viewStatus" : "'+req.body.viewStatus+
+                       ', "requestStatus" : "'+req.body.requestStatus+
                     '"}'+
            '}';
            console.log(chat);
@@ -55,11 +56,11 @@ var jsonChat = JSON.parse(chat);
                                                    /*#######################
                                                       For new conversation
                                                     ########################*/
-                                                    var requestStatus = "accept";
+
                                                      var cnvrValues = {
                                                             subjectId            :    jsonChat.chat.senderId,
                                                             objectId             :    jsonChat.chat.receiverId,
-                                                            requestStatus        :    requestStatus
+                                                            requestStatus        :    req.body.requestStatus
                                                            };
                                                 console.log(result);
                                                      //Save to Conversation table
@@ -200,7 +201,7 @@ getChatList : function(req, res) {
                                                                             }
                                                                             else
                                                                             {
-                                                                                return res.json(200, {status: 1, result: result, resultUser: resultUser });
+                                                                                return res.json(200, {status: 1, result: result[0], resultUser: resultUser });
                                                                             }
                                                                  });
 
@@ -230,7 +231,7 @@ getChatList : function(req, res) {
  ====================================================================================================================================*/
 
 
- getEachChat : function(req, res) {
+ getDetailChat : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -285,6 +286,57 @@ getChatList : function(req, res) {
             },
 
 
+/*===================================================================================================================================
+                                      Update Request Status in Conversation table
+ ====================================================================================================================================*/
+chatRequest : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                            Conversation.findOne({id: req.body.id}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        var criteria = {id: result.id};
+
+                                        Conversation.update(criteria, {requestStatus: req.body.reqStatus}).exec(function(err, updatedReqStatus) {
+                                            if(err)
+                                            {
+                                                console.log(err);
+                                                return res.json(200, {status: 2, error_details: err});
+                                            }
+                                            else
+                                            {
+                                                console.log("update");
+                                                console.log(result);
+                                                console.log(updatedReqStatus);
+
+                                                return res.json(200, {status: 1, updatedReqStatus: updatedReqStatus});
+                                            }
+
+                                        });
+                                    }
+
+                               });
+
+
+                            }
+                    }
+        });
+
+    },
 
 
 

@@ -11,11 +11,11 @@ module.exports = {
 
 
 /*===================================================================================================================================
-                                                   Send mail(only when click send)
+                                                   Save mail
  ====================================================================================================================================*/
 
 
-    sendMail : function(req, res) {
+    saveMail : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -84,23 +84,23 @@ mailbox : function(req, res) {
                                             {
 
                                                    case 'inbox':
-                                                       query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  'inbox' ";
+                                                       query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"' ";
                                                    break;
 
                                                    case 'sent':
-                                                        query +=  "senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  'sent' ";
+                                                        query +=  "senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  '"+switchKey+"' ";
                                                    break;
 
                                                    case 'trash':
-                                                        query +=  "(receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  'trash') OR (senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  'trash') ";
+                                                        query +=  "(receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"') OR (senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  '"+switchKey+"') ";
                                                    break;
 
                                                    case 'folder':
-                                                        query +=  "(receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  'folder') OR (senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  'folder') ";
+                                                        query +=  "(receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"') OR (senderId = "+tokenCheck.tokenDetails.userId+" AND  senderStatus =  '"+switchKey+"') ";
                                                    break;
 
                                                    default:
-                                                       query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  'inbox' ";
+                                                       query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"' ";
 
                                              }
                            query += "ORDER BY createdAt DESC";
@@ -184,24 +184,24 @@ var msgid = messageArray;
 
                                            case 'draft':
 
-                                               query += "senderStatus = 'draft' ";
+                                               query += "senderStatus = '"+switchKey+"' ";
 
                                            break;
 
                                            case 'sent':
 
-                                               query += "senderStatus = 'sent' ";
+                                               query += "senderStatus = '"+switchKey+"' ";
 
                                            break;
 
                                            case 'trash':
 
                                                     if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = 'trash' ";
+                                                        query += "senderStatus = '"+switchKey+"' ";
                                                     }
                                                     else
                                                     {
-                                                        query += "receiverStatus = 'trash' ";
+                                                        query += "receiverStatus = '"+switchKey+"' ";
                                                     }
 
                                            break;
@@ -209,11 +209,11 @@ var msgid = messageArray;
                                            case 'delete':
 
                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = 'delete' ";
+                                                        query += "senderStatus = '"+switchKey+"' ";
                                                     }
                                                     else
                                                     {
-                                                        query += "receiverStatus = 'delete' ";
+                                                        query += "receiverStatus = '"+switchKey+"' ";
                                                     }
 
                                            break;
@@ -221,18 +221,18 @@ var msgid = messageArray;
                                            case 'folder':
 
                                                     if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                         query += "senderStatus = 'folder' senderFolderId = "+jsonFolderId.folderId.id;
+                                                         query += "senderStatus = '"+switchKey+"' senderFolderId = "+jsonFolderId.folderId.id;
                                                     }
                                                     else
                                                     {
-                                                        query += "receiverStatus = 'folder', receiverFolderId = "+jsonFolderId.folderId.id;
+                                                        query += "receiverStatus = '"+switchKey+"', receiverFolderId = "+jsonFolderId.folderId.id;
                                                     }
 
                                            break;
 
                                            case 'viewstatus':
-
-                                               query += "viewStatus = 'true' ";
+                                               var viewStatus = "true";
+                                               query += "viewStatus = '"+viewStatus+"' ";
 
                                            break;
 

@@ -28,6 +28,8 @@ module.exports = {
             /*accept,decline,block when a new conversation starts*/
              requestStatus: {
                 type: 'string',
+                enum: ['accept', 'decline', 'block'],
+                defaultsTo: 'accept',
             },
   }
 };

@@ -29,6 +29,7 @@ var chat = '{"chat" : {"message": "'+req.body.message+
                        '", "senderId" : '+tokenCheck.tokenDetails.userId+
                        ', "receiverId" : '+req.body.receiverId+
                        ', "viewStatus" : "'+req.body.viewStatus+
+                       ', "requestStatus" : "'+req.body.requestStatus+
                     '"}'+
            '}';
            console.log(chat);
@@ -55,10 +56,11 @@ var jsonChat = JSON.parse(chat);
                                                    /*#######################
                                                       For new conversation
                                                     ########################*/
+
                                                      var cnvrValues = {
                                                             subjectId            :    jsonChat.chat.senderId,
                                                             objectId             :    jsonChat.chat.receiverId,
-                                                            requestStatus        :    "accept"
+                                                            requestStatus        :    req.body.requestStatus
                                                            };
                                                 console.log(result);
                                                      //Save to Conversation table
@@ -135,12 +137,13 @@ var jsonChat = JSON.parse(chat);
          });
     },
 
+
+
+
 /*===================================================================================================================================
-                                                   Get Full Conversation
+                                                   List Conversation
  ====================================================================================================================================*/
-
-
- getEachChat : function(req, res) {
+getChatList : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -152,13 +155,102 @@ var jsonChat = JSON.parse(chat);
                     {
                         if(tokenCheck.status == 1)
                             {
+                               var query = "SELECT *"+
+                                        " FROM chat cht"+
+                                        " WHERE conversationId"+
+                                        " IN ("+
+                                        " SELECT cnvr.id"+
+                                        " FROM conversation cnvr"+
+                                        " WHERE cnvr.subjectId ="+tokenCheck.tokenDetails.userId+
+                                        " AND cnvr.objectId ="+req.body.receiverId+
+                                        " OR cnvr.subjectId ="+req.body.receiverId+
+                                        " AND cnvr.objectId ="+tokenCheck.tokenDetails.userId+
+                                        " )"+
+                                        "ORDER BY createdAt DESC ";
+                                console.log(query);
+                                queryUser = "SELECT * FROM  user WHERE ";
+                                Chat.query(query, function(err, result) {
+                                               if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    console.log("Success Chat");
+                                                    console.log(result);
+                                                    console.log(result[0].senderId);
+                                                    console.log(result[0].receiverId);
+                                                    //return res.json(200, {status: 1, result: result});
+                                                    //var senderDetails = "";
+                                                    //var receiverDetails = "";
 
+                                                    if(result != ""){
+                                                            if(tokenCheck.tokenDetails.userId == result[0].senderId){
+                                                                console.log("Sender");
+                                                                queryUser+= "id = "+result[0].senderId;
+                                                            }
+                                                            else{
+                                                                console.log("Receiver");
+                                                                 queryUser+= "id = "+result[0].receiverId;
+                                                             }
+                                                                 //To get user's details
+                                                                 User.query(queryUser, function(err, resultUser) {
+                                                                          if(err)
+                                                                            {
+                                                                                return res.json(200, {status: 2, error_details: err});
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                return res.json(200, {status: 1, result: result[0], resultUser: resultUser });
+                                                                            }
+                                                                 });
+
+                                                    }else{
+
+                                                           return res.json(200, {status: 3, result: "No result found"});
+                                                        }
+
+                                                }
+                                });
+
+
+                            }
+                        else
+                          {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                          }
+                     }
+
+        });
+
+    },
+
+
+/*===================================================================================================================================
+                                                   Get Conversation in Detail
+ ====================================================================================================================================*/
+
+
+ getDetailChat : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                   var viewStatus = "true";
                                    var query =  "SELECT *"+
                                                 " FROM  chat"+
                                                 " WHERE  conversationId ="+ req.body.cnvrId+
                                                 " ORDER BY createdAt DESC";
-                                     console.log(query);
-                                   var queryStatus="UPDATE chat SET viewStatus = 'true' WHERE conversationId ="+ req.body.cnvrId;
+                                    console.log(query);
+                                    //Update view status
+                                    var queryStatus="UPDATE chat SET viewStatus = '"+viewStatus+"' WHERE conversationId ="+ req.body.cnvrId;
                                     console.log(queryStatus);
                                     Chat.query(query, function(err, result) {
                                                if(err)
@@ -192,6 +284,59 @@ var jsonChat = JSON.parse(chat);
                 });
 
             },
+
+
+/*===================================================================================================================================
+                                      Update Request Status in Conversation table
+ ====================================================================================================================================*/
+chatRequest : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                            Conversation.findOne({id: req.body.id}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        var criteria = {id: result.id};
+
+                                        Conversation.update(criteria, {requestStatus: req.body.reqStatus}).exec(function(err, updatedReqStatus) {
+                                            if(err)
+                                            {
+                                                console.log(err);
+                                                return res.json(200, {status: 2, error_details: err});
+                                            }
+                                            else
+                                            {
+                                                console.log("update");
+                                                console.log(result);
+                                                console.log(updatedReqStatus);
+
+                                                return res.json(200, {status: 1, updatedReqStatus: updatedReqStatus});
+                                            }
+
+                                        });
+                                    }
+
+                               });
+
+
+                            }
+                    }
+        });
+
+    },
 
 
 

@@ -32,22 +32,19 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-/*
-  '/': {
-    view: 'homepage'
-  }
-*/
 
-'/signup'                    : {
-        view: 'signup'
+  '/': 'IndexController.index',
+
+  '/signup' : {
+    view: 'signup'
   },
 
-    '/login'                    : {
-        view: 'login'
+  '/login': {
+    view: 'login'
   },
 
-  '/logout'                    : {
-        view: 'login'
+  '/logout': {
+    view: 'login'
   },
 
  /* 'POST /user/login'   : {

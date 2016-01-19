@@ -6,64 +6,86 @@
  */
 
 var crypto = require('crypto');
+var userConstants = sails.config.constants.user;
 
 module.exports = {
     /*===================================================================================================================================
      User Sign up
      ====================================================================================================================================*/
     userSignup: function (req, res) {
-
         console.log("Signup Entered");
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
-        values = {username: 'userdssggrew',
+        values = {username: 'user' + (Math.random() * 100 | 0) + 1,
             firstname: 'fname',
             lastname: 'lname',
             email: req.body.email,
             password: password,
-            passwordResetKey: '',
-            status: '',
-            profilePic: '',
-            emailVerificationStatus: '',
-            emailVerificationKey: '',
-            subscriptionPackageId: 0,
-            subscriptionType: '',
+            passwordResetKey: (req.body.passwordResetKey) ? req.body.passwordResetKey : '',
+            status: (req.body.status) ? req.body.status : userConstants.STATUS_ACTIVE,
+            profilePic: (req.body.profilePic) ? req.body.profilePic : '',
+            emailVerificationStatus: (req.body.emailVerificationStatus) ? req.body.emailVerificationStatus : userConstants.EMAIL_NOTVERIFIED,
+            emailVerificationKey: (req.body.emailVerificationKey) ? req.body.emailVerificationKey : '',
+            subscriptionPackageId: (req.body.subscriptionPackageId) ? req.body.subscriptionPackageId : 0,
+            subscriptionType: (req.body.subscriptionType) ? req.body.subscriptionType : userConstants.SUBSCRIPTION_FREE,
             subscriptionExpiredDate: '',
-            adPackageId: 0,
+            adPackageId: (req.body.adPackageId) ? req.body.adPackageId : 0,
             adExpiredDate: '',
-            massageFrequency: '',
-            referralBenefit: '',
-            blacklisted: '',
+            massageFrequency: (req.body.massageFrequency) ? req.body.massageFrequency : userConstants.MASSAGE_WEEKLY,
+            referralBenefit: (req.body.referralBenefit) ? req.body.referralBenefit : userConstants.REFERRAL_UNABLE,
+            blacklisted: (req.body.blacklisted) ? req.body.blacklisted : userConstants.BLACKLIST_NO,
             createdAt: ''
         };
 
-        //Enter Values to zen_user table
-        User.create(values).exec(function (err, result) {
+        var userRole = req.body.userRole;
+        if (userRole === 'user') {
 
-            if (err) {
+            User.create(values).exec(function (err, result) {
+                if (err) {
+                    return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                } else {
 
-                sails.log.debug('Some error occured ' + err);
-                return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                    var userId = result.id;
+                    UsertokenService.createToken(userId, function (err, details) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'some error occured', error: details});
+                        } else {
+                            return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
 
-            } else {
-                sails.log.debug('Result ' + result);
-                // Create new access token on signup success
-                var userId = result.id;
-                console.log(result);
-                UsertokenService.createToken(userId, function (err, details) {
+                        }
+                    });
 
-                    //return res.json(200, {status:1,message:'Success', result: result});
-                    if (err) {
-                        console.log("Token Error>>>>>>>>>>>>");
-                        return res.json(200, {status: 2, message: 'some error occured', error: details});
-                    } else {
-                        console.log("Token Success>>>>>>>>>>>>");
+                }
+            });
 
-                        return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+        } else if (userRole === 'admin') {
 
-                    }
-                });
-            }
-        });
+            AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+                if (err) {
+                    return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                } else {
+
+                    User.create(values).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                        } else {
+
+                            var userId = result.id;
+                            UsertokenService.createToken(userId, function (err, details) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: details});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+
+                                }
+                            });
+
+                        }
+                    });
+
+                }
+            });
+
+        }
     },
     /*===================================================================================================================================
      User Login
@@ -240,8 +262,8 @@ module.exports = {
             } else {
 
                 if (tokenCheck.status == 1) {
-                    
-                    User.update({id: userId},{status: 'block'}).exec(function (err, result) {
+
+                    User.update({id: userId}, {status: userConstants.STATUS_BLOCK}).exec(function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, error_details: err});
                         } else {
@@ -268,8 +290,8 @@ module.exports = {
             } else {
 
                 if (tokenCheck.status == 1) {
-                    
-                    User.update({id: userId},{status: 'delete'}).exec(function (err, result) {
+
+                    User.update({id: userId}, {status: userConstants.STATUS_DELETE}).exec(function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, error_details: err});
                         } else {

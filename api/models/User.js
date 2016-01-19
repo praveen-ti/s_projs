@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var userConstants = sails.config.constants.user;
+
 module.exports = {
 
   attributes: {
@@ -43,8 +45,8 @@ module.exports = {
 
         status: {
             type: 'string',
-            enum : ['active', 'inactive', 'block', 'delete'],
-            defaultsTo: 'active'
+            enum : [userConstants.STATUS_ACTIVE, userConstants.STATUS_INACTIVE, userConstants.STATUS_BLOCK, userConstants.STATUS_DELETE],
+            defaultsTo: userConstants.STATUS_ACTIVE
         },
 
         profilePic: {
@@ -54,8 +56,8 @@ module.exports = {
 
         emailVerificationStatus: {
             type: 'string',
-            enum : ['verified', 'notverified'],
-            defaultsTo: 'verified'
+            enum : [userConstants.EMAIL_VERIFIED, userConstants.EMAIL_NOTVERIFIED],
+            defaultsTo: userConstants.EMAIL_NOTVERIFIED
         },
 
         emailVerificationKey: {
@@ -68,8 +70,8 @@ module.exports = {
 
         subscriptionType: {
             type: 'string',
-            enum : ['free', 'paid'],
-            defaultsTo: 'free'
+            enum : [userConstants.SUBSCRIPTION_FREE, userConstants.SUBSCRIPTION_PAID],
+            defaultsTo: userConstants.SUBSCRIPTION_FREE
         },
 
         subscriptionExpiredDate: {
@@ -86,20 +88,20 @@ module.exports = {
 
         massageFrequency: {
             type: 'string',
-            enum: ['daily', 'weekly', 'monthly'],
-            defaultsTo: 'weekly'
+            enum: [userConstants.MASSAGE_DAILY, userConstants.MASSAGE_WEEKLY, userConstants.MASSAGE_MONTHLY],
+            defaultsTo: userConstants.MASSAGE_WEEKLY
         },
 
         referralBenefit: {
             type: 'string',
-            enum: ['claimable', 'claimed'],
-            defaultsTo: 'claimable'
+            enum: [userConstants.REFERRAL_UNABLE, userConstants.REFERRAL_CLAIMABLE, userConstants.REFERRAL_CLAIMED],
+            defaultsTo: userConstants.REFERRAL_UNABLE
         },
 
          blacklisted: {
             type: 'string',
-            enum: ['no', 'yes'],
-            defaultsTo: 'no'
+            enum: [userConstants.BLACKLIST_NO, userConstants.BLACKLIST_YES],
+            defaultsTo: userConstants.BLACKLIST_NO
         },
 
         createdAt: {

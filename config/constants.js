@@ -17,5 +17,10 @@ module.exports.constants = {
         REFERRAL_CLAIMED: 'claimed',
         BLACKLIST_NO: 'no',
         BLACKLIST_YES: 'yes'
+    },
+    subscription: {
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
+        STATUS_DELETE: 'delete'
     }
 };

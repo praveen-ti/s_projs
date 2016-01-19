@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
   `passwordResetKey` varchar(255) DEFAULT NULL,
-  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+  `status` enum('active','inactive','block','delete') NOT NULL DEFAULT 'active',
   `profilePic` varchar(255) DEFAULT NULL,
   `emailVerificationStatus` enum('verified','notverified') NOT NULL DEFAULT 'notverified',
   `emailVerificationKey` varchar(255) DEFAULT NULL,
@@ -27,4 +27,4 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

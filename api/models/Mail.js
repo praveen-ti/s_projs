@@ -58,6 +58,10 @@ module.exports = {
             defaultsTo: 'inbox',
         },
 
+        conversationId: {
+            type: 'integer',
+        },
+
        viewStatus: {
             type: 'string',
             enum: ['true', 'false'],

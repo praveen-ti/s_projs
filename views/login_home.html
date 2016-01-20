@@ -47,8 +47,10 @@
 
 
         io.socket.on('message', function messageReceived(messages){
-            console.log(messages);
-             jQuery("#response").append('<h3>'+messages.msg+'</h3><br>');
+            console.log("messages <<<<<>>>>>>>>>>");
+             console.log(messages);
+                jQuery("#response").append('<h3>'+messages.msg+'</h3><br>');
+             console.log("messages <<<<<>>>>>>>>>>");
             });
 
     //});
@@ -56,9 +58,11 @@
     io.socket.get('/admin/subscribeToFunRoom', {roomName:'Two'}, function (resData, jwres){
       // ...
 
-      console.log('Sails responded with: ', resData);
-      console.log('with headers: ', jwres.headers);
-      console.log('and with status code: ', jwres.statusCode);
+      console.log('<<<<<<<<<   resData ++ jwres ++ jwres.statusCode >>>>>>>>>>>>>>');
+          console.log('Sails responded with: ', resData);
+          console.log('with headers: ', jwres);
+          console.log('and with status code: ', jwres.statusCode);
+      console.log('<<<<<<<<<   resData ++ jwres ++ jwres.statusCode >>>>>>>>>>>>>>');
     });
 
 

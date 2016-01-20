@@ -10,8 +10,9 @@ var _ = require("underscore");
 module.exports = {
 
 
+
 /*===================================================================================================================================
-                                                   Save mail
+                                                   Save Mail
  ====================================================================================================================================*/
 
 
@@ -27,30 +28,110 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-//var mail = '{"mail" : {"subject": "SSSSSUBJECT", "message": "messagevvvvvvvvvvvvvvvvv", "file" : "",}}';
-//var jsonMail = JSON.parse(mail);
-                                //console.log(tokenCheck.tokenDetails.userId);
-                                 var values = {
-                                                subject             :    req.body.subject,
-                                                message             :    req.body.message,
-                                                file                :    req.body.file,
-                                                senderId            :    tokenCheck.tokenDetails.userId,
-                                                receiverId          :    req.body.receiverId,
-                                                senderFolderId      :    req.body.senderFolderId,
-                                                receiverFolderId    :    req.body.receiverFolderId,
-                                                senderStatus        :    req.body.senderStatus,
-                                                receiverStatus      :    req.body.receiverStatus,
-                                                viewStatus          :    req.body.viewStatus
-                                               };
-                                 Mail.create(values).exec(function(err, result){
-                                        if (err)
+
+var mail = '{"mail" : {"message": "'+req.body.message+
+                       '", "senderId" : '+tokenCheck.tokenDetails.userId+
+                       ', "receiverId" : '+req.body.receiverId+
+                       ', "viewStatus" : "'+req.body.viewStatus+
+                    '"}'+
+           '}';
+console.log("mail------------------");
+           console.log(mail);
+var jsonMail = JSON.parse(mail);
+ console.log(jsonMail);
+
+                                var query = "SELECT id"+
+                                            " FROM mail_conversation"+
+                                            " WHERE subjectId = "+tokenCheck.tokenDetails.userId+" AND objectId = "+req.body.receiverId+""+
+                                            " OR"+
+                                            " subjectId = "+req.body.receiverId+" AND objectId = "+tokenCheck.tokenDetails.userId;
+
+                                Mail_conversation.query(query, function(err, result) {
+                                       if(err)
                                         {
-                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                        } else
-                                        {
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+                                            return res.json(200, {status: 2, error_details: err});
                                         }
-                                    });
+                                        else
+                                        {
+
+
+                                             if(result == ""){
+
+                                                   /*#######################
+                                                      For new Mail conversation
+                                                    ########################*/
+
+                                                     var cnvrValues = {
+                                                            subjectId            :    jsonMail.mail.senderId,
+                                                            objectId             :    jsonMail.mail.receiverId,
+                                                            requestStatus        :    req.body.requestStatus
+                                                           };
+                                                console.log(result);
+                                                     //Save to Mail Conversation table
+                                                        Mail_conversation.create(cnvrValues).exec(function(err, saveMailConversation){
+                                                            if (err)
+                                                            {
+                                                                return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                            } else
+                                                            {
+
+                                                             console.log("For New Conversation");
+                                                              var mailValues = {
+                                                                    message             :    jsonMail.mail.message,
+                                                                    conversationId      :    saveMailConversation.id,
+                                                                    senderId            :    jsonMail.mail.senderId,
+                                                                    receiverId          :    jsonMail.mail.receiverId,
+                                                                    viewStatus          :    jsonMail.mail.viewStatus
+                                                                   };
+                                                                  // console.log();
+                                                                //Save Mail  to Mail table
+                                                                 Mail.create(mailValues).exec(function(err, saveMail){
+                                                                        if (err)
+                                                                        {
+                                                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                                        } else
+                                                                        {
+                                                                            console.log("Success >>>>> Mail");
+                                                                            return res.json(200, {status: 1, message: 'success', result: saveMail});
+                                                                        }
+                                                                 });
+                                                            }
+                                                         });
+
+
+
+                                             }
+                                             else{
+                                                     /*#######################
+                                                      For Existed Mail conversation
+                                                    ########################*/
+                                                     console.log(" For Existed Mail conversation");
+                                                     //Save Mail  to Mail table
+                                                     var  mailValues = {
+                                                            message             :    jsonMail.mail.message,
+                                                            conversationId      :    result[0].id,
+                                                            senderId            :    jsonMail.mail.senderId,
+                                                            receiverId          :    jsonMail.mail.receiverId,
+                                                            viewStatus          :    jsonMail.mail.viewStatus
+                                                           };
+                                                          //console.log(result);
+                                                          //console.log(result[0].id);
+                                                        //Save Mail messages to Mail table
+                                                         Mail.create(mailValues).exec(function(err, saveMail){
+                                                                if (err)
+                                                                {
+                                                                    return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                                } else
+                                                                {
+                                                                    console.log("Success >>>>> Mail =======");
+                                                                    return res.json(200, {status: 1, message: 'success', result: saveMail});
+                                                                }
+                                                         });
+                                            }
+                                        }
+                                });
+
+
                             }
                             else
                             {
@@ -59,6 +140,7 @@ module.exports = {
                    }
          });
     },
+
 
 /*===================================================================================================================================
                                                    Get Mailbox
@@ -649,6 +731,144 @@ updateUserSettings : function(req, res) {
     },
 
 
+
+
+
+/*===================================================================================================================================
+                                                   List Mail Conversation(Sent & Inbox)
+ ====================================================================================================================================*/
+
+getMailList : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+var query = "SELECT group1. * , usr. *"+
+" FROM ("+
+" SELECT *"+
+" FROM ("+
+" SELECT *"+
+" FROM mail ml"+
+" WHERE conversationId"+
+" IN ("+
+" SELECT cnvr.id"+
+" FROM mail_conversation cnvr"+
+" WHERE cnvr.subjectId = "+tokenCheck.tokenDetails.userId+
+" OR cnvr.objectId = "+tokenCheck.tokenDetails.userId+
+" )"+
+" AND ("+
+" (ml.senderStatus =  'sent' AND ml.senderId = "+tokenCheck.tokenDetails.userId+")"+
+" OR (ml.receiverStatus =  'inbox' AND ml.receiverId = "+tokenCheck.tokenDetails.userId+")"+
+" )"+
+" ORDER BY createdAt DESC"+
+" ) AS mlgrp"+
+" GROUP BY mlgrp.conversationId"+
+" ) AS group1"+
+" INNER JOIN user usr ON group1.senderId = usr.id"+
+" AND group1.receiverId =1"+
+" OR group1.receiverId = usr.id"+
+" AND group1.senderId =1"+
+" ORDER BY CONCAT( usr.firstname, usr.lastname )";
+
+                                console.log(query);
+                                        Mail.query(query, function(err, result) {
+                                                       if(err)
+                                                        {
+                                                            return res.json(200, {status: 2, error_details: err});
+                                                        }
+                                                        else
+                                                        {
+
+                                                            if(result != ""){
+                                                                    return res.json(200, {status: 1, result: result});
+                                                            }
+                                                            else{
+                                                                    return res.json(200, {status: 3, result: "No result Found"});
+                                                            }
+                                                        }
+                                        });
+
+
+                            }
+                        else
+                          {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                          }
+                     }
+
+        });
+
+    },
+
+
+/*===================================================================================================================================
+                                   GET mail Conversation(get sent and inbox messages)
+ ====================================================================================================================================*/
+GetMailConversation : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+
+                            {
+var query = "SELECT *"+
+            " FROM mail ml"+
+            " WHERE conversationId = "+req.body.cnvrId+
+            " AND ("+
+            " ("+
+            " senderStatus =  'sent'"+
+            " AND ml.senderId = "+tokenCheck.tokenDetails.userId+
+            " OR ("+
+            " receiverStatus =  'inbox'"+
+            " AND ml.receiverId = "+tokenCheck.tokenDetails.userId+
+            " )"+
+            " )"+
+            " )"+
+            " ORDER BY createdAt DESC ";
+                                console.log(">>>>>>>>>>GET MAIL CONVER>>>>>>>>>");
+                                console.log(query);
+
+                                    Mail.query(query, function(err, result) {
+                                                   if(err)
+                                                    {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    }
+                                                    else
+                                                    {
+                                                        if(result != ""){
+                                                            return res.json(200, {status: 1, result: result});
+                                                        }
+                                                        else{
+                                                             return res.json(200, {status: 3, result: "No result Found"});
+                                                        }
+                                                    }
+                                    });
+
+
+
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                   }
+         });
+
+ },
 
 
 };

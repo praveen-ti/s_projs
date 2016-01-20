@@ -141,7 +141,7 @@ var jsonChat = JSON.parse(chat);
 
 
 /*===================================================================================================================================
-                                                   List Chat Conversation
+                                                   List Chat Conversation [Receiver id getting from Online members]
  ====================================================================================================================================*/
 getChatList : function(req, res) {
 
@@ -155,6 +155,7 @@ getChatList : function(req, res) {
                     {
                         if(tokenCheck.status == 1)
                             {
+                                console.log("query >>>>>>>>>>????????????????????");
                                var query = "SELECT *"+
                                         " FROM chat cht"+
                                         " WHERE conversationId"+
@@ -186,12 +187,12 @@ getChatList : function(req, res) {
 
                                                     if(result != ""){
                                                             if(tokenCheck.tokenDetails.userId == result[0].senderId){
-                                                                console.log("Sender");
-                                                                queryUser+= "id = "+result[0].senderId;
+                                                                console.log("Receiver");
+                                                                queryUser+= "id = "+result[0].receiverId;
                                                             }
                                                             else{
-                                                                console.log("Receiver");
-                                                                 queryUser+= "id = "+result[0].receiverId;
+                                                                console.log("Sender");
+                                                                 queryUser+= "id = "+result[0].senderId;
                                                              }
                                                                  //To get user's details
                                                                  User.query(queryUser, function(err, resultUser) {
@@ -201,6 +202,9 @@ getChatList : function(req, res) {
                                                                             }
                                                                             else
                                                                             {
+                                                                                console.log(result);
+                                                                                console.log(resultUser);
+                                                                                console.log(tokenCheck.tokenDetails.userId);
                                                                                 return res.json(200, {status: 1, result: result[0], resultUser: resultUser });
                                                                             }
                                                                  });

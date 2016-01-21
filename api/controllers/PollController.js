@@ -243,6 +243,7 @@ var jsonPollDetails = JSON.parse(pollDetails);
                                             " ORDER BY createdAt DESC";*/
                                    var query ="SELECT * FROM  poll"+
                                                 " WHERE pollStatus = 'active' "+
+                                                " AND approvalStatus != 'rejected'"+
                                                 " ORDER BY createdAt DESC";
                                    console.log(query);
                                 Poll.query(query, function(err, result) {
@@ -377,6 +378,45 @@ var jsonPollDetails = JSON.parse(pollDetails);
 
 
 /*===================================================================================================================================
+                                                      Delete Poll Details
+ ====================================================================================================================================*/
+    deletePollDetails : function(req, res) {
+
+
+          AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                Poll_details.destroy({id: req.body.pollDetailsId}).exec(function deleteCB(err){
+                                    if(err)
+                                    {
+                                        console.log("error");
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                         console.log("Succes");
+                                         return res.json(200, {status: 1, message: 'success'});
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+      });
+    },
+
+
+/*===================================================================================================================================
                                                    Get all poll Details
  ====================================================================================================================================*/
 getPollDeatilsList : function(req, res) {
@@ -404,7 +444,9 @@ getPollDeatilsList : function(req, res) {
                             {
 
                                 //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
-                                var query ="SELECT * FROM poll_details WHERE pollsId= "+req.body.pollsId+" ORDER BY createdAt DESC";
+                                var query ="SELECT * FROM poll_details WHERE pollsId= "+req.body.pollsId+
+                                            "AND approvalStatus = 'approved'"+
+                                            " ORDER BY createdAt DESC";
 
                                 Poll_details.query(query, function(err, result) {
                                     if(err)
@@ -429,6 +471,8 @@ getPollDeatilsList : function(req, res) {
                     }
         });
     },
+
+
 
 
 };

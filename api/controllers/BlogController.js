@@ -217,7 +217,9 @@ module.exports = {
                                             " authorId =  "+authorId+
                                             " ORDER BY createdAt DESC";*/
                                    var query ="SELECT * FROM  blog"+
-                                                "WHERE blogStatus = 'active' ORDER BY createdAt DESC";
+                                                "WHERE blogStatus = 'active'"+
+                                                "approvalStatus != 'rejected'"+
+                                                "ORDER BY createdAt DESC";
                                    console.log(query);
                                 Blog.query(query, function(err, result) {
                                     if(err)
@@ -361,6 +363,45 @@ module.exports = {
          });
     },
 
+/*===================================================================================================================================
+                                                      Delete Blog Comments
+ ====================================================================================================================================*/
+    deleteBlogComments : function(req, res) {
+
+
+          AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                Blog_comment.destroy({id: req.body.blogCommentId}).exec(function deleteCB(err){
+                                    if(err)
+                                    {
+                                        console.log("error");
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                         console.log("Succes");
+                                         return res.json(200, {status: 1, message: 'success'});
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+      });
+    },
+
+
 
 /*===================================================================================================================================
                                                    Get all Blog Comments
@@ -389,7 +430,9 @@ getBlogcommentList : function(req, res) {
                             {
 
                                 //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
-                                var query ="SELECT * FROM blog_comment WHERE blogId= "+req.body.blogId+" ORDER BY createdAt DESC";
+                                var query ="SELECT * FROM blog_comment WHERE blogId= "+req.body.blogId+
+                                            "AND approvalStatus != 'rejected'"+
+                                            " ORDER BY createdAt DESC";
                                 Blog_comment.query(query, function(err, result) {
                                     if(err)
                                     {

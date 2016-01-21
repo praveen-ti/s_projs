@@ -8,6 +8,22 @@
 var crypto = require('crypto');
 var userConstants = sails.config.constants.user;
 
+function getUserById(uid, callback) {
+    var condition = {id: uid};
+    User.findOne(condition).exec(function (err, user) {
+        if (err) {
+            callback(true, err);
+        } else {
+            if (typeof user != "undefined") {
+                callback(false, {status: 1, message: 'User data', user: user});
+            } else {
+                callback(false, {status: 0, message: 'No user data', user: []});
+            }
+        }
+
+    });
+}
+
 module.exports = {
     /*===================================================================================================================================
      User Sign up
@@ -393,6 +409,92 @@ module.exports = {
                 }
             }
 
+        });
+    },
+    markFavourite: function (req, res) {
+
+        var userId = req.body.userId;
+        var favUserId = req.body.favUserId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    UserService.checkMarkedAsFavourite(userId, favUserId, function (err, favCheck) {
+
+                        if (favCheck.favourite === true) {
+                            Favourite.destroy({userId: userId, favouriteUserId: favUserId}).exec(function deleteCB(err) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'success'});
+                                }
+                            });
+
+                        } else {
+                            Favourite.create({userId: userId, favouriteUserId: favUserId}).exec(function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    getUserById(userId, function (status, user) {
+                                        getUserById(favUserId, function (status, favuser) {
+                                            var email_to = "useremailtestacc@gmail.com";
+                                            var email_subject = 'Zentiera - Marked you as favourite.';
+                                            var email_template = 'favourite';
+                                            var email_context = {favuser_name: favuser.user.username, user_name: user.user.username};
+                                            UserService.emailSend(email_to, email_subject, email_template, email_context, function (err, sendresult) {
+                                                if (err)
+                                                {
+                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
+                                                }
+                                                else {
+                                                    return res.json(200, {status: 1, message: 'email sent successfully', data: result});
+                                                }
+                                            });
+                                            //return res.json(200, {status: 1, data: result});
+                                        });
+                                    });
+                                }
+                            });
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    getMyFavourites: function (req, res) {
+
+        var userId = req.body.userId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT u.* FROM user AS u LEFT JOIN favourite AS f ON  u.id = f.favouriteUserId WHERE f.userId = " + userId + " ORDER BY u.id ASC";
+                    User.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
         });
     }
 

@@ -44,10 +44,11 @@ module.exports = {
             defaultsTo: 'sub',
         },
 
+         //To block a subadmin
          blockStatus: {
             type: 'string',
-            enum: ['true', 'false'],
-            defaultsTo: 'false',
+            enum: ['block', 'unblock'],
+            defaultsTo: 'unblock',
         },
 
   }

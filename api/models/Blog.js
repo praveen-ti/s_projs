@@ -14,11 +14,11 @@ module.exports = {
               primaryKey: true,
               autoIncrement: true
           },
-
+          //May be admin_id or user_id
           authorId: {
                 type: 'integer',
             },
-
+           //To check admin or not
            authorType : {
                 type: 'string',
                 enum: ['super_admin', 'sub_admin', 'user'],
@@ -32,13 +32,13 @@ module.exports = {
             description : {
                 type: 'string',
             },
-
+            //Admin can block a blog for a particular time
             blogStatus : {
                 type: 'string',
                 enum: ['active','inactive'],
                 defaultsTo: 'active',
             },
-
+            //Admin can block a user's blog
             approvalStatus : {
                 type: 'string',
                 enum: ['pending','approved','rejected'],

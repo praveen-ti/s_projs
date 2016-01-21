@@ -17,7 +17,7 @@ module.exports = {
             primaryKey: true,
             autoIncrement: true
         },
-
+      //Username of an admin
       username: {
             type: 'string',
             //required: true,
@@ -36,7 +36,7 @@ module.exports = {
             type: 'string',
             //required: true,
         },
-
+        //To know admin is a super_admin or sub_admin
         adminType: {
             type: 'string',
             //required: true,

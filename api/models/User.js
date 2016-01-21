@@ -86,12 +86,6 @@ module.exports = {
             type: 'datetime'
         },
 
-        massageFrequency: {
-            type: 'string',
-            enum: [userConstants.MASSAGE_DAILY, userConstants.MASSAGE_WEEKLY, userConstants.MASSAGE_MONTHLY],
-            defaultsTo: userConstants.MASSAGE_WEEKLY
-        },
-
         referralBenefit: {
             type: 'string',
             enum: [userConstants.REFERRAL_UNABLE, userConstants.REFERRAL_CLAIMABLE, userConstants.REFERRAL_CLAIMED],

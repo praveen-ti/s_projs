@@ -30,11 +30,12 @@ module.exports = {
             subscriptionExpiredDate: '',
             adPackageId: (req.body.adPackageId) ? req.body.adPackageId : 0,
             adExpiredDate: '',
-            massageFrequency: (req.body.massageFrequency) ? req.body.massageFrequency : userConstants.MASSAGE_WEEKLY,
             referralBenefit: (req.body.referralBenefit) ? req.body.referralBenefit : userConstants.REFERRAL_UNABLE,
             blacklisted: (req.body.blacklisted) ? req.body.blacklisted : userConstants.BLACKLIST_NO,
             createdAt: ''
         };
+
+
 
         var userRole = req.body.userRole;
         if (userRole === 'user') {
@@ -45,11 +46,55 @@ module.exports = {
                 } else {
 
                     var userId = result.id;
-                    UsertokenService.createToken(userId, function (err, details) {
+                    var userInfo = {
+                        userId: userId,
+                        dob: '',
+                        age: 0,
+                        gender: '',
+                        telephone: '',
+                        zipcode: '',
+                        country: '',
+                        state: '',
+                        city: '',
+                        latitude: '',
+                        longitude: '',
+                        userLevel: '',
+                        expYear: '',
+                        bodyType: '',
+                        height: 0,
+                        massageFrequency: '',
+                        drinkingHabit: '',
+                        smokingHabit: '',
+                        trainingHours: '',
+                        languages: '',
+                        therapeuticStatus: '',
+                        therapeuticGender: '',
+                        therapeuticDesc: '',
+                        sensualStatus: '',
+                        sensualGender: '',
+                        sensualDesc: '',
+                        relationshipTypes: '',
+                        preferedMassageTypes: '',
+                        serviceType: '',
+                        referredUserId: 0,
+                        lastLoggedin: '',
+                        createdAt: ''
+                    };
+
+                    Userinfo.create(userInfo).exec(function (err, result) {
                         if (err) {
-                            return res.json(200, {status: 2, message: 'some error occured', error: details});
+                            return res.json(200, {status: 2, message: 'Some error occured', error: err});
                         } else {
-                            return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+
+
+                            UsertokenService.createToken(userId, function (err, details) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: details});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+
+                                }
+                            });
 
                         }
                     });
@@ -70,11 +115,55 @@ module.exports = {
                         } else {
 
                             var userId = result.id;
-                            UsertokenService.createToken(userId, function (err, details) {
+                            var userInfo = {
+                                userId: userId,
+                                dob: '',
+                                age: 0,
+                                gender: '',
+                                telephone: '',
+                                zipcode: '',
+                                country: '',
+                                state: '',
+                                city: '',
+                                latitude: '',
+                                longitude: '',
+                                userLevel: '',
+                                expYear: '',
+                                bodyType: '',
+                                height: 0,
+                                massageFrequency: '',
+                                drinkingHabit: '',
+                                smokingHabit: '',
+                                trainingHours: '',
+                                languages: '',
+                                therapeuticStatus: '',
+                                therapeuticGender: '',
+                                therapeuticDesc: '',
+                                sensualStatus: '',
+                                sensualGender: '',
+                                sensualDesc: '',
+                                relationshipTypes: '',
+                                preferedMassageTypes: '',
+                                serviceType: '',
+                                referredUserId: 0,
+                                lastLoggedin: '',
+                                createdAt: ''
+                            };
+
+                            Userinfo.create(userInfo).exec(function (err, result) {
                                 if (err) {
-                                    return res.json(200, {status: 2, message: 'some error occured', error: details});
+                                    return res.json(200, {status: 2, message: 'Some error occured', error: err});
                                 } else {
-                                    return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+
+                                    //var userId = result.id;
+                                    UsertokenService.createToken(userId, function (err, details) {
+                                        if (err) {
+                                            return res.json(200, {status: 2, message: 'some error occured', error: details});
+                                        } else {
+                                            return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
+
+                                        }
+                                    });
 
                                 }
                             });

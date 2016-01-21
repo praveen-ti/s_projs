@@ -269,9 +269,9 @@ var jsonPollDetails = JSON.parse(pollDetails);
 
 
 /*===================================================================================================================================
-                                                   Create a Comment for Poll
+                                                   Create Details for Poll
  ====================================================================================================================================*/
-    addPollComment : function(req, res) {
+    addPollDetails : function(req, res) {
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -283,19 +283,23 @@ var jsonPollDetails = JSON.parse(pollDetails);
                     {
                         if(tokenCheck.status == 1)
                             {
-var pollCommentDetails = '{"pollCommentDetails" : {"pollsId":'+req.body.pollsId+
+var pollDetails = '{"pollDetails" : {"pollsId":'+req.body.pollsId+
                             ', "pollAnswer": "'+req.body.pollAnswer+
                             '", "pollComment": "'+req.body.pollComment+
                             '", "approvalStatus": "'+req.body.approvalStatus+'"}}';
-var jsonPollCommentDetails = JSON.parse(pollCommentDetails);
+
+         console.log(pollDetails);
+
+var jsonPollDetails = JSON.parse(pollDetails);
                                  var values = {
-                                                pollsId                :       jsonPollCommentDetails.pollCommentDetails.pollsId,
-                                                pollAnswer             :       jsonPollCommentDetails.pollCommentDetails.pollAnswer,
-                                                pollComment            :       jsonPollCommentDetails.pollCommentDetails.pollComment,
+                                                pollsId                :       jsonPollDetails.pollDetails.pollsId,
+                                                pollAnswer             :       jsonPollDetails.pollDetails.pollAnswer,
+                                                pollComment            :       jsonPollDetails.pollDetails.pollComment,
                                                 userId                 :       tokenCheck.tokenDetails.userId,
-                                                approvalStatus         :       jsonPollCommentDetails.pollCommentDetails.approvalStatus,
+                                                approvalStatus         :       jsonPollDetails.pollDetails.approvalStatus,
                                               };
-                                 Poll_comment.create(values).exec(function(err, result){
+          console.log(values);
+                                 Poll_details.create(values).exec(function(err, result){
                                         if (err)
                                         {
                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
@@ -333,7 +337,7 @@ var jsonPollCommentDetails = JSON.parse(pollCommentDetails);
                         if(tokenCheck.status == 1)
                             {
 
-                               Poll_comment.findOne({id: req.body.commentId}).exec(function findCB(err, result) {
+                               Poll_details.findOne({id: req.body.commentId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -346,7 +350,7 @@ var jsonPollCommentDetails = JSON.parse(pollCommentDetails);
                                                   };
 
                                             var criteria = {id: result.id};
-                                            Poll_comment.update(criteria, values).exec(function(err, updatedPollComment) {
+                                            Poll_details.update(criteria, values).exec(function(err, updatedPollComment) {
                                                 if(err)
                                                 {
                                                     return res.json(200, {status: 2, error_details: err});
@@ -373,9 +377,9 @@ var jsonPollCommentDetails = JSON.parse(pollCommentDetails);
 
 
 /*===================================================================================================================================
-                                                   Get all poll Comments
+                                                   Get all poll Details
  ====================================================================================================================================*/
-getPollcommentList : function(req, res) {
+getPollDeatilsList : function(req, res) {
 
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
@@ -400,15 +404,15 @@ getPollcommentList : function(req, res) {
                             {
 
                                 //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
-                                var query ="SELECT * FROM poll_comment WHERE pollsId= "+req.body.pollId+" ORDER BY createdAt DESC";
-                                Poll_comment.query(query, function(err, result) {
+                                var query ="SELECT * FROM poll_details WHERE pollsId= "+req.body.pollsId+" ORDER BY createdAt DESC";
+
+                                Poll_details.query(query, function(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
                                     }
                                     else
                                     {
-                                        console.log(result);
                                         if(result.length!=0){
                                             return res.json(200, {status: 1, message: "success", result: result});
                                         }

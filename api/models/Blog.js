@@ -33,6 +33,12 @@ module.exports = {
                 type: 'string',
             },
 
+            blogStatus : {
+                type: 'string',
+                enum: ['active','inactive'],
+                defaultsTo: 'active',
+            },
+
             approvalStatus : {
                 type: 'string',
                 enum: ['pending','approved','rejected'],

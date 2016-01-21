@@ -18,11 +18,11 @@ module.exports = {
           pollsId: {
                 type: 'integer',
            },
-
+            //One answer against a question
            pollAnswer : {
                 type: 'string',
             },
-
+            //One comment against a question
             pollComment : {
                 type: 'string',
             },

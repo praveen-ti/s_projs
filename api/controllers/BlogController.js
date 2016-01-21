@@ -217,7 +217,7 @@ module.exports = {
                                             " authorId =  "+authorId+
                                             " ORDER BY createdAt DESC";*/
                                    var query ="SELECT * FROM  blog"+
-                                                " ORDER BY createdAt DESC";
+                                                "WHERE blogStatus = 'active' ORDER BY createdAt DESC";
                                    console.log(query);
                                 Blog.query(query, function(err, result) {
                                     if(err)

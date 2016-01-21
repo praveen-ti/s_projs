@@ -154,7 +154,7 @@ console.log(req.body.token);
                     {
                          if(tokenCheck.status == 1)
                             {
-                                Admin.findOne({id: req.body.adminId}).exec(function findCB(err, result) {
+                                Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -211,7 +211,7 @@ console.log(req.body.token);
                     {
                          if(tokenCheck.status == 1)
                             {
-                                Admin.destroy({id: req.body.adminId}).exec(function deleteCB(err){
+                                Admin.destroy({id: tokenCheck.tokenDetails.adminId}).exec(function deleteCB(err){
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -248,7 +248,7 @@ console.log(req.body.token);
                         if(tokenCheck.status == 1)
                             {
                                  var values = {
-                                                adminId         :       req.body.adminId,
+                                                adminId         :       tokenCheck.tokenDetails.adminId,
                                                 privilegeId     :       req.body.privilegeId
                                                };
                                  Admin_privilege_log.create(values).exec(function(err, result){
@@ -363,7 +363,7 @@ console.log(req.body.token);
                     {
                         if(tokenCheck.status == 1)
                             {
-                                Admin_privilege_log.findOne({id: req.body.adminId}).exec(function findCB(err, result1) {
+                                Admin_privilege_log.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result1) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});

@@ -21,11 +21,6 @@
             type: 'integer'
         },
 
-        clearStatus: {
-            type: 'string',
-            enum: ['active','delete'],
-        },
-
         lastClearDate: {
             type: 'datetime',
         },

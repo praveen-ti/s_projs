@@ -54,6 +54,37 @@ module.exports = {
 
         });
 
+    },
+    checkProfileViewed: function (userId, visitorId, callback) {
+
+        Profilevisitor.query('SELECT * FROM profile_visitor WHERE userId = ? AND visitorId = ?', [userId, visitorId], function (err, results) {
+
+            if (err) {
+                callback(true, err);
+            } else {
+
+                if (typeof results[0] != "undefined") {
+                    callback(false, {status: 1, message: 'User already viewed this profile', viewed: true});
+                } else {
+                    callback(false, {status: 0, message: 'Not viewed before', viewed: false});
+                }
+            }
+
+        });
+
+    },
+    updateUser: function (criteria, data, callback) {
+
+        User.update(criteria, data).exec(function (err, updatedData) {
+            if (err) {
+
+                callback(true, err);
+
+            } else {
+
+                callback(false, updatedData);
+            }
+        });
     }
 
 

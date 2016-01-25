@@ -7,7 +7,7 @@
 
 module.exports = {
     index: function (req, res) {
-        var email_to = "useremailtestacc@gmail.com";
+        /*var email_to = "useremailtestacc@gmail.com";
         var email_subject = 'Zentiera - Email verify';
         var email_template = 'email_verify';
         var email_context = {display_name: "result.name", email: "result.email", link: "result"};
@@ -27,7 +27,12 @@ module.exports = {
                 return res.json(200, {status: 1, message: 'succes', details: 'details'});
             }
         });
-        return res.view("test", {test: 'testing'});
+        return res.view("test", {test: 'testing'});*/
+        var param = {key:'FROM_EMAIL'};
+        SettingsService.getSettingsValue(param, function(err, result) {
+                console.log(result);
+        });
+        var from = SettingsService.key.FROM_EMAIL;
     }
 
 

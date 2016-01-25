@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(255) DEFAULT NULL,
   `passwordResetKey` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive','block','delete') NOT NULL DEFAULT 'active',
+  `deletedBy` enum('user','admin') DEFAULT NULL,
   `profilePic` varchar(255) DEFAULT NULL,
   `emailVerificationStatus` enum('verified','notverified') NOT NULL DEFAULT 'notverified',
   `emailVerificationKey` varchar(255) DEFAULT NULL,

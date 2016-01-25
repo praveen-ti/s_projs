@@ -386,9 +386,20 @@ module.exports = {
     deleteAMember: function (req, res) {
 
         var userId = req.body.userId;
+        var userRole = req.body.userRole;
         var tokenService = tokenService || {};
+        var deletedBy = null;
 
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+            deletedBy = userConstants.DELETED_BY_USER;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+            deletedBy = userConstants.DELETED_BY_ADMIN;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
                 return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
@@ -396,7 +407,7 @@ module.exports = {
 
                 if (tokenCheck.status == 1) {
 
-                    User.update({id: userId}, {status: userConstants.STATUS_DELETE}).exec(function (err, result) {
+                    User.update({id: userId}, {status: userConstants.STATUS_DELETE, deletedBy: deletedBy}).exec(function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, error_details: err});
                         } else {
@@ -496,7 +507,126 @@ module.exports = {
                 }
             }
         });
-    }
+    },
+    markProfileASViewed: function (req, res) {
 
+        var userId = req.body.userId;
+        var visitorId = req.body.visitorId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    UserService.checkProfileViewed(userId, visitorId, function (err, visitorCheck) {
+
+                        if (visitorCheck.viewed === false) {
+
+                            Profilevisitor.create({userId: userId, visitorId: visitorId}).exec(function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    getUserById(userId, function (status, user) {
+                                        getUserById(visitorId, function (status, visituser) {
+                                            var email_to = "useremailtestacc@gmail.com";
+                                            var email_subject = 'Zentiera - New user visited your profile.';
+                                            var email_template = 'profilevisit';
+                                            var email_context = {visitor_name: visituser.user.username, user_name: user.user.username};
+                                            UserService.emailSend(email_to, email_subject, email_template, email_context, function (err, sendresult) {
+                                                if (err)
+                                                {
+                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
+                                                }
+                                                else {
+                                                    return res.json(200, {status: 1, message: 'email sent successfully', data: result});
+                                                }
+                                            });
+                                            //return res.json(200, {status: 1, data: result});
+                                        });
+                                    });
+                                }
+                            });
+
+                        } else {
+                            return res.json(200, {status: 1, message: 'User already viewed this profile', viewed: true});
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    getProfileVisitors: function (req, res) {
+
+        var userId = req.body.userId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT u.* FROM user AS u LEFT JOIN profile_visitor AS pv ON u.id = pv.visitorId WHERE pv.userId = " + userId + " ORDER BY u.id ASC";
+                    User.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    changePassword: function (req, res) {
+
+        //validate token
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+                // If it is a valid token
+                if (tokenCheck.status == 1) {
+
+                    var currentPassword = crypto.createHash('md5').update(req.body.currentPassword).digest("hex");
+                    var newPassword = crypto.createHash('md5').update(req.body.newPassword).digest("hex");
+
+                    var criteria = {id: tokenCheck.tokenDetails.userId, password: currentPassword};
+                    var data = {password: newPassword};
+                    
+                    // Update user with the new password
+                    UserService.updateUser(criteria, data, function (err, result) {
+                        console.log('result');
+                        console.log(result);
+                        if (err) {
+
+                            return res.json(200, {status: 2, message: 'some error has occured', error_details: result});
+                        } else {
+                            if (result.length == 0) {
+                                return res.json(200, {status: 2, message: "Current password is incorrect"});
+                            } else {
+                                return res.json(200, {status: 1, message: "success"});
+                            }
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'session expired'});
+                }
+            }
+        });
+    },
 };
 

@@ -48,6 +48,11 @@ module.exports = {
             enum : [userConstants.STATUS_ACTIVE, userConstants.STATUS_INACTIVE, userConstants.STATUS_BLOCK, userConstants.STATUS_DELETE],
             defaultsTo: userConstants.STATUS_ACTIVE
         },
+        
+        deletedBy: {
+            type: 'string',
+            enum : [userConstants.DELETED_BY_USER, userConstants.DELETED_BY_ADMIN]
+        },
 
         profilePic: {
             type: 'string'

@@ -5,6 +5,8 @@ module.exports.constants = {
         STATUS_INACTIVE: 'inactive',
         STATUS_BLOCK: 'block',
         STATUS_DELETE: 'delete',
+        DELETED_BY_USER: 'user',
+        DELETED_BY_ADMIN: 'admin',
         EMAIL_VERIFIED: 'verified',
         EMAIL_NOTVERIFIED: 'notverified',
         SUBSCRIPTION_FREE: 'free',

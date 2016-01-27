@@ -6,6 +6,7 @@
  */
 
 var crypto = require('crypto');
+var fs = require('fs');
 var userConstants = sails.config.constants.user;
 
 function getUserById(uid, callback) {
@@ -784,7 +785,7 @@ module.exports = {
         });
 
     },
-    addImage: function (req, res) {
+    addPhoto: function (req, res) {
 
         var userId = req.body.userId;
         var title = req.body.title;
@@ -867,6 +868,103 @@ module.exports = {
                 }
             }
         });
+    },
+    getPhotosByUserId: function (req, res) {
+
+        var userId = req.body.userId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT p.* FROM photos AS p WHERE p.userId = " + userId + " ORDER BY p.id ASC";
+                    Photos.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+
+    },
+    deletePhoto: function (req, res) {
+        var photoId = req.body.photoId;
+        var userId = req.body.userId;
+        var imagePath = './assets/images/pics';
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error in token check.', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    var condition = {id: userId};
+                    User.findOne(condition).exec(function (err, user) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error in fetching user data.', error_details: err});
+                        } else {
+
+                            if (typeof user != "undefined") {
+
+                                Photos.findOne({id: photoId}).exec(function (err, photo) {
+
+                                    if (err) {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    } else {
+
+                                        fs.unlink(imagePath + '/' + user.username + '/' + photo.imageName, function (err) {
+                                            if (err) {
+                                                return res.json(200, {status: 2, message: 'Error in file deletion', error_details: err});
+                                            } else {
+
+                                                Photos.destroy({id: photoId}).exec(function (err, photo) {
+
+                                                    if (err) {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    } else {
+                                                        return res.json(200, {status: 1, message: 'File deleted successfully.', photoId: photoId});
+                                                    }
+
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+
+                            } else {
+                                return res.json(200, {status: 0, message: 'No user exists', user: []});
+                            }
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+
     }
 };
 

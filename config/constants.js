@@ -72,5 +72,13 @@ module.exports.constants = {
         THERAPEUTIC_NO: 'no',
         SENSUAL_YES: 'yes',
         SENSUAL_NO: 'no',
+    },
+    video: {
+        ACCESS_TYPE_PRIVATE: 'private',
+        ACCESS_TYPE_PUBLIC: 'public'
+    },
+    photo: {
+        ACCESS_TYPE_PRIVATE: 'private',
+        ACCESS_TYPE_PUBLIC: 'public'
     }
 };

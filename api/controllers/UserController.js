@@ -605,7 +605,7 @@ module.exports = {
 
                     var criteria = {id: tokenCheck.tokenDetails.userId, password: currentPassword};
                     var data = {password: newPassword};
-                    
+
                     // Update user with the new password
                     UserService.updateUser(criteria, data, function (err, result) {
                         console.log('result');
@@ -628,5 +628,245 @@ module.exports = {
             }
         });
     },
+    addVideo: function (req, res) {
+
+        var userId = req.body.userId;
+        var videoUrl = req.body.videoUrl;
+        var title = req.body.title;
+        var description = req.body.description;
+        var accessType = req.body.accessType;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    UserService.checkVideoLimit(userId, accessType, function (err, limitCheck) {
+
+                        if (limitCheck.exceed === false) {
+
+                            Video.create({userId: userId, videoUrl: videoUrl, title: title, description: description, accessType: accessType}).exec(function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    return res.json(200, {status: 1, data: result});
+                                }
+                            });
+
+                        } else {
+                            return res.json(200, {status: 1, message: 'User video limit already exceed.', limitExceed: true});
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    editVideo: function (req, res) {
+
+        var videoId = req.body.videoId;
+        var userId = req.body.userId;
+        var videoUrl = req.body.videoUrl;
+        var title = req.body.title;
+        var description = req.body.description;
+        var accessType = req.body.accessType;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    UserService.checkVideoLimit(userId, accessType, function (err, limitCheck) {
+
+                        if (limitCheck.exceed === false) {
+
+                            Video.update({id: videoId}, {userId: userId, videoUrl: videoUrl, title: title, description: description, accessType: accessType}).exec(function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    return res.json(200, {status: 1, data: result});
+                                }
+                            });
+
+                        } else {
+                            return res.json(200, {status: 1, message: 'User video limit already exceed.', limitExceed: true});
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    deleteVideo: function (req, res) {
+
+        var videoId = req.body.videoId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    Video.destroy({id: videoId}).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    getVideosByUserId: function (req, res) {
+
+        var userId = req.body.userId;
+        var videoId = req.body.videoId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT v.* FROM video AS v WHERE v.userId = " + userId + " ORDER BY v.id ASC";
+                    Video.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+
+    },
+    addImage: function (req, res) {
+
+        var userId = req.body.userId;
+        var title = req.body.title;
+        var description = req.body.description;
+        var accessType = req.body.accessType;
+        var imagePath = '../../assets/images/pics';
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    User.findOne({id: userId}).exec(function findCB(err, user) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+
+                            UserService.checkPhotoLimit(userId, user.subscriptionType, accessType, function (err, limitCheck) {
+
+                                if (limitCheck.exceed === false) {
+
+                                    if (typeof user != 'undefined') {
+                                        imagePath = imagePath + '/' + user.username;
+                                        //return res.json(200, {status: 2, user: user});
+                                        req.file('pics').upload({dirname: imagePath}, function (err, files) {
+                                            if (err) {
+                                                return res.json(200, {status: 2, message: 'Some error occured in file upload', error_details: err});
+                                            } else {
+
+                                                if (files.length != 0) {
+                                                    //var d = new Date();
+                                                    //var extension = (files[0].filename).substr((files[0].filename).lastIndexOf('.') + 1);
+                                                    //var imageName = 'user_' + userId + '_img_' + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+                                                    //imageName = imageName + '.' + extension;
+
+                                                    var filePath = files[0].fd;
+                                                    filePath = filePath.split("/" + user.username + "/");
+
+                                                    var imageData = {
+                                                        userId: userId,
+                                                        imageName: filePath[1],
+                                                        title: title,
+                                                        description: description,
+                                                        accessType: accessType
+                                                    };
+
+                                                    Photos.create(imageData).exec(function (err, result) {
+                                                        if (err) {
+                                                            return res.json(200, {status: 2, error_details: err});
+                                                        } else {
+                                                            return res.json(200, {status: 1, data: result});
+                                                        }
+                                                    });
+
+                                                } else {
+                                                    return res.json(200, {status: 2, message: 'no files selected'});
+                                                }
+
+                                            }
+                                        });
+
+                                    } else {
+                                        return res.json(200, {status: 2, message: 'no user found'});
+                                    }
+
+                                } else {
+                                    return res.json(200, {status: 1, message: 'Photo limit already exceed.', limitExceed: true});
+                                }
+                            });
+
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    }
 };
 

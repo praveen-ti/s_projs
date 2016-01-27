@@ -1,3 +1,6 @@
+
+var userConstants = sails.config.constants.user;
+
 module.exports = {
     emailSend: function (email_to, email_subject, email_template, email_context, callback) {
         console.log("Entered E-mail Service");
@@ -85,7 +88,48 @@ module.exports = {
                 callback(false, updatedData);
             }
         });
+    },
+    checkVideoLimit: function (userId, accessType, callback) {
+
+        Video.query('SELECT COUNT(*) AS vcount FROM video AS v WHERE v.userId = ? AND v.accessType = ?', [userId, accessType], function (err, results) {
+
+            if (err) {
+                callback(true, err);
+            } else {
+
+                if ((typeof results[0] != "undefined") && (results[0].vcount >= 5)) {
+                    callback(false, {status: 1, message: 'User video limit already exceed.', exceed: true});
+                } else {
+                    callback(false, {status: 0, message: 'Video limit not exceeded.', exceed: false});
+                }
+            }
+
+        });
+
+    },
+    checkPhotoLimit: function (userId, subscriptionType, accessType, callback) {
+
+        Photos.query('SELECT COUNT(*) AS pcount FROM photos AS p WHERE p.userId = ? AND p.accessType = ?', [userId, accessType], function (err, results) {
+
+            if (err) {
+                callback(true, err);
+            } else {
+
+                if ((typeof results[0] != "undefined") && (subscriptionType == userConstants.SUBSCRIPTION_FREE) && (results[0].pcount >= 5)) {
+                    callback(false, {status: 1, message: 'Free user photo limit exceeded.', exceed: true});
+                } else if ((typeof results[0] != "undefined") && (subscriptionType == userConstants.SUBSCRIPTION_PAID) && (results[0].pcount >= 50)) {
+                    callback(false, {status: 1, message: 'Paid user photo limit exceeded.', exceed: true});
+                } else {
+                    callback(false, {status: 0, message: 'photo limit not exceeded.', exceed: false});
+                }
+
+            }
+
+        });
+
     }
+
+
 
 
 };

@@ -230,64 +230,6 @@ getChatList : function(req, res) {
     },
 
 
-/*===================================================================================================================================
-                                                   Get Conversation in Detail
- ====================================================================================================================================*/
-
-
- getDetailChat : function(req, res) {
-
-         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                   var viewStatus = "true";
-                                   var query =  "SELECT *"+
-                                                " FROM  chat"+
-                                                " WHERE  conversationId ="+ req.body.cnvrId+
-                                                " ORDER BY createdAt DESC";
-                                    console.log(query);
-                                    //Update view status
-                                    var queryStatus="UPDATE chat SET viewStatus = '"+viewStatus+"' WHERE conversationId ="+ req.body.cnvrId;
-                                    console.log(queryStatus);
-                                    Chat.query(query, function(err, result) {
-                                               if(err)
-                                                {
-                                                    return res.json(200, {status: 2, error_details: err});
-                                                }
-                                                else
-                                                {
-                                                    Conversation.query(queryStatus, function(err, resultStatus) {
-                                                            if(err)
-                                                            {
-                                                                return res.json(200, {status: 2, error_details: err});
-                                                            }
-                                                            else
-                                                            {
-                                                                console.log(result);
-                                                                return res.json(200, {status: 1, message: 'success', result: resultStatus});
-                                                            }
-                                                    });
-                                                }
-                                     });
-
-
-                              }
-                              else
-                              {
-                                    return res.json(200, {status: 3, message: 'token expired'});
-                              }
-
-                    }
-                });
-
-            },
 
 
 /*===================================================================================================================================
@@ -343,7 +285,222 @@ chatRequest : function(req, res) {
     },
 
 
+/*===================================================================================================================================
+                                  Clear full Conversation[By changing senderstatus and receiver status by clear]
+ ====================================================================================================================================*/
 
+
+clearChat : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+var currentDate = new Date();
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                              var findValues = {
+                                                clearUserId     : tokenCheck.tokenDetails.userId,
+                                                conversationId  : req.body.cnvrId
+                                                };
+                                 console.log(req.body.cnvrId);
+
+                                 console.log(findValues);
+
+                            Clearchat.findOne(findValues).exec(function findCB(err, result) {
+                                var clearStatus = req.body.clearStatus;
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        console.log(result);
+                                        //Clear a chat conversation first time
+                                        if(typeof result == "undefined" || result == ""){
+
+                                             var values = {
+                                                conversationId            :       req.body.cnvrId,
+                                                clearUserId               :       tokenCheck.tokenDetails.userId,
+                                                clearStatus               :       clearStatus,
+                                              };
+                                                Clearchat.create(values).exec(function(err, addClearChat){
+                                                        if (err)
+                                                        {
+                                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                        } else
+                                                        {
+                                                            console.log("Create Values");
+                                                            return res.json(200, {status: 1, message: 'success', addClearChat: addClearChat});
+                                                        }
+                                                    });
+                                        }
+                                        //Clear a chat conversation more than 1
+                                        else{
+
+                                             var criteria = {id: result.id};
+
+
+
+                                                Clearchat.update(criteria, {lastClearDate: currentDate}).exec(function(err, updatedDate) {
+                                                    if(err)
+                                                    {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    }
+                                                    else
+                                                    {
+                                                        console.log("success update");
+                                                        console.log(updatedDate);
+
+                                                        return res.json(200, {status: 1, updatedDate: updatedDate});
+                                                    }
+                                               });
+                                                //return res.json(200, {status: 1, result: result});
+                                        }
+
+                                    }
+                              });
+
+                            }
+                          else
+                          {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                          }
+                    }
+         });
+
+    },
+
+/*===================================================================================================================================
+                                                   Get Conversation in Detail[which are not cleared one]
+ ====================================================================================================================================*/
+
+
+ getDetailChat : function(req, res) {
+
+         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+var queryGetCnvr = "SELECT id "+
+                    " FROM  conversation"+
+                    " WHERE ("+
+                    " subjectId = "+tokenCheck.tokenDetails.userId+
+                    " AND  objectId = "+req.body.receiverId+
+                    " )"+
+                    " OR ("+
+                    " subjectId = "+req.body.receiverId+
+                    " AND  objectId = "+tokenCheck.tokenDetails.userId+
+                    " )";
+console.log(queryGetCnvr);
+                        //Checking conversation is there or not
+                        Conversation.query(queryGetCnvr, function(err, result) {
+                                       if(err)
+                                        {
+                                            return res.json(200, {status: 2, error_details: err});
+                                        }
+                                        else
+                                        {
+
+                                             if(result.length > 0){
+
+                                                    console.log(result);
+                                                   // console.log(result[0].id);
+                                                    var findValues = {
+                                                            clearUserId     : tokenCheck.tokenDetails.userId,
+                                                            conversationId  : result[0].id,
+                                                    };
+
+                                                    //Checking Clearchat entry is there or not
+                                                    Clearchat.findOne(findValues).exec(function findCB(err, clearResult) {
+                                                            if(err)
+                                                            {
+                                                                return res.json(200, {status: 2, error_details: err});
+                                                            }
+                                                            else
+                                                            {
+                                                                console.log(tokenCheck.tokenDetails.userId);
+                                                                console.log(result[0].id);
+                                                                console.log(clearResult);
+                                                                       //Checking the entry in clearchat table or not
+                                                                      if(typeof clearResult != "undefined"){
+                                                                          console.log("<<Split date to clear chat>>");
+                                                                          var clearDate       = clearResult.lastClearDate.toISOString();
+                                                                          var splitdate       = clearDate.split("T1");
+                                                                          var splitTime       = splitdate[1].split(".");
+                                                                          var splitDateTime  = splitdate[0]+" "+splitTime[0];
+
+                                                                          var queryChat = "SELECT *"+
+                                                                                            " FROM chat"+
+                                                                                            " WHERE conversationId ="+result[0].id+
+                                                                                            " AND ("+
+                                                                                            " senderId = "+tokenCheck.tokenDetails.userId+
+                                                                                            " OR receiverId = "+req.body.receiverId+
+                                                                                            " )"+
+                                                                                            " AND createdAt >'"+splitDateTime+
+                                                                                            "' ORDER BY createdAt DESC";
+                                                                        }
+                                                                        else{
+                                                                            console.log("No clear chat entry");
+                                                                            var queryChat = "SELECT *"+
+                                                                                            " FROM chat"+
+                                                                                            " WHERE conversationId ="+result[0].id+
+                                                                                            " AND ("+
+                                                                                            " senderId = "+tokenCheck.tokenDetails.userId+
+                                                                                            " OR receiverId = "+req.body.receiverId+
+                                                                                            " )"+
+                                                                                            " ORDER BY createdAt DESC";
+
+                                                                            }
+                                                        console.log("queryChat??????????????");
+                                                       console.log(queryChat);
+
+                                                                 //get detail chat
+                                                                Chat.query(queryChat, function(err, chatResult) {
+                                                                           if(err)
+                                                                            {
+                                                                                return res.json(200, {status: 2, error_details: err});
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                console.log("<<<<<<<< chatResult >>>>>>>");
+                                                                                console.log(chatResult);
+                                                                                return res.json(200, {status: 1, message: 'success', chatResult: chatResult});
+                                                                            }
+                                                                      });
+                                                            }
+                                                     });
+
+                                               }
+                                               else{
+                                                    return res.json(200, {status: 3, result: "No conversation Found"});
+                                                }
+
+                                        }
+                            });
+
+
+                              }
+                              else
+                              {
+                                    return res.json(200, {status: 3, message: 'token expired'});
+                              }
+
+                    }
+                });
+
+            },
 
 
 };

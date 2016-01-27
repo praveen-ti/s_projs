@@ -15,6 +15,25 @@ module.exports = {
               autoIncrement: true
           },
 
+         //Banner image of ad
+         banner: {
+                type: 'string',
+           },
+
+         //Bannertype to Ban By admin
+         bannerType: {
+                type: 'string',
+                enum: ['therapeutic','sensual'],
+                defaultsTo: 'therapeutic',
+           },
+
+        //Advertisement ,currently active or not
+         status: {
+                type: 'string',
+                enum: ['active','inactive','delete'],
+                defaultsTo: 'active',
+           },
+
         adPageId: {
                 type: 'integer',
            },
@@ -27,24 +46,14 @@ module.exports = {
                 type: 'integer',
            },
 
-          //Advertisement ,currently active or not
-         adStatus: {
-                type: 'string',
-                enum: ['active','inactive'],
-                defaultsTo: 'active',
+          totalCost: {
+                type: 'integer',
            },
 
-        //Banner image of ad
-         adImage: {
-                type: 'string',
-           },
-
-         //Banner image of ad
          adStartDate: {
                 type: 'datetime',
            },
 
-         //Banner image of ad
          adEndDate: {
                 type: 'datetime',
            },

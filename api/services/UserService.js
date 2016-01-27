@@ -127,6 +127,24 @@ module.exports = {
 
         });
 
+    },
+    checkPhotoKey: function (userId, objectUserId, key, callback) {
+
+        Photokeymapping.query('SELECT pk.* FROM photo_key_mapping AS pk WHERE pk.userId = ? AND pk.objectUserId = ? AND pk.key = ?', [userId, objectUserId, key], function (err, results) {
+
+            if (err) {
+                callback(true, err);
+            } else {
+
+                if (typeof results[0] != "undefined") {
+                    callback(false, {status: 1, message: 'You can access private photos', valid: true});
+                } else {
+                    callback(false, {status: 0, message: 'No permission to access private photos', valid: false});
+                }
+            }
+
+        });
+
     }
 
 

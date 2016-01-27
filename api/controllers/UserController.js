@@ -8,6 +8,7 @@
 var crypto = require('crypto');
 var fs = require('fs');
 var userConstants = sails.config.constants.user;
+var photoConstants = sails.config.constants.photo;
 
 function getUserById(uid, callback) {
     var condition = {id: uid};
@@ -965,6 +966,82 @@ module.exports = {
             }
         });
 
+    },
+    generatePhotoKey: function (req, res) {
+        var objectUserId = req.body.objectUserId;
+        var userId = req.body.userId;
+        var d = new Date();
+        var hash = userId + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+        var key = crypto.createHash('md5').update(hash).digest("hex");
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    var photoKeyData = {
+                        userId: userId,
+                        key: key,
+                        objectUserId: objectUserId
+                    };
+
+                    Photokeymapping.create(photoKeyData).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    getPrivatePhotos: function (req, res) {
+        var objectUserId = req.body.objectUserId;
+        var userId = req.body.userId;
+        var key = req.body.key;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+                    UserService.checkPhotoKey(userId, objectUserId, key, function (err, keyCheck) {
+
+                        if (keyCheck.valid === true) {
+
+                            var query = "SELECT p.* FROM photos AS p WHERE p.userId = " + userId + " AND p.accessType = '" + photoConstants.ACCESS_TYPE_PRIVATE + "' ORDER BY p.id ASC";
+                            console.log('query');
+                            console.log(query);
+                            Photos.query(query, function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, error_details: err});
+                                } else {
+                                    return res.json(200, {status: 1, message: "success", photos: result});
+                                }
+                            });
+
+                        } else {
+                            return res.json(200, {status: 1, message: 'No permission to access private photos', valid: false});
+                        }
+
+                    });
+
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
     }
+
 };
 

@@ -50,6 +50,8 @@ module.exports = {
             adPackageId: (req.body.adPackageId) ? req.body.adPackageId : 0,
             adExpiredDate: '',
             referralBenefit: (req.body.referralBenefit) ? req.body.referralBenefit : userConstants.REFERRAL_UNABLE,
+            referredUserId: null,
+            refferedCount: 0,
             blacklisted: (req.body.blacklisted) ? req.body.blacklisted : userConstants.BLACKLIST_NO,
             createdAt: ''
         };
@@ -95,7 +97,6 @@ module.exports = {
                         relationshipTypes: '',
                         preferedMassageTypes: '',
                         serviceType: '',
-                        referredUserId: 0,
                         lastLoggedin: '',
                         createdAt: ''
                     };
@@ -164,7 +165,6 @@ module.exports = {
                                 relationshipTypes: '',
                                 preferedMassageTypes: '',
                                 serviceType: '',
-                                referredUserId: 0,
                                 lastLoggedin: '',
                                 createdAt: ''
                             };
@@ -1108,6 +1108,114 @@ module.exports = {
                 }
             }
         });
+    },
+    blockAUser: function (req, res) {
+
+        var userId = req.body.userId;
+        var blockedUserId = req.body.blockedUserId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error in token check.', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    var blockUserData = {
+                        userId: userId,
+                        blockedUserId: blockedUserId
+                    };
+
+                    Blockuser.create(blockUserData).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success', data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    unblockAUser: function (req, res) {
+
+        var userId = req.body.userId;
+        var blockedUserId = req.body.blockedUserId;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    Blockuser.destroy({userId: userId, blockedUserId: blockedUserId}).exec(function deleteCB(err) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success'});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    referAFriend: function (req, res) {
+
+        var userId = req.body.userId;
+        var referredUserId = req.body.referredUserId;
+
+        User.findOne({id: referredUserId}).exec(function (err, user) {
+            if (err) {
+                return res.json(200, {status: 2, error_details: err});
+            } else {
+                if (typeof user != "undefined") {
+                    //return res.json(200, {status: 1, message: 'User data', user: user});
+
+                    var query = "UPDATE user SET refferedCount  = refferedCount + 1 WHERE id = " + user.id;
+
+                    User.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+
+                            var criteria = {id: userId};
+                            var data = {referredUserId: referredUserId};
+
+                            UserService.updateUser(criteria, data, function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error has occured', error_details: result});
+                                } else {
+                                    if (result.length == 0) {
+                                        return res.json(200, {status: 2, message: "Error in refferal user status updation"});
+                                    } else {
+                                        return res.json(200, {status: 1, message: "success"});
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+
+
+
+                } else {
+                    return res.json(200, {status: 0, message: 'No user data', user: []});
+                }
+            }
+
+        });
+
     }
 
 };

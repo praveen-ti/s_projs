@@ -16,11 +16,13 @@ CREATE TABLE IF NOT EXISTS `user` (
   `emailVerificationStatus` enum('verified','notverified') NOT NULL DEFAULT 'notverified',
   `emailVerificationKey` varchar(255) DEFAULT NULL,
   `subscriptionPackageId` varchar(255) DEFAULT NULL,
-  `subscriptionType` varchar(255) DEFAULT NULL,
+  `subscriptionType` enum('free','paid') NOT NULL DEFAULT 'free',
   `subscriptionExpiredDate` datetime DEFAULT NULL,
   `adPackageId` int(11) DEFAULT NULL,
   `adExpiredDate` datetime DEFAULT NULL,
   `referralBenefit` enum('unable','claimable','claimed') NOT NULL DEFAULT 'unable',
+  `referredUserId` int(11) DEFAULT NULL,
+  `refferedCount` int(4) NOT NULL DEFAULT '0',
   `blacklisted` enum('no','yes') NOT NULL DEFAULT 'no',
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -28,3 +30,4 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+

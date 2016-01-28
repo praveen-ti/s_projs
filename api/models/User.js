@@ -96,8 +96,16 @@ module.exports = {
             enum: [userConstants.REFERRAL_UNABLE, userConstants.REFERRAL_CLAIMABLE, userConstants.REFERRAL_CLAIMED],
             defaultsTo: userConstants.REFERRAL_UNABLE
         },
+        
+        referredUserId: {
+            type: 'integer'
+        },
+        
+        refferedCount: {
+            type: 'integer'
+        },
 
-         blacklisted: {
+        blacklisted: {
             type: 'string',
             enum: [userConstants.BLACKLIST_NO, userConstants.BLACKLIST_YES],
             defaultsTo: userConstants.BLACKLIST_NO

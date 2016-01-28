@@ -143,10 +143,6 @@ module.exports = {
           type: 'text'
       },
       
-      referredUserId: {
-          type: 'integer'
-      },
-      
       lastLoggedin: {
           type: 'datetime'
       },

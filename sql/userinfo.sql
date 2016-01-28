@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS `userinfo` (
   `relationshipTypes` text,
   `preferedMassageTypes` text,
   `serviceType` text,
-  `referredUserId` int(11) DEFAULT NULL,
   `lastLoggedin` datetime DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,

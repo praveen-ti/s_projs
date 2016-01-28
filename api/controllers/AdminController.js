@@ -384,7 +384,6 @@ module.exports = {
                                 return res.json(200, {status: 3, message: 'token expired'});
                             }
                     }
->>>>>>> Added constants to all controller and model
         });
     },
     /*===================================================================================================================================

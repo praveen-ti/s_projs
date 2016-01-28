@@ -5,416 +5,398 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 var crypto = require('crypto');
+var reviewConstants = sails.config.constants.review;
 
 module.exports = {
+    /*===================================================================================================================================
+     Get all subadmins
+     ====================================================================================================================================*/
 
-/*===================================================================================================================================
-                                                        Get all subadmins
- ====================================================================================================================================*/
+    getSubadminList: function (req, res) {
 
-    getSubadminList : function(req, res) {
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
-        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    console.log("Checktoken");
+                    console.log(tokenCheck);
+                    var adminRole = "sub_admin";
 
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                console.log("Checktoken");
-                                console.log(tokenCheck);
-                                    var adminRole = "sub_admin";
-
-                                    var query ="SELECT * FROM admin WHERE adminType =  '"+adminRole+"' ORDER BY createdAt DESC";
-                                    Admin.query(query, function(err, result) {
-                                        if(err)
-                                        {
-                                            return res.json(200, {status: 2, error_details: err});
-                                        }
-                                        else
-                                        {
-                                            console.log(result);
-                                            return res.json(200, {status: 1, message: "success", result: result});
-                                        }
-                                    });
-                            }
+                    var query = "SELECT * FROM admin WHERE adminType =  '" + adminRole + "' ORDER BY createdAt DESC";
+                    Admin.query(query, function (err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
                         else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
+                        {
+                            console.log(result);
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
         });
     },
+    /*===================================================================================================================================
+     Get subadmin's details
+     ====================================================================================================================================*/
 
 
-/*===================================================================================================================================
-                                                      Get subadmin's details
- ====================================================================================================================================*/
+    getSubadminDetails: function (req, res) {
 
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+            console.log(req.body.token);
+            if (err)
+            {
+                console.log("Error ");
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
 
-    getSubadminDetails : function(req, res) {
+            }
+            else
+            {
+                console.log("Inside else  ");
+                if (tokenCheck.status == 1)
+                {
+                    Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log(result);
+                            return res.json(200, {status: 1, data: result});
+                        }
 
-       AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-console.log(req.body.token);
-                    if(err)
-                    {
-                                                 console.log("Error ");
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-
-                    }
-                    else
-                    {
-                        console.log("Inside else  ");
-                        if(tokenCheck.status == 1)
-                            {
-                                Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                        console.log(result);
-                                        return res.json(200, {status: 1, data: result});
-                                    }
-
-                                });
-                            }
-                            else
-                            {
-                                console.log("mmmm");
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
+                    });
+                }
+                else
+                {
+                    console.log("mmmm");
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
         });
     },
-
-/*===================================================================================================================================
-                                                   Create/Add a subadmin
- ====================================================================================================================================*/
-
-
-    addSubadmin : function(req, res) {
-
-         AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                 var password   = crypto.createHash('md5').update(req.body.password).digest("hex");
-                                 var values = {
-                                                username            :       req.body.username,
-                                                firstname           :       req.body.firstname,
-                                                lastname            :       req.body.lastname,
-                                                password            :       password,
-                                                adminType           :       req.body.adminType,
-                                                blockStatus         :       req.body.blockStatus
-                                              };
-                                 Admin.create(values).exec(function(err, result){
-                                        if (err)
-                                        {
-                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                        } else
-                                        {
-                                            return res.json(200, {status: 1, message: 'success', result: result});
-                                        }
-                                    });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                   }
-         });
-    },
+    /*===================================================================================================================================
+     Create/Add a subadmin
+     ====================================================================================================================================*/
 
 
-/*===================================================================================================================================
-                                                      Edit admin
- ====================================================================================================================================*/
+    addSubadmin: function (req, res) {
 
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
-    updateAdminDetails : function(req, res) {
-
-          AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                         if(tokenCheck.status == 1)
-                            {
-                                Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                        console.log(result);
-                                        var values = {
-                                                       username         :       req.body.username,
-                                                       firstname        :       req.body.firstname,
-                                                       lastname         :       req.body.lastname,
-                                                       password         :       req.body.password,
-                                                       adminType        :       req.body.adminType,
-                                                       blockStatus      :       req.body.blockStatus
-                                                      };
-                                        //return res.json(200, {status: 1, message: 'success'});
-                                        var criteria = {id: result.id};
-                                        Admin.update(criteria, values).exec(function(err, updatedAdmin) {
-                                            if(err)
-                                            {
-                                                return res.json(200, {status: 2, error_details: err});
-                                            }
-                                            else
-                                            {
-                                                return res.json(200, {status: 1, data: updatedAdmin});
-                                            }
-
-                                        });
-                                    }
-                                  });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-
-                 }
-          });
-    },
-
-
- /*===================================================================================================================================
-                                                      Delete a subadmin
- ====================================================================================================================================*/
-    deleteSubadmin : function(req, res) {
-
-     AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                         if(tokenCheck.status == 1)
-                            {
-                                Admin.destroy({id: tokenCheck.tokenDetails.adminId}).exec(function deleteCB(err){
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                         return res.json(200, {status: 1, message: 'success'});
-                                    }
-
-                                });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    var password = crypto.createHash('md5').update(req.body.password).digest("hex");
+                    var values = {
+                        username: req.body.username,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        password: password,
+                        adminType: req.body.adminType,
+                        blockStatus: req.body.blockStatus
+                    };
+                    Admin.create(values).exec(function (err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                        } else
+                        {
+                            return res.json(200, {status: 1, message: 'success', result: result});
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
         });
     },
+    /*===================================================================================================================================
+     Edit admin
+     ====================================================================================================================================*/
 
 
-/*===================================================================================================================================
-                                                      Set subadmin privileges
- ====================================================================================================================================*/
-    setSubadminPrivilege : function(req, res) {
+    updateAdminDetails: function (req, res) {
 
-        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                 var values = {
-                                                adminId         :       tokenCheck.tokenDetails.adminId,
-                                                privilegeId     :       req.body.privilegeId
-                                               };
-                                 Admin_privilege_log.create(values).exec(function(err, result){
-                                        if (err)
-                                        {
-                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                        } else
-                                        {
-                                            return res.json(200, {status: 1, message: 'success', result: result});
-                                        }
-                                    });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
-          });
-    },
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log(result);
+                            var values = {
+                                username: req.body.username,
+                                firstname: req.body.firstname,
+                                lastname: req.body.lastname,
+                                password: req.body.password,
+                                adminType: req.body.adminType,
+                                blockStatus: req.body.blockStatus
+                            };
+                            //return res.json(200, {status: 1, message: 'success'});
+                            var criteria = {id: result.id};
+                            Admin.update(criteria, values).exec(function (err, updatedAdmin) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updatedAdmin});
+                                }
 
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
 
-
-/*===================================================================================================================================
-                                                      Delete a subadmin privilege
- ====================================================================================================================================*/
-    deleteSubadminPrivilege : function(req, res) {
-
-      AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                Admin_privilege_log.destroy({id: req.body.id}).exec(function deleteCB(err){
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                         return res.json(200, {status: 1, message: 'success'});
-                                    }
-
-                                });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
-      });
-    },
-
-
-
-
-/*===================================================================================================================================
-                                                        Get all Privileges
- ====================================================================================================================================*/
-
-    getPrivilegesList : function(req, res) {
-
-     AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                var query ="SELECT * FROM admin_privilege ORDER BY createdAt DESC";
-                                Admin_privilege.query(query, function(err, result) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                        console.log(result);
-                                        return res.json(200, {status: 1, message: "success", result: result});
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
+            }
         });
     },
+    /*===================================================================================================================================
+     Delete a subadmin
+     ====================================================================================================================================*/
+    deleteSubadmin: function (req, res) {
 
-/*===================================================================================================================================
-                                                      Get subadmin's Privilege
- ====================================================================================================================================*/
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin.destroy({id: tokenCheck.tokenDetails.adminId}).exec(function deleteCB(err) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            return res.json(200, {status: 1, message: 'success'});
+                        }
 
-    getSubadminPrivileges : function(req, res) {
-
-       AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-                                Admin_privilege_log.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result1) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-
-
-                                         Admin_privilege.findOne({id: result1.privilegeId}).exec(function findCB(err, result2) {
-                                            if(err)
-                                            {
-                                                return res.json(200, {status: 2, error_details: err});
-                                            }
-                                            else
-                                            {
-                                                console.log("result1");
-                                                console.log(result1);
-                                                console.log("result2");
-                                                console.log(result2);
-                                                return res.json(200, {status: 1, data: result2});
-
-                                            }
-                                        });
-                                    }
-
-                                });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                    }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
         });
     },
+    /*===================================================================================================================================
+     Set subadmin privileges
+     ====================================================================================================================================*/
+    setSubadminPrivilege: function (req, res) {
 
-/*===================================================================================================================================
-                                                        Admin Login
- ====================================================================================================================================*/
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
-    adminLogin: function(req, res){
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    var values = {
+                        adminId: tokenCheck.tokenDetails.adminId,
+                        privilegeId: req.body.privilegeId
+                    };
+                    Admin_privilege_log.create(values).exec(function (err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                        } else
+                        {
+                            return res.json(200, {status: 1, message: 'success', result: result});
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    /*===================================================================================================================================
+     Delete a subadmin privilege
+     ====================================================================================================================================*/
+    deleteSubadminPrivilege: function (req, res) {
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin_privilege_log.destroy({id: req.body.id}).exec(function deleteCB(err) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            return res.json(200, {status: 1, message: 'success'});
+                        }
+
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    /*===================================================================================================================================
+     Get all Privileges
+     ====================================================================================================================================*/
+
+    getPrivilegesList: function (req, res) {
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT * FROM admin_privilege ORDER BY createdAt DESC";
+                    Admin_privilege.query(query, function (err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log(result);
+                            return res.json(200, {status: 1, message: "success", result: result});
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    /*===================================================================================================================================
+     Get subadmin's Privilege
+     ====================================================================================================================================*/
+
+
+    getSubadminPrivileges: function (req, res) {
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin_privilege_log.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result1) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+
+
+                            Admin_privilege.findOne({id: result1.privilegeId}).exec(function findCB(err, result2) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    console.log("result1");
+                                    console.log(result1);
+                                    console.log("result2");
+                                    console.log(result2);
+                                    return res.json(200, {status: 1, data: result2});
+
+                                }
+                            });
+                        }
+
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    /*===================================================================================================================================
+     Admin Login
+     ====================================================================================================================================*/
+
+    adminLogin: function (req, res) {
 
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         //var password = req.body.password;
         var values = {
-                        username: req.body.username,
-                        password: password
-                     };
-console.log(req.body.username);
-console.log(password);
+            username: req.body.username,
+            password: password
+        };
+        console.log(req.body.username);
+        console.log(password);
         // Get Admin details
-        Admin.findOne(values).exec(function(err, result){
+        Admin.findOne(values).exec(function (err, result) {
             if (err) {
 
                 sails.log.debug('Some error occured ' + err);
@@ -422,7 +404,7 @@ console.log(password);
 
             } else {
 
-                if(typeof result == "undefined")
+                if (typeof result == "undefined")
                 {
                     sails.log.debug({message: 'No admin found'});
                     return res.json(200, {status: 2, message: 'No admin found', result: result});
@@ -431,8 +413,8 @@ console.log(password);
                 else
                 {
                     // Create new access token on login
-                    AdmintokenService.createToken(result.id, function(err, details) {
-                        if(err) {
+                    AdmintokenService.createToken(result.id, function (err, details) {
+                        if (err) {
                             return res.json(200, {status: 2, message: 'some error occured', error: details});
                         } else {
 
@@ -441,10 +423,10 @@ console.log(password);
                             //return res.view('login_home');
                             //res.redirect('login_home');
                             // res.view('login_home', {status: 1, message: 'succes', details: details});
-                             req.session.authenticated = true;
-                             req.session.token      = details.token.token;
+                            req.session.authenticated = true;
+                            req.session.token = details.token.token;
 
-                             return res.json(200, {status: 1, message: 'succes', details: details});
+                            return res.json(200, {status: 1, message: 'succes', details: details});
                         }
                     });
 
@@ -454,94 +436,126 @@ console.log(password);
         });
 
     },
-
-/*===================================================================================================================================
-                                                        Admin Logout
- ====================================================================================================================================*/
-    adminLogout: function(req, res){
-    console.log(req.body.username);
-        AdmintokenService.deleteToken(req.session.token, function(err, result) {
-            if(err) {
-                 return res.json(200, {status: 2, message: 'some error occured', error_details: result});
+    /*===================================================================================================================================
+     Admin Logout
+     ====================================================================================================================================*/
+    adminLogout: function (req, res) {
+        console.log(req.body.username);
+        AdmintokenService.deleteToken(req.session.token, function (err, result) {
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: result});
             } else {
-                 //req.session.destroy();
-                 return res.json(200, {status: 1, message: 'success', result: result, rr: req.body.username});
-                 //res.view('login');
+                //req.session.destroy();
+                return res.json(200, {status: 1, message: 'success', result: result, rr: req.body.username});
+                //res.view('login');
             }
         });
 
     },
+    /*================================================================================================================================
+     Socket - Check
+     =================================================================================================================================*/
+    dbcheck: function (req, res) {
 
+        sails.models.Admin.DbVersionCheck(function (result) {
+            return res.json(200, {success: 'Success', response: result});
+        });
 
-/*================================================================================================================================
-                                        Socket - Check
- =================================================================================================================================*/
-           dbcheck:function (req,res){
+    },
+    subscribeToFunRoom: function (req, res) {
+        //r roomName = req.param('roomName');
+        //console.log(req);
+        roomName = req.body.roomName;
+        sails.sockets.join(req.socket, roomName);
+        sails.sockets.join(req.socket, "room55");
+        //sails.sockets.broadcast(roomName, { msg: 'Hi there!' });
+        res.json({
+            messages: 'Subscribed to a fun room called ' + roomName + '!'
+        });
+        //sails.sockets.emit(friendId, 'privateMessage', {from: req.session.userId, msg: 'Hi!'});
+        //sails.sockets.broadcast(1, { msg: 'Hi there!' });
+    },
+    indexcheck: function (req, res) {
+        result = {};
+        result.message = req.body.message;
 
-                sails.models.Admin.DbVersionCheck(function(result){
-                        return res.json(200, { success: 'Success' ,response:result});
-                });
+        //return res.json(200, { success: 'Success' ,response: result});
 
-            },
+    },
+    /*######################*/
+    /*    indexj: function (req,res) {
+     
+     var socket = req.socket;
+     var io = sails.io;
+     
+     // emit to all sockets (aka publish)
+     // including yourself
+     io.sockets.emit('messageName', {thisIs: 'theMessage'});
+     
+     // broadcast to a room (aka publish)
+     // excluding yourself, if you're in it
+     socket.broadcast.to('roomName').emit('messageName', {thisIs: 'theMessage'});
+     
+     // emit to a room (aka publish)
+     // including yourself
+     io.sockets.in('roomName').emit('messageName', {thisIs: 'theMessage'});
+     
+     // Join a room (aka subscribe)
+     // If you're in the room already, no problem, do nothing
+     // If the room doesn't exist yet, it gets created
+     socket.join('roomName');
+     
+     // Leave a room (aka unsubscribe)
+     // If you're not in the room, no problem, do nothing
+     // If the room doesn't exist yet, no problem, do nothing
+     socket.leave('roomName');
+     
+     // Get all connected sockets in the app
+     sails.io.sockets.clients();
+     
+     // Get all conneted sockets in the room, "roomName"
+     sails.io.sockets.clients('roomName');
+     
+     
+     },*/
 
-            subscribeToFunRoom: function(req, res) {
-                  //r roomName = req.param('roomName');
-                  //console.log(req);
-                  roomName = req.body.roomName;
-                  sails.sockets.join(req.socket, roomName);
-                  sails.sockets.join(req.socket, "room55");
-                  //sails.sockets.broadcast(roomName, { msg: 'Hi there!' });
-                  res.json({
-                    messages: 'Subscribed to a fun room called '+roomName+'!'
-                  });
-                  //sails.sockets.emit(friendId, 'privateMessage', {from: req.session.userId, msg: 'Hi!'});
-                  //sails.sockets.broadcast(1, { msg: 'Hi there!' });
-            },
+    userReviewApproval: function (req, res) {
 
-            indexcheck:function (req,res){
-                    result = {};
-                    result.message = req.body.message;
+        var reviewId = req.body.reviewId;
+        var approvalStatus = req.body.approvalStatus;
 
-                    //return res.json(200, { success: 'Success' ,response: result});
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var criteria = {id: reviewId};
+                    var data = {approvalStatus: approvalStatus};
+
+                    Review.update(criteria, data).exec(function (err, updatedData) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'some error has occured', error_details: updatedData});
+                        } else {
+
+                            if (updatedData.length == 0) {
+                                return res.json(200, {status: 2, message: "Error in review status updation"});
+                            } else {
+                                return res.json(200, {status: 1, message: "success", updatedData: updatedData});
+                            }
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
             }
+        });
 
-            /*######################*/
-        /*    indexj: function (req,res) {
-
-                    var socket = req.socket;
-                    var io = sails.io;
-
-                    // emit to all sockets (aka publish)
-                    // including yourself
-                    io.sockets.emit('messageName', {thisIs: 'theMessage'});
-
-                    // broadcast to a room (aka publish)
-                    // excluding yourself, if you're in it
-                    socket.broadcast.to('roomName').emit('messageName', {thisIs: 'theMessage'});
-
-                    // emit to a room (aka publish)
-                    // including yourself
-                    io.sockets.in('roomName').emit('messageName', {thisIs: 'theMessage'});
-
-                    // Join a room (aka subscribe)
-                    // If you're in the room already, no problem, do nothing
-                    // If the room doesn't exist yet, it gets created
-                    socket.join('roomName');
-
-                    // Leave a room (aka unsubscribe)
-                    // If you're not in the room, no problem, do nothing
-                    // If the room doesn't exist yet, no problem, do nothing
-                    socket.leave('roomName');
-
-                    // Get all connected sockets in the app
-                    sails.io.sockets.clients();
-
-                    // Get all conneted sockets in the room, "roomName"
-                    sails.io.sockets.clients('roomName');
-
-
-                  },*/
+    }
 
 
 

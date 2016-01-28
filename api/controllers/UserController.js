@@ -9,6 +9,7 @@ var crypto = require('crypto');
 var fs = require('fs');
 var userConstants = sails.config.constants.user;
 var photoConstants = sails.config.constants.photo;
+var reviewConstants = sails.config.constants.review;
 
 function getUserById(uid, callback) {
     var condition = {id: uid};
@@ -610,8 +611,6 @@ module.exports = {
 
                     // Update user with the new password
                     UserService.updateUser(criteria, data, function (err, result) {
-                        console.log('result');
-                        console.log(result);
                         if (err) {
 
                             return res.json(200, {status: 2, message: 'some error has occured', error_details: result});
@@ -1035,6 +1034,74 @@ module.exports = {
 
                     });
 
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    markEmailVerified: function (req, res) {
+
+        var emailVerificationKey = req.body.emailVerificationKey;
+
+        User.findOne({emailVerificationKey: emailVerificationKey}).exec(function findCB(err, user) {
+            if (err) {
+                return res.json(200, {status: 2, error_details: err});
+            } else {
+
+                if (typeof user != "undefined") {
+
+                    var criteria = {id: user.id};
+                    var data = {emailVerificationStatus: userConstants.EMAIL_VERIFIED, emailVerificationKey: null};
+
+                    UserService.updateUser(criteria, data, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'some error has occured', error_details: result});
+                        } else {
+                            if (result.length == 0) {
+                                return res.json(200, {status: 2, message: "Error in email verification status updation"});
+                            } else {
+                                return res.json(200, {status: 1, message: "success"});
+                            }
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 2, message: 'no user found'});
+                }
+            }
+        });
+
+    },
+    addReview: function (req, res) {
+        var userId = req.body.userId;
+        var reviewerId = req.body.reviewerId;
+        var reviewNote = req.body.reviewNote;
+        var approvalStatus = reviewConstants.REVIEW_STATUS_NOTAPPROVED;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    var reviewData = {
+                        userId: userId,
+                        reviewerId: reviewerId,
+                        reviewNote: reviewNote,
+                        approvalStatus: approvalStatus
+                    };
+
+                    Review.create(reviewData).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success', data: result});
+                        }
+                    });
 
                 } else {
                     return res.json(200, {status: 3, message: 'token expired'});

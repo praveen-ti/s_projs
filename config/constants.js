@@ -80,5 +80,9 @@ module.exports.constants = {
     photo: {
         ACCESS_TYPE_PRIVATE: 'private',
         ACCESS_TYPE_PUBLIC: 'public'
+    },
+    review: {
+        REVIEW_STATUS_APPROVED: 'approved',
+        REVIEW_STATUS_NOTAPPROVED: 'notapproved'
     }
 };

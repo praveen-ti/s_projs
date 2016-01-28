@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var adUserConstants = sails.config.constants.adUser;
+
 module.exports = {
 
   attributes: {
@@ -22,16 +24,16 @@ module.exports = {
 
          //Bannertype to Ban By admin
          bannerType: {
-                type: 'string',
-                enum: ['therapeutic','sensual'],
-                defaultsTo: 'therapeutic',
+                type        : 'string',
+                enum        : [adUserConstants.BANNER_TYPE_THERAPEUTIC, adUserConstants.BANNER_TYPE_SENSUAL],
+                defaultsTo  : adUserConstants.BANNER_TYPE_THERAPEUTIC,
            },
 
         //Advertisement ,currently active or not
          status: {
-                type: 'string',
-                enum: ['active','inactive','delete'],
-                defaultsTo: 'active',
+                type        : 'string',
+                enum        : [adUserConstants.ADUSER_STATUS_ACTIVE, adUserConstants.ADUSER_STATUS_INACTIVE, adUserConstants.ADUSER_STATUS_DELETE],
+                defaultsTo  : adUserConstants.ADUSER_STATUS_ACTIVE,
            },
 
         adPageId: {

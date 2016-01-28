@@ -5,7 +5,7 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
-
+var adminConstants = sails.config.constants.admin;
 module.exports = {
 
 
@@ -38,17 +38,17 @@ module.exports = {
         },
         //To know admin is a super_admin or sub_admin
         adminType: {
-            type: 'string',
+            type                : 'string',
             //required: true,
-            enum: ['super_admin', 'sub_admin'],
-            defaultsTo: 'sub',
+            enum                : [adminConstants.ADMIN_TYPE_SUPERADMIN, adminConstants.ADMIN_TYPE_SUBADMIN],
+            defaultsTo          : adminConstants.ADMIN_TYPE_SUBADMIN,
         },
 
          //To block a subadmin
          blockStatus: {
-            type: 'string',
-            enum: ['block', 'unblock'],
-            defaultsTo: 'unblock',
+            type                : 'string',
+            enum                : [adminConstants.BLOCK_STATUS_ACTIVE, adminConstants.BLOCK_STATUS_BLOCK],
+            defaultsTo          : adminConstants.BLOCK_STATUS_ACTIVE,
         },
 
   }

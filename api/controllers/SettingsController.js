@@ -57,25 +57,20 @@ module.exports = {
 
                     if(err)
                     {
-                        console.log("Update Settings");
-                        console.log(tokenCheck);
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
                     }
                     else
                     {
                         if(tokenCheck.status == 1)
                             {
-                                    console.log(tokenCheck);
                                     Settings.findOne({key: req.body.key}).exec(function findCB(err, result) {
                                         if(err)
                                         {
-                                            console.log("Error");
-                                            console.log(err);
+
                                             return res.json(200, {status: 2, error_details: err});
                                         }
                                         else
                                         {
-                                            console.log(result);
                                             var values = {value: req.body.value};
                                             //return res.json(200, {status: 1, message: 'success'});
                                             var criteria = {key: result.key};

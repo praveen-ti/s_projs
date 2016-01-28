@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var pollDetailsConstants = sails.config.constants.pollDetails;
+
 module.exports = {
 
   attributes: {
@@ -33,9 +35,9 @@ module.exports = {
 
            //Comment approval normally approved ,Rejected if necessary
            approvalStatus : {
-                type: 'string',
-                enum: ['approved','rejected'],
-                defaultsTo: 'approved',
+                type        : 'string',
+                enum        : [pollDetailsConstants.APPROVAL_STATUS_APPROVED, pollDetailsConstants.APPROVAL_STATUS_REJECTED],
+                defaultsTo  : pollDetailsConstants.APPROVAL_STATUS_APPROVED,
             },
 
   }

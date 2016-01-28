@@ -6,6 +6,7 @@
  */
 
 var _ = require("underscore");
+var mailConstants = sails.config.constants.mail;
 
 module.exports = {
 
@@ -75,7 +76,6 @@ var jsonMail = JSON.parse(mail);
                                                             } else
                                                             {
 
-                                                             console.log("For New Conversation");
                                                               var mailValues = {
                                                                     message             :    jsonMail.mail.message,
                                                                     conversationId      :    saveMailConversation.id,
@@ -91,7 +91,6 @@ var jsonMail = JSON.parse(mail);
                                                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                                                                         } else
                                                                         {
-                                                                            console.log("Success >>>>> Mail");
                                                                             return res.json(200, {status: 1, message: 'success', result: saveMail});
                                                                         }
                                                                  });
@@ -105,7 +104,7 @@ var jsonMail = JSON.parse(mail);
                                                      /*#######################
                                                       For Existed Mail conversation
                                                     ########################*/
-                                                     console.log(" For Existed Mail conversation");
+
                                                      //Save Mail  to Mail table
                                                      var  mailValues = {
                                                             message             :    jsonMail.mail.message,
@@ -123,7 +122,6 @@ var jsonMail = JSON.parse(mail);
                                                                     return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                                                                 } else
                                                                 {
-                                                                    console.log("Success >>>>> Mail =======");
                                                                     return res.json(200, {status: 1, message: 'success', result: saveMail});
                                                                 }
                                                          });
@@ -194,9 +192,6 @@ mailbox : function(req, res) {
                                                 }
                                                 else
                                                 {
-                                                    console.log(tokenCheck.tokenDetails.userId);
-                                                    console.log(switchKey);
-                                                    console.log(query);
                                                     return res.json(200, {status: 1, message: "success", result: result});
 
                                                 }
@@ -329,10 +324,6 @@ var msgid = messageArray;
                                         }
                                         else
                                         {
-                                            console.log(tokenCheck.tokenDetails.userId);
-                                            console.log(switchKey);
-                                            console.log("update   ===query");
-                                            console.log(query);
                                             return res.json(200, {status: 1, message: "success", result: result});
 
                                         }
@@ -372,7 +363,6 @@ var msgid = messageArray;
                                     }
                                     else
                                     {
-                                        console.log(result);
                                         return res.json(200, {status: 1, data: result});
                                     }
 
@@ -650,8 +640,8 @@ var query = "SELECT group1. * , usr. *"+
 " OR cnvr.objectId = "+tokenCheck.tokenDetails.userId+
 " )"+
 " AND ("+
-" (ml.senderStatus =  'sent' AND ml.senderId = "+tokenCheck.tokenDetails.userId+")"+
-" OR (ml.receiverStatus =  'inbox' AND ml.receiverId = "+tokenCheck.tokenDetails.userId+")"+
+" (ml.senderStatus = "+mailConstants.SENDER_STATUS_SENT+" AND ml.senderId = "+tokenCheck.tokenDetails.userId+")"+
+" OR (ml.receiverStatus =  "+mailConstants.RECEIVER_STATUS_INBOX+" AND ml.receiverId = "+tokenCheck.tokenDetails.userId+")"+
 " )"+
 " ORDER BY createdAt DESC"+
 " ) AS mlgrp"+
@@ -715,16 +705,15 @@ var query = "SELECT *"+
             " WHERE conversationId = "+req.body.cnvrId+
             " AND ("+
             " ("+
-            " senderStatus =  'sent'"+
+            " senderStatus =  '"+mailConstants.SENDER_STATUS_SENT+"'"+
             " AND ml.senderId = "+tokenCheck.tokenDetails.userId+
             " OR ("+
-            " receiverStatus =  'inbox'"+
+            " receiverStatus =  '"+mailConstants.RECEIVER_STATUS_INBOX+"'"+
             " AND ml.receiverId = "+tokenCheck.tokenDetails.userId+
             " )"+
             " )"+
             " )"+
             " ORDER BY createdAt DESC ";
-                                console.log(">>>>>>>>>>GET MAIL CONVER>>>>>>>>>");
                                 console.log(query);
 
                                     Mail.query(query, function(err, result) {

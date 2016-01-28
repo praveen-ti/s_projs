@@ -5,6 +5,9 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var pollConstants = sails.config.constants.poll;
+var pollDetailsConstants = sails.config.constants.pollDetails;
+
 module.exports = {
 
 
@@ -242,8 +245,8 @@ var jsonPollDetails = JSON.parse(pollDetails);
                                             " authorId =  "+authorId+
                                             " ORDER BY createdAt DESC";*/
                                    var query ="SELECT * FROM  poll"+
-                                                " WHERE pollStatus = 'active' "+
-                                                " AND approvalStatus != 'rejected'"+
+                                                " WHERE pollStatus = "+pollConstants.POLL_STATUS_ACTIVE+
+                                                " AND approvalStatus != "+pollConstants.APPROVAL_STATUS_REJECTED+
                                                 " ORDER BY createdAt DESC";
                                    console.log(query);
                                 Poll.query(query, function(err, result) {
@@ -445,7 +448,7 @@ getPollDeatilsList : function(req, res) {
 
                                 //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
                                 var query ="SELECT * FROM poll_details WHERE pollsId= "+req.body.pollsId+
-                                            "AND approvalStatus = 'approved'"+
+                                            "AND approvalStatus = "+pollDetailsConstants.APPROVAL_STATUS_APPROVED+
                                             " ORDER BY createdAt DESC";
 
                                 Poll_details.query(query, function(err, result) {

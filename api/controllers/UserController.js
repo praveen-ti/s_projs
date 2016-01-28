@@ -1207,8 +1207,6 @@ module.exports = {
                         }
                     });
 
-
-
                 } else {
                     return res.json(200, {status: 0, message: 'No user data', user: []});
                 }

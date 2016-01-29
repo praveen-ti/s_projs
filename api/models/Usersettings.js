@@ -25,8 +25,8 @@ module.exports = {
            /* Exclude user's profile from search by others */
            searchProfileStatus: {
                 type        : 'string',
-                enum        : [userSettings.SEARCH_PROFILE_STATUS_ENABLE, userSettings.SEARCH_PROFILE_STATUS_DISABLE],
-                defaultsTo  : userSettings.SEARCH_PROFILE_STATUS_DISABLE,
+                enum        : [userSettingsConstants.SEARCH_PROFILE_STATUS_ENABLE, userSettingsConstants.SEARCH_PROFILE_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.SEARCH_PROFILE_STATUS_DISABLE,
                 required    : true,
 
             },
@@ -34,31 +34,31 @@ module.exports = {
             /* Viewing sensual ads or not*/
            sensualAdStatus: {
                 type        : 'string',
-                enum        : [userSettings.SENSUAL_ADSTATUS_ENABLE, userSettings.SENSUAL_ADSTATUS_DISABLE],
-                defaultsTo  : userSettings.SENSUAL_ADSTATUS_ENABLE,
+                enum        : [userSettingsConstants.SENSUAL_ADSTATUS_ENABLE, userSettingsConstants.SENSUAL_ADSTATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.SENSUAL_ADSTATUS_ENABLE,
                 required    : true,
 
             },
 
             autoLogin: {
                 type        : 'string',
-                enum        : [userSettings.AUTO_LOGIN_ENABLE, userSettings.AUTO_LOGIN_DISABLE],
-                defaultsTo  : userSettings.AUTO_LOGIN_ENABLE,
+                enum        : [userSettingsConstants.AUTO_LOGIN_ENABLE, userSettingsConstants.AUTO_LOGIN_DISABLE],
+                defaultsTo  : userSettingsConstants.AUTO_LOGIN_ENABLE,
                 required    : true,
             },
 
             setOffLine: {
                 type        : 'string',
-                enum        : [userSettings.SET_OFFLINE_ENABLE, userSettings.SET_OFFLINE_DISABLE],
-                defaultsTo  : userSettings.SET_OFFLINE_ENABLE,
+                enum        : [userSettingsConstants.SET_OFFLINE_ENABLE, userSettingsConstants.SET_OFFLINE_DISABLE],
+                defaultsTo  : userSettingsConstants.SET_OFFLINE_ENABLE,
                 required    : true,
             },
 
              /* Mail & Message to user, when others set as favourite*/
             favouriteMailStatus: {
                 type        : 'string',
-                enum        : [userSettings.FAVOURITE_MAIL_STATUS_ENABLE, userSettings.FAVOURITE_MAIL_STATUS_DISABLE],
-                defaultsTo  : userSettings.FAVOURITE_MAIL_STATUS_ENABLE,
+                enum        : [userSettingsConstants.FAVOURITE_MAIL_STATUS_ENABLE, userSettingsConstants.FAVOURITE_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.FAVOURITE_MAIL_STATUS_ENABLE,
                 required    : true,
 
             },
@@ -66,8 +66,8 @@ module.exports = {
             /* Mail & Message to user, when others visit his profile*/
             provisitMailStatus: {
                 type        : 'string',
-                enum        : [userSettings.PROVISIT_MAIL_STATUS_ENABLE, userSettings.PROVISIT_MAIL_STATUS_DISABLE],
-                defaultsTo  : userSettings.PROVISIT_MAIL_STATUS_ENABLE,
+                enum        : [userSettingsConstants.PROVISIT_MAIL_STATUS_ENABLE, userSettingsConstants.PROVISIT_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.PROVISIT_MAIL_STATUS_ENABLE,
                 required    : true,
 
             },
@@ -75,8 +75,8 @@ module.exports = {
             /* Mail & Message to user, when messages get from other*/
             newMailStatus: {
                 type        : 'string',
-                enum        : [userSettings.NEW_MAIL_STATUS_ENABLE , userSettings.NEW_MAIL_STATUS_DISABLE],
-                defaultsTo  : userSettings.NEW_MAIL_STATUS_ENABLE,
+                enum        : [userSettingsConstants.NEW_MAIL_STATUS_ENABLE , userSettingsConstants.NEW_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.NEW_MAIL_STATUS_ENABLE,
                 required    : true,
 
             },
@@ -84,8 +84,8 @@ module.exports = {
             /* Mail & Message to user, when admin add a new poll*/
             pollMailStatus: {
                 type        : 'string',
-                enum        : [userSettings.POLL_MAIL_STATUS_ENABLE, userSettings.POLL_MAIL_STATUS_DISABLE],
-                defaultsTo  : userSettings.POLL_MAIL_STATUS_ENABLE,
+                enum        : [userSettingsConstants.POLL_MAIL_STATUS_ENABLE, userSettingsConstants.POLL_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.POLL_MAIL_STATUS_ENABLE,
                 required    : true,
             },
 

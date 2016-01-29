@@ -85,7 +85,7 @@ module.exports.constants = {
     review: {
         REVIEW_STATUS_APPROVED: 'approved',
         REVIEW_STATUS_NOTAPPROVED: 'notapproved'
-    }
+    },
 
 
     admin: {

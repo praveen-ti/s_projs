@@ -332,7 +332,7 @@ module.exports = {
 
 
 /*===================================================================================================================================
-                                                      Get subadmin's Privilege
+                                                      Get Each subadmin's Privilege[for subadmin only]
  ====================================================================================================================================*/
 
 
@@ -348,30 +348,27 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                Admin_privilege_log.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
+                                   var query =  "SELECT ap.name, ap.description"+
+                                                " FROM"+
+                                                " admin_privilege_log apl"+
+                                                " INNER JOIN"+
+                                                " admin_privilege ap"+
+                                                " ON"+
+                                                " apl.privilegeId = ap.id"+
+                                                " AND apl.adminId = "+tokenCheck.tokenDetails.adminId+
+                                                " ORDER BY apl.createdAt DESC";
 
-
-                                         Admin_privilege.findOne({id: result.privilegeId}).exec(function findCB(err, adminPrivilege) {
-                                            if(err)
-                                            {
-                                                return res.json(200, {status: 2, error_details: err});
-                                            }
-                                            else
-                                            {
-
-                                                return res.json(200, {status: 1, adminPrivilege: adminPrivilege});
-
-                                            }
-                                        });
-                                    }
-
-                                });
+                                   Admin_privilege_log.query(query, function (err, result) {
+                                        if (err)
+                                        {
+                                            return res.json(200, {status: 2, error_details: err});
+                                        }
+                                        else
+                                        {
+                                            console.log(result);
+                                            return res.json(200, {status: 1, message: "success", result: result});
+                                        }
+                                    });
                             }
                             else
                             {
@@ -380,6 +377,51 @@ module.exports = {
                     }
         });
     },
+
+/*===================================================================================================================================
+                                                List subadmin's Privilege List[for superadmin only]
+ ====================================================================================================================================*/
+
+
+    listSubadminPrivileges : function(req, res) {
+
+       AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                            var query = "SELECT apl.id, apl.adminId, ap.name, ap.description, adm.firstname, adm.lastname, CONCAT( adm.firstname, adm.lastname ) AS adminName"+
+                                        " FROM admin_privilege_log apl"+
+                                        " INNER JOIN admin_privilege ap ON apl.privilegeId = ap.id"+
+                                        " INNER JOIN admin adm ON adm.id = apl.adminId"+
+                                        " ORDER BY apl.createdAt DESC ";
+
+                                   Admin_privilege_log.query(query, function (err, result) {
+                                        if (err)
+                                        {
+                                            return res.json(200, {status: 2, error_details: err});
+                                        }
+                                        else
+                                        {
+                                            console.log(result);
+                                            return res.json(200, {status: 1, message: "success", result: result});
+                                        }
+                                    });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+
     /*===================================================================================================================================
      Admin Login
      ====================================================================================================================================*/

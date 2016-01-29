@@ -41,18 +41,12 @@ module.exports = {
                                         }
                                     });
                             }
-                        else
-                        {
-                            console.log(result);
-                            return res.json(200, {status: 1, message: "success", result: result});
-                        }
-                    }
-
-                else
-                {
-                    return res.json(200, {status: 3, message: 'token expired'});
-                }
-            });
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                       }
+               });
 
     },
 

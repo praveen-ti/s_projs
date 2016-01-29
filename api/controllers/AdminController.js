@@ -452,7 +452,50 @@ module.exports = {
 
     },
 
-/*================================================================================================================================
+
+    userReviewApproval: function (req, res) {
+
+        var reviewId = req.body.reviewId;
+        var approvalStatus = req.body.approvalStatus;
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var criteria = {id: reviewId};
+                    var data = {approvalStatus: approvalStatus};
+
+                    Review.update(criteria, data).exec(function (err, updatedData) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'some error has occured', error_details: updatedData});
+                        } else {
+
+                            if (updatedData.length == 0) {
+                                return res.json(200, {status: 2, message: "Error in review status updation"});
+                            } else {
+                                return res.json(200, {status: 1, message: "success", updatedData: updatedData});
+                            }
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+
+    },
+
+
+
+
+
+  /*================================================================================================================================
                                         Socket - Check
  =================================================================================================================================*/
 
@@ -526,43 +569,6 @@ module.exports = {
 
      },*/
 
-    userReviewApproval: function (req, res) {
-
-        var reviewId = req.body.reviewId;
-        var approvalStatus = req.body.approvalStatus;
-
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
-
-            if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-            } else {
-
-                if (tokenCheck.status == 1)
-                {
-                    var criteria = {id: reviewId};
-                    var data = {approvalStatus: approvalStatus};
-
-                    Review.update(criteria, data).exec(function (err, updatedData) {
-
-                        if (err) {
-                            return res.json(200, {status: 2, message: 'some error has occured', error_details: updatedData});
-                        } else {
-
-                            if (updatedData.length == 0) {
-                                return res.json(200, {status: 2, message: "Error in review status updation"});
-                            } else {
-                                return res.json(200, {status: 1, message: "success", updatedData: updatedData});
-                            }
-                        }
-                    });
-
-                } else {
-                    return res.json(200, {status: 3, message: 'token expired'});
-                }
-            }
-        });
-
-    }
 
 
 

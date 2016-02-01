@@ -31,7 +31,7 @@ module.exports.views = {
   ****************************************************************************/
 
   engine: 'ejs',
-  extension: 'html',
+  //extension: 'html',
   /* engine: {
       ext: 'html',
       fn: require('ejs').renderFile

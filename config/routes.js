@@ -31,41 +31,21 @@ module.exports.routes = {
   * `assets` directory)                                                      *
   *                                                                          *
   ***************************************************************************/
-
-
-  '/': 'IndexController.index',
-
-  '/signup' : {
-    view: 'signup'
+ 
+  '/': {
+    view: 'index'
   },
-
+  
   '/login': {
-    view: 'login'
+    view: 'index'
   },
-
-  '/logout': {
-    view: 'login'
+  
+  '/admin': {
+    view: 'adminlogin'
   },
-
- /* 'POST /user/login'   : {
-       controller: "User",
-       action    : "login",
-       //view      : "login",
-  },*/
-
-   '/login_home'                  : {
-        view: 'login_home'
-  },
-
-'/admin/getSubadminList'                    : {
-        controller: "Admin",
-        action    : "getSubadminList"
-         //cors: {
-         //    origin: "origin: 'http://localhost:2000',",
-             //credentials: true
-         //  }
-           //cors: true,
-        //view: 'login'
+  
+  '/admin/*': {
+    view: 'admin'
   },
 
 

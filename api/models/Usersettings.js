@@ -5,6 +5,7 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var userSettingsConstants = sails.config.constants.userSettings;
 
 module.exports = {
 
@@ -23,69 +24,69 @@ module.exports = {
 
            /* Exclude user's profile from search by others */
            searchProfileStatus: {
-                type: 'string',
-                enum: ['enable','disable'],
-                defaultsTo: 'disable',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.SEARCH_PROFILE_STATUS_ENABLE, userSettingsConstants.SEARCH_PROFILE_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.SEARCH_PROFILE_STATUS_DISABLE,
+                required    : true,
 
             },
 
             /* Viewing sensual ads or not*/
            sensualAdStatus: {
-                type: 'string',
-                enum: ['enable','disable'],
-                defaultsTo: 'enable',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.SENSUAL_ADSTATUS_ENABLE, userSettingsConstants.SENSUAL_ADSTATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.SENSUAL_ADSTATUS_ENABLE,
+                required    : true,
 
             },
 
             autoLogin: {
-                type: 'string',
-                enum: ['enable','disable'],
-                defaultsTo: 'enable',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.AUTO_LOGIN_ENABLE, userSettingsConstants.AUTO_LOGIN_DISABLE],
+                defaultsTo  : userSettingsConstants.AUTO_LOGIN_ENABLE,
+                required    : true,
             },
 
             setOffLine: {
-                type: 'string',
-                enum: ['enable','disable'],
-                defaultsTo: 'enable',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.SET_OFFLINE_ENABLE, userSettingsConstants.SET_OFFLINE_DISABLE],
+                defaultsTo  : userSettingsConstants.SET_OFFLINE_ENABLE,
+                required    : true,
             },
 
              /* Mail & Message to user, when others set as favourite*/
             favouriteMailStatus: {
-                type: 'string',
-                enum: ['true','false'],
-                defaultsTo: 'true',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.FAVOURITE_MAIL_STATUS_ENABLE, userSettingsConstants.FAVOURITE_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.FAVOURITE_MAIL_STATUS_ENABLE,
+                required    : true,
 
             },
 
             /* Mail & Message to user, when others visit his profile*/
             provisitMailStatus: {
-                type: 'string',
-                enum: ['true','false'],
-                defaultsTo: 'true',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.PROVISIT_MAIL_STATUS_ENABLE, userSettingsConstants.PROVISIT_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.PROVISIT_MAIL_STATUS_ENABLE,
+                required    : true,
 
             },
 
             /* Mail & Message to user, when messages get from other*/
             newMailStatus: {
-                type: 'string',
-                enum: ['true','false'],
-                defaultsTo: 'true',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.NEW_MAIL_STATUS_ENABLE , userSettingsConstants.NEW_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.NEW_MAIL_STATUS_ENABLE,
+                required    : true,
 
             },
 
             /* Mail & Message to user, when admin add a new poll*/
             pollMailStatus: {
-                type: 'string',
-                enum: ['true','false'],
-                defaultsTo: 'true',
-                required: true,
+                type        : 'string',
+                enum        : [userSettingsConstants.POLL_MAIL_STATUS_ENABLE, userSettingsConstants.POLL_MAIL_STATUS_DISABLE],
+                defaultsTo  : userSettingsConstants.POLL_MAIL_STATUS_ENABLE,
+                required    : true,
             },
 
 

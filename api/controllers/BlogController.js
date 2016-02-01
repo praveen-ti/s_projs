@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing blogs
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+var blogConstants = sails.config.constants.blog;
 
 module.exports = {
 
@@ -217,8 +218,8 @@ module.exports = {
                                             " authorId =  "+authorId+
                                             " ORDER BY createdAt DESC";*/
                                    var query ="SELECT * FROM  blog"+
-                                                "WHERE blogStatus = 'active'"+
-                                                "approvalStatus != 'rejected'"+
+                                                "WHERE blogStatus = "+blogConstants.BLOG_STATUS_ACTIVE+
+                                                "approvalStatus != "+blogConstants.APPROVAL_STATUS_REJECTED+
                                                 "ORDER BY createdAt DESC";
                                    console.log(query);
                                 Blog.query(query, function(err, result) {
@@ -431,7 +432,7 @@ getBlogcommentList : function(req, res) {
 
                                 //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
                                 var query ="SELECT * FROM blog_comment WHERE blogId= "+req.body.blogId+
-                                            "AND approvalStatus != 'rejected'"+
+                                            "AND approvalStatus != "+blogConstants.APPROVAL_STATUS_REJECTED+
                                             " ORDER BY createdAt DESC";
                                 Blog_comment.query(query, function(err, result) {
                                     if(err)

@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var blogConstants = sails.config.constants.blog;
+
 module.exports = {
 
   attributes: {
@@ -21,7 +23,7 @@ module.exports = {
            //To check admin or not
            authorType : {
                 type: 'string',
-                enum: ['super_admin', 'sub_admin', 'user'],
+                enum: [blogConstants.AUTHOR_TYPE_SUPERADMIN, blogConstants.AUTHOR_TYPE_SUBADMIN, blogConstants.AUTHOR_TYPE_USER],
                 defaultsTo: 'super_admin',
             },
 
@@ -34,15 +36,15 @@ module.exports = {
             },
             //Admin can block a blog for a particular time
             blogStatus : {
-                type: 'string',
-                enum: ['active','inactive'],
-                defaultsTo: 'active',
+                type            : 'string',
+                enum            : [blogConstants.BLOG_STATUS_ACTIVE,blogConstants.BLOG_STATUS_ACTIVE],
+                defaultsTo      :  blogConstants.BLOG_STATUS_ACTIVE,
             },
             //Admin can block a user's blog
             approvalStatus : {
-                type: 'string',
-                enum: ['pending','approved','rejected'],
-                defaultsTo: 'pending',
+                type            : 'string',
+                enum            : [blogConstants.APPROVAL_STATUS_PENDING, blogConstants.APPROVAL_STATUS_APPROVED, blogConstants.APPROVAL_STATUS_REJECTED],
+                defaultsTo      :  blogConstants.APPROVAL_STATUS_PENDING,
             },
 
 

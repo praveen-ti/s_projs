@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var adUserConstants = sails.config.constants.adUser;
+
 module.exports = {
 
 /*===================================================================================================================================
@@ -158,7 +160,6 @@ module.exports = {
 
         var userRole        =   req.body.userRole;
         var tokenService    =   tokenService || {};
-        var deleteStatus          =   "delete";
         var userId          =   "";
         var sensualAdStatus =   "enable";
 
@@ -196,11 +197,11 @@ module.exports = {
                                         if(typeof sensualCheck != 'undefined'){
 
                                             if (userRole == 'user') {
-                                                query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+" AND status != '"+deleteStatus+"' ORDER BY  createdAt DESC";
+                                                query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+" AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"' ORDER BY  createdAt DESC";
 
 
                                             } else if (userRole == 'admin') {
-                                                query ="SELECT * FROM  aduser WHERE status = '"+activeStatus+"' ORDER BY  createdAt DESC";
+                                                query ="SELECT * FROM  aduser WHERE status = '"+adUserConstants.ADUSER_STATUS_ACTIVE+"' ORDER BY  createdAt DESC";
                                             }
 
                                         }
@@ -208,12 +209,12 @@ module.exports = {
 
                                             if (userRole == 'user') {
                                                 query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+
-                                                        " AND status != '"+deleteStatus+"'"+
+                                                        " AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"'"+
                                                         " AND bannerType = 'therapeutic'"+
                                                         " ORDER BY  createdAt DESC";
 
                                             } else if (userRole == 'admin') {
-                                                query ="SELECT * FROM  aduser WHERE status = '"+activeStatus+"' ORDER BY  createdAt DESC";
+                                                query ="SELECT * FROM  aduser WHERE status = '"+adUserConstants.ADUSER_STATUS_ACTIVE+"' ORDER BY  createdAt DESC";
                                             }
 
                                         }

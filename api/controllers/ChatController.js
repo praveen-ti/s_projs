@@ -155,7 +155,7 @@ getChatList : function(req, res) {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                console.log("query >>>>>>>>>>????????????????????");
+
                                var query = "SELECT *"+
                                         " FROM chat cht"+
                                         " WHERE conversationId"+
@@ -168,7 +168,7 @@ getChatList : function(req, res) {
                                         " AND cnvr.objectId ="+tokenCheck.tokenDetails.userId+
                                         " )"+
                                         "ORDER BY createdAt DESC ";
-                                console.log(query);
+
                                 queryUser = "SELECT * FROM  user WHERE ";
                                 Chat.query(query, function(err, result) {
                                                if(err)
@@ -177,21 +177,11 @@ getChatList : function(req, res) {
                                                 }
                                                 else
                                                 {
-                                                    console.log("Success Chat");
-                                                    console.log(result);
-                                                    console.log(result[0].senderId);
-                                                    console.log(result[0].receiverId);
-                                                    //return res.json(200, {status: 1, result: result});
-                                                    //var senderDetails = "";
-                                                    //var receiverDetails = "";
-
                                                     if(result != ""){
                                                             if(tokenCheck.tokenDetails.userId == result[0].senderId){
-                                                                console.log("Receiver");
                                                                 queryUser+= "id = "+result[0].receiverId;
                                                             }
                                                             else{
-                                                                console.log("Sender");
                                                                  queryUser+= "id = "+result[0].senderId;
                                                              }
                                                                  //To get user's details
@@ -202,9 +192,6 @@ getChatList : function(req, res) {
                                                                             }
                                                                             else
                                                                             {
-                                                                                console.log(result);
-                                                                                console.log(resultUser);
-                                                                                console.log(tokenCheck.tokenDetails.userId);
                                                                                 return res.json(200, {status: 1, result: result[0], resultUser: resultUser });
                                                                             }
                                                                  });
@@ -265,10 +252,6 @@ chatRequest : function(req, res) {
                                             }
                                             else
                                             {
-                                                console.log("update");
-                                                console.log(result);
-                                                console.log(updatedReqStatus);
-
                                                 return res.json(200, {status: 1, updatedReqStatus: updatedReqStatus});
                                             }
 
@@ -307,9 +290,6 @@ var currentDate = new Date();
                                                 clearUserId     : tokenCheck.tokenDetails.userId,
                                                 conversationId  : req.body.cnvrId
                                                 };
-                                 console.log(req.body.cnvrId);
-
-                                 console.log(findValues);
 
                             Clearchat.findOne(findValues).exec(function findCB(err, result) {
                                 var clearStatus = req.body.clearStatus;
@@ -403,7 +383,7 @@ var queryGetCnvr = "SELECT id "+
                     " subjectId = "+req.body.receiverId+
                     " AND  objectId = "+tokenCheck.tokenDetails.userId+
                     " )";
-console.log(queryGetCnvr);
+
                         //Checking conversation is there or not
                         Conversation.query(queryGetCnvr, function(err, result) {
                                        if(err)
@@ -435,7 +415,6 @@ console.log(queryGetCnvr);
                                                                 console.log(clearResult);
                                                                        //Checking the entry in clearchat table or not
                                                                       if(typeof clearResult != "undefined"){
-                                                                          console.log("<<Split date to clear chat>>");
                                                                           var clearDate       = clearResult.lastClearDate.toISOString();
                                                                           var splitdate       = clearDate.split("T1");
                                                                           var splitTime       = splitdate[1].split(".");
@@ -474,8 +453,6 @@ console.log(queryGetCnvr);
                                                                             }
                                                                             else
                                                                             {
-                                                                                console.log("<<<<<<<< chatResult >>>>>>>");
-                                                                                console.log(chatResult);
                                                                                 return res.json(200, {status: 1, message: 'success', chatResult: chatResult});
                                                                             }
                                                                       });

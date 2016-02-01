@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var mailConstants = sails.config.constants.mail;
+
 module.exports = {
 
   attributes: {
@@ -47,15 +49,15 @@ module.exports = {
         },
 
         senderStatus: {
-            type: 'string',
-            enum: ['sent', 'draft', 'trash', 'folder','delete'],
-            defaultsTo: 'sent',
+            type        : 'string',
+            enum        : [mailConstants.SENDER_STATUS_SENT, mailConstants.SENDER_STATUS_DRAFT, mailConstants.SENDER_STATUS_TRASH, mailConstants.SENDER_STATUS_FOLDER,mailConstants.SENDER_STATUS_DELETE],
+            defaultsTo  : mailConstants.SENDER_STATUS_DRAFT,
         },
 
         receiverStatus: {
-            type: 'string',
-            enum: ['inbox', 'trash', 'folder','delete'],
-            defaultsTo: 'inbox',
+            type        : 'string',
+            enum        : [mailConstants.RECEIVER_STATUS_INBOX, mailConstants.RECEIVER_STATUS_TRASH, mailConstants.RECEIVER_STATUS_FOLDER,mailConstants.RECEIVER_STATUS_DELETE],
+            defaultsTo  : mailConstants.RECEIVER_STATUS_INBOX,
         },
 
         conversationId: {
@@ -64,8 +66,8 @@ module.exports = {
 
        viewStatus: {
             type: 'string',
-            enum: ['true', 'false'],
-            defaultsTo: 'false',
+            enum: [mailConstants.VIEW_STATUS_TRUE, mailConstants.VIEW_STATUS_FALSE],
+            defaultsTo: mailConstants.VIEW_STATUS_FALSE,
         },
 
 

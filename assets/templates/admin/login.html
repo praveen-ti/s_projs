@@ -1,16 +1,32 @@
-<div class="container">
-    <h3>Admin login</h3>
+<div id="page-wrapper">
 
-    <form role="form">
-        <div class="form-group">
-            <label for="email">Username:</label>
-            <input type="text" class="form-control" id="username" ng-model="username">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-2">
+                </div>
+            <div class="col-sm-8">
+               <span class="login_error_message error">{{login_error_message}}</span>
+                <form ng-submit="loginSubmit()" class="form-horizontal" role="form" name="myForm" novalidate >
+                  <h4>Login</h4></br>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">Username</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" ng-model="username" name="username" type="text" required />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="password" ng-model="password" ng-minlength="6" name="text" required />
+                    </div>
+                  </div>
+                  <input type="submit" id="submit" value="Submit" />
+                </form>
+
+            </div>
+            <div class="col-sm-2">
+                </div>
         </div>
-        <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" class="form-control" id="pwd" ng-model="password">
-        </div>
-        <button type="submit" class="btn btn-default" ng-click="login()">Submit</button>
-    </form>
+    </div>
 </div>
-

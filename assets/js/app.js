@@ -3,6 +3,7 @@
 var zentiera = angular.module('zentiera', ['adminControllers']);
 
 zentiera.config(['$routeProvider', '$locationProvider',
+
     function ($routeProvider, $locationProvider) {
 
         $locationProvider.html5Mode(true);
@@ -23,6 +24,10 @@ zentiera.config(['$routeProvider', '$locationProvider',
                 when('/admin/login', {
                     templateUrl: 'templates/admin/login.html',
                     controller: 'adminLoginCtrl'
+                }).
+                when('/admin/dashboard', {
+                    templateUrl: 'templates/admin/dashboard.html',
+                    //controller: 'adminController'
                 }).
                 otherwise({
                     redirectTo: '/'

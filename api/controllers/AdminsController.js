@@ -420,7 +420,7 @@ module.exports = {
      ====================================================================================================================================*/
 
     adminLogin: function (req, res) {
-
+console.log("username");
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         //var password = req.body.password;
         var values = {
@@ -429,6 +429,7 @@ module.exports = {
         };
         console.log(req.body.username);
         console.log(password);
+        console.log(values);
         // Get Admin details
         Admin.findOne(values).exec(function (err, result) {
             if (err) {
@@ -460,7 +461,7 @@ module.exports = {
                             req.session.authenticated = true;
                             req.session.token = details.token.token;
 
-                            return res.json(200, {status: 1, message: 'succes', details: details});
+                            return res.json(200, {status: 1, message: 'succes', data: details});
                         }
                     });
 

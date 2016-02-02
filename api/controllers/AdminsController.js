@@ -420,16 +420,13 @@ module.exports = {
      ====================================================================================================================================*/
 
     adminLogin: function (req, res) {
-console.log("username");
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         //var password = req.body.password;
         var values = {
             username: req.body.username,
             password: password
         };
-        console.log(req.body.username);
-        console.log(password);
-        console.log(values);
+
         // Get Admin details
         Admin.findOne(values).exec(function (err, result) {
             if (err) {
@@ -442,7 +439,7 @@ console.log("username");
                 if (typeof result == "undefined")
                 {
                     sails.log.debug({message: 'No admin found'});
-                    return res.json(200, {status: 2, message: 'No admin found', result: result});
+                    return res.json(200, {status: 2, message: 'No admin found', data: result});
 
                 }
                 else
@@ -452,14 +449,11 @@ console.log("username");
                         if (err) {
                             return res.json(200, {status: 2, message: 'some error occured', error: details});
                         } else {
-
-                            console.log(details);
-
                             //return res.view('login_home');
                             //res.redirect('login_home');
                             // res.view('login_home', {status: 1, message: 'succes', details: details});
-                            req.session.authenticated = true;
-                            req.session.token = details.token.token;
+                            //req.session.authenticated = true;
+                            //req.session.token = details.token.token;
 
                             return res.json(200, {status: 1, message: 'succes', data: details});
                         }
@@ -561,39 +555,39 @@ console.log("username");
 
     /*######################*/
     /*    indexj: function (req,res) {
-     
+
      var socket = req.socket;
      var io = sails.io;
-     
+
      // emit to all sockets (aka publish)
      // including yourself
      io.sockets.emit('messageName', {thisIs: 'theMessage'});
-     
+
      // broadcast to a room (aka publish)
      // excluding yourself, if you're in it
      socket.broadcast.to('roomName').emit('messageName', {thisIs: 'theMessage'});
-     
+
      // emit to a room (aka publish)
      // including yourself
      io.sockets.in('roomName').emit('messageName', {thisIs: 'theMessage'});
-     
+
      // Join a room (aka subscribe)
      // If you're in the room already, no problem, do nothing
      // If the room doesn't exist yet, it gets created
      socket.join('roomName');
-     
+
      // Leave a room (aka unsubscribe)
      // If you're not in the room, no problem, do nothing
      // If the room doesn't exist yet, no problem, do nothing
      socket.leave('roomName');
-     
+
      // Get all connected sockets in the app
      sails.io.sockets.clients();
-     
+
      // Get all conneted sockets in the room, "roomName"
      sails.io.sockets.clients('roomName');
-     
-     
+
+
      },*/
 
 

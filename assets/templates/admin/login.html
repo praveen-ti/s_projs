@@ -1,27 +1,50 @@
 <div id="page-wrapper">
 
     <div class="container-fluid">
-
         <div class="row">
             <div class="col-sm-2">
                 </div>
             <div class="col-sm-8">
-               <span class="login_error_message error">{{login_error_message}}</span>
-                <form ng-submit="loginSubmit()" class="form-horizontal" role="form" name="myForm" novalidate >
+
+
+                <form ng-submit="loginSubmit()" class="form-horizontal" role="form" name="adminLoginForm" novalidate>
                   <h4>Login</h4></br>
+
                   <div class="form-group">
                     <label class="col-sm-3 control-label">Username</label>
                     <div class="col-sm-6">
                         <input class="form-control" ng-model="username" name="username" type="text" required />
                     </div>
                   </div>
+
                   <div class="form-group">
                     <label class="col-sm-3 control-label">Password</label>
                     <div class="col-sm-6">
-                        <input class="form-control" type="password" ng-model="password" ng-minlength="6" name="text" required />
+                        <input class="form-control" type="password" ng-model="password" name="text" required />
                     </div>
                   </div>
-                  <input type="submit" id="submit" value="Submit" />
+
+                  <div class="form-group">
+                     <!-- <p ng-message="required">Your name is too short.</p> -->
+<!--
+                      <span ng-show="adminLoginForm.username.$dirty && adminLoginForm.username.$submitted && adminLoginForm.username.$invalid && !adminLoginForm.username.$pristine && !adminLoginForm.username.$touched && !adminLoginForm.username.$error.required">The username is required.</span>
+                      <span ng-show="adminLoginForm.username.$dirty && adminLoginForm.username.$submitted && adminLoginForm.password.$invalid && !adminLoginForm.password.$pristine && !adminLoginForm.password.$touched && !adminLoginForm.password.$error.required">The password is required.</span>
+
+                      <span class="text-danger">{{!!adminLoginForm.$error.required}}</span>
+                       <span class="text-danger">{{!adminLoginForm.$error.$submitted}}</span>
+                        <span class="text-danger">{{!adminLoginForm.username.$dirty}}</span>
+
+-->
+<!--
+                      <ng-messages ng-if="adminLoginForm.$submitted" for="adminLoginForm.$error">
+                          <ng-message when="required" class="error-message">REQUIRED!!!</ng-message>
+                          <ng-message when="$invalid" class="error-message">Invalid!!!</ng-message>
+                      </ng-messages>
+-->
+                <span class="text-danger">{{login_error_message}}</span>
+                  </div>
+                  <input type="submit" id="submit" value="Submit"/>
+                  <!-- ng-disabled="adminLoginForm.$invalid" -->
                 </form>
 
             </div>

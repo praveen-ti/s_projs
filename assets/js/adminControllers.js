@@ -9,36 +9,33 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
      $scope.loginSubmit = function() {
             var username = $scope.username;
             var password  = $scope.password;
-        var params = {
+        var angParams = {
             username: username,
             password: password
         };
+
         if (username && password) {
-            $http.post('admins/adminLogin',params).success(function(response) {
-
-                                console.log("SUCCESS _______________");
-
+            $http.post($rootScope.STATIC_URL+'admins/adminLogin',angParams).success(function(response) {
                             if(response.status == 1)
                             {
                                 $window.location.href = '/admin/dashboard';
                             }
-                            else
+                            else if(response.status == 2)
                             {
-                                $scope.login_error_message = "Invalid login credentials";
-                            }
+
+                                    $scope.login_error_message = response.message;
+                                    console.log($scope.login_error_message);
+                             }
+                             else
+                             {
+                                    $scope.login_error_message = "Error Occured";
+                                    console.log($scope.login_error_message);
+                             }
 
                     }).error(function() {
-
-                        console.log("EROOR _______________");
-
+                               $scope.login_error_message = "Error Occured while Posting";
                     });
         }
-        else if(username){
-                $scope.login_error_message = "Please Enter the password";
-              }
-        else if(password){
-                $scope.login_error_message = "Please Enter the Username";
-              }
         else {
                $scope.login_error_message = "All fields are mandatory";
         }

@@ -6,9 +6,11 @@ html {
 }
 html body {
     margin-top: 0px;
+    background: #fff;
 }
 .zentiera #wrapper{
    padding-left: 0px;
+   background: #222;
 }
 .zentiera nav.navbar-inverse {
     background-color: #222;

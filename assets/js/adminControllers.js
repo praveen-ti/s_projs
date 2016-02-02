@@ -3,28 +3,30 @@
 
 var adminControllers = angular.module('adminControllers', []);
 
-adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $rootScope, $http, $location) {
+adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
 
      $scope.loginSubmit = function() {
+            var username = $scope.username;
+            var password  = $scope.password;
         var params = {
-            username: $scope.username,
-            password: $scope.password
+            username: username,
+            password: password
         };
         if (username && password) {
-            $http.post($rootScope.STATIC_URL + 'admins/adminLogin',params).success(function(data, status, headers, config) {
+            $http.post('admins/adminLogin',params).success(function(response) {
 
                                 console.log("SUCCESS _______________");
-                                /*
-                                                if(data.status == 1)
-                                                {
-                                                    $window.location.href = '/admin/dashboard';
-                                                }
-                                                else
-                                                {
-                                                    $scope.login_error_message = "Invalid login credentials";
-                                                }
-                                 */
+
+                            if(response.status == 1)
+                            {
+                                $window.location.href = '/admin/dashboard';
+                            }
+                            else
+                            {
+                                $scope.login_error_message = "Invalid login credentials";
+                            }
+
                     }).error(function() {
 
                         console.log("EROOR _______________");

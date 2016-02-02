@@ -38,7 +38,7 @@ zentiera.config(['$routeProvider', '$locationProvider',
 
 zentiera.run(function ($rootScope, $location, $http, $window) {
 
-    $rootScope.STATIC_URL = $location.absUrl();
+    $rootScope.STATIC_URL = $location;
     //$rootScope.STATIC_URL = "http://localhost:2000/";
 
 //    if (angular.isUndefined($window.sessionStorage.isAuthenticated) || angular.isUndefined(($window.sessionStorage.uid))) {

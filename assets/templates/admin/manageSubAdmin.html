@@ -34,7 +34,7 @@
                                 <tbody>
                                     <tr ng-repeat="subAdmin in subAdmins | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
-                                        <td class="text-center" ng-controller="RepeatController">{{ number }}</td>
+                                        <td class="text-center" ng-controller="RepeatCtrl">{{ number }}</td>
                                         <td class="text-center">{{ subAdmin.username}}</td>
                                         <td class="text-center">{{ subAdmin.firstname}}</td>
                                         <td class="text-center">{{ subAdmin.lastname}}</td>

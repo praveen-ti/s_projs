@@ -4,7 +4,7 @@
 var adminControllers = angular.module('adminControllers', ['appServices']);
 
 
-adminControllers.controller('RepeatController', function RepeatController($scope) {
+adminControllers.controller('RepeatCtrl', function RepeatController($scope) {
 
     $scope.number = ($scope.$index + 1) + ($scope.currentPage) * $scope.pageSize;
 
@@ -129,7 +129,7 @@ adminControllers.controller('adminPackageCtrl', function ($scope, $routeParams, 
  Manage Sub Admin Controller   -----  II
  ====================================================================================================================================*/
 
-adminControllers.controller('manageSubAdminController', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
     $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;

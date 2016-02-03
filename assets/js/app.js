@@ -79,7 +79,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                 }).
                 when('/admin/manageSubAdmin', {
                     templateUrl: 'templates/admin/manageSubAdmin.html',
-                    controller: 'manageSubAdminController',
+                    controller: 'manageSubAdminCtrl',
                     access: {
                         requiresLogin: true,
                         role: 'admin'

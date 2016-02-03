@@ -137,7 +137,7 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
     var request = "";
 
     var angParams = {
-        token: "3b3910295c7e0276f6e1b537"
+        token: $window.sessionStorage.token
     };
 
     $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', angParams).success(function (response) {
@@ -162,7 +162,7 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
         var lastName    =   $scope.newLastName;
         var password    =   $scope.newPassword;
         var blockStatus =   $scope.newBlockStatus;
-        var token       =   "3b3910295c7e0276f6e1b537";
+        var token       =   $window.sessionStorage.token;
 
         $scope.newSubAdmin_error_message        = '';
         $scope.newAddSubAdmin_error_message     = '';
@@ -251,7 +251,7 @@ var blockStatus = $event.currentTarget.id;
                 {
                        //get full user details
                            var angParams = {
-                                token: "3b3910295c7e0276f6e1b537"
+                                token: $window.sessionStorage.token
                             };
                         $http.post($rootScope.STATIC_URL+'admins/getSubadminList', angParams).success(function(response) {
                             console.log(response);

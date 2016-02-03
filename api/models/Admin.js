@@ -47,7 +47,7 @@ module.exports = {
          //To block a subadmin
          blockStatus: {
             type                : 'string',
-            enum                : [adminConstants.BLOCK_STATUS_ACTIVE, adminConstants.BLOCK_STATUS_BLOCK],
+            enum                : [adminConstants.BLOCK_STATUS_ACTIVE, adminConstants.BLOCK_STATUS_BLOCK, adminConstants.BLOCK_STATUS_DELETE],
             defaultsTo          : adminConstants.BLOCK_STATUS_ACTIVE,
         },
 

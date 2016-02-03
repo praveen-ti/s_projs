@@ -94,6 +94,7 @@ module.exports.constants = {
         ADMIN_TYPE_SUBADMIN       : 'sub_admin',
         BLOCK_STATUS_BLOCK        : 'block',
         BLOCK_STATUS_ACTIVE       : 'active',
+        BLOCK_STATUS_DELETE       : 'delete',
 
     },
 

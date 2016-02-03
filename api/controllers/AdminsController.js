@@ -27,7 +27,7 @@ module.exports = {
                 if (tokenCheck.status == 1)
                 {
 
-                    var query = "SELECT * FROM admin WHERE adminType =  '" + adminConstants.ADMIN_TYPE_SUBADMIN + "' ORDER BY createdAt DESC";
+                    var query = "SELECT * FROM admin WHERE adminType =  '" + adminConstants.ADMIN_TYPE_SUBADMIN +"' ORDER BY createdAt DESC";
                     Admin.query(query, function (err, result) {
                         if (err)
                         {
@@ -35,7 +35,7 @@ module.exports = {
                         }
                         else
                         {
-                            console.log(result);
+                            //console.log(result);
                             return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
@@ -54,8 +54,8 @@ module.exports = {
 
 
     getSubadminDetails: function (req, res) {
-
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+var request = req.body.request;
+      /*  AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -65,8 +65,8 @@ module.exports = {
             {
                 console.log("Inside else  ");
                 if (tokenCheck.status == 1)
-                {
-                    Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
+                {*/
+                    Admin.findOne({id: request}).exec(function findCB(err, result) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});
@@ -78,13 +78,13 @@ module.exports = {
                         }
 
                     });
-                }
+               /* }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
             }
-        });
+        });*/
     },
     /*===================================================================================================================================
      Create/Add a subadmin
@@ -118,7 +118,7 @@ module.exports = {
                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                         } else
                         {
-                            return res.json(200, {status: 1, message: 'success', result: result});
+                            return res.json(200, {status: 1, message: 'success', data: result});
                         }
                     });
                 }
@@ -136,7 +136,7 @@ module.exports = {
 
     updateAdminDetails: function (req, res) {
 
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+       /* AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -145,8 +145,8 @@ module.exports = {
             else
             {
                 if (tokenCheck.status == 1)
-                {
-                    Admin.findOne({id: tokenCheck.tokenDetails.adminId}).exec(function findCB(err, result) {
+                {*/
+                    Admin.findOne({id: req.body.id}).exec(function findCB(err, result) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});
@@ -171,27 +171,35 @@ module.exports = {
                                 }
                                 else
                                 {
+                                    console.log(updatedAdmin);
                                     return res.json(200, {status: 1, data: updatedAdmin});
                                 }
 
                             });
                         }
                     });
-                }
+               /* }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
 
             }
-        });
+        });*/
     },
-    /*===================================================================================================================================
-     Delete a subadmin
-     ====================================================================================================================================*/
-    deleteSubadmin: function (req, res) {
 
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+ /*===================================================================================================================================
+    Block Status update
+    ====================================================================================================================================*/
+
+
+    updateBlockStatus: function (req, res) {
+
+console.log("updateBlockStatus <<<<<<<<<<<<>>>>>>>>>>>>>>>>>");
+
+var request = req.body.request;
+console.log(request);
+       /* AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -200,25 +208,81 @@ module.exports = {
             else
             {
                 if (tokenCheck.status == 1)
-                {
-                    Admin.destroy({id: tokenCheck.tokenDetails.adminId}).exec(function deleteCB(err) {
+                {*/
+                    Admin.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});
                         }
                         else
                         {
+                            var values = {
+                                 blockStatus: request.blockStatus
+                            };
+
+                            var criteria = {
+                                              id          : result.id
+                                            };
+                            Admin.update(criteria, values).exec(function (err, deleteAdmin) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    console.log(deleteAdmin);
+                                    return res.json(200, {status: 1, data: deleteAdmin});
+                                }
+
+                            });
+                        }
+                    });
+               /* }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });*/
+    },
+
+
+    /*===================================================================================================================================
+     Delete a subadmin
+     ====================================================================================================================================*/
+    deleteSubadmin: function (req, res) {
+
+      /*  AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {*/
+                    Admin.destroy({id: req.body.adminId}).exec(function deleteCB(err) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log("success");
+                            console.log(req.body.adminId);
                             return res.json(200, {status: 1, message: 'success'});
                         }
 
                     });
-                }
+               /* }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
             }
-        });
+        });*/
     },
     /*===================================================================================================================================
      Set subadmin privileges

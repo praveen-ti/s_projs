@@ -57,6 +57,28 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
 adminControllers.controller('adminDashboardCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
     $rootScope.adminNavigation = 1;
+});
 
+
+
+/*===================================================================================================================================
+ Manage Sub Admin Controller
+ ====================================================================================================================================*/
+
+adminControllers.controller('manageSubAdminController', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    var angParams = {
+        token: "3b3910295c7e0276f6e1b537"
+    };
+
+    $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', angParams).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.subAdmins = response.data;
+        }
+
+    });
 
 });

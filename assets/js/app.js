@@ -68,6 +68,10 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/manageSubAdmin', {
+                    templateUrl: 'templates/admin/manageSubAdmin.html',
+                    controller: 'manageSubAdminController'
+                }).
                 otherwise({
                     redirectTo: '/'
                 });
@@ -78,7 +82,6 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
 zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationService) {
 
     $rootScope.STATIC_URL = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
-    //$rootScope.STATIC_URL = "http://localhost:2000/";
 
     $rootScope.$on("$routeChangeStart", function (event, nextRoute, currentRoute) {
 

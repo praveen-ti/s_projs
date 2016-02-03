@@ -36,7 +36,7 @@ module.exports = {
                         else
                         {
                             console.log(result);
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 }
@@ -81,7 +81,6 @@ module.exports = {
                 }
                 else
                 {
-                    console.log("mmmm");
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
             }

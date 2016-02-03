@@ -29,6 +29,10 @@ zentiera.config(['$routeProvider', '$locationProvider',
                     templateUrl: 'templates/admin/dashboard.html',
                     //controller: 'adminController'
                 }).
+                when('/admin/manageSubAdmin', {
+                    templateUrl: 'templates/admin/manageSubAdmin.html',
+                    controller: 'manageSubAdminController'
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

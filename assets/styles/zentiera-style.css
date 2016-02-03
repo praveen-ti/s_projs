@@ -9,7 +9,7 @@ html body {
     background: #fff;
 }
 .zentiera #wrapper{
-   padding-left: 0px;
+  /* padding-left: 0px; */
    background: #222;
 }
 .zentiera nav.navbar-inverse {

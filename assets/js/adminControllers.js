@@ -55,8 +55,59 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
 
 
 adminControllers.controller('adminDashboardCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
-
     $rootScope.adminNavigation = 1;
+});
+
+adminControllers.controller('adminPackageCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+    $rootScope.adminNavigation = 1;
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    var params = {
+        userRole: 'admin',
+        token: $window.sessionStorage.token
+    };
+
+    $http.post($rootScope.STATIC_URL + 'subscription/getAllPackages', params).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.packages = response.data;
+        }
+
+    });
+
+    $scope.statusUpdate = function ($event, packageId, status) {
+
+        var params = {
+            packageId: packageId,
+            status: status,
+            token: $window.sessionStorage.token
+        };
+
+        var args = {
+            userRole: 'admin',
+            token: $window.sessionStorage.token
+        };
+
+        if (!confirm('Are you sure you want to ' + status + ' this Package?')) {
+            $event.preventDefault();
+        } else {
+
+            $http.post($rootScope.STATIC_URL + 'subscription/updatePackageStatus', params).success(function (response) {
+
+                if (response.status == 1) {
+                    $http.post($rootScope.STATIC_URL + 'subscription/getAllPackages', args).success(function (data) {
+                        if (data.status == 1) {
+                            $scope.packages = data.data;
+                        }
+                    });
+                }
+
+            });
+
+        }
+    }
+
 });
 
 

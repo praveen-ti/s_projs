@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS `subscription_package` (
   `cost` float NOT NULL DEFAULT '0',
   `validDays` int(11) NOT NULL,
   `status` enum('active','inactive','delete') NOT NULL DEFAULT 'active',
-  `createdAt` datetime DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

@@ -49,7 +49,8 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminLoginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'admin'
+                        role: 'admin',
+                        page: 'login'
                     }
                 }).
                 when('/admin/login', {
@@ -57,12 +58,21 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminLoginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'admin'
+                        role: 'admin',
+                        page: 'login'
                     }
                 }).
                 when('/admin/dashboard', {
                     templateUrl: 'templates/admin/dashboard.html',
                     controller: 'adminDashboardCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/package', {
+                    templateUrl: 'templates/admin/package.html',
+                    controller: 'adminPackageCtrl',
                     access: {
                         requiresLogin: true,
                         role: 'admin'
@@ -95,7 +105,7 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
         //console.log(angular.isUndefined($window.sessionStorage.token));
 
         if (nextRoute.access.requiresLogin && ($window.sessionStorage.isAuthenticated === 'false') && angular.isUndefined($window.sessionStorage.token)) {
-            console.log('ee');
+            console.log('Logged - No');
             if (nextRoute.access.role === 'user') {
                 $location.path("/login");
             } else {
@@ -109,10 +119,13 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
             if (nextRoute.access.role === 'user') {
 
             } else {
-                $location.path("/admin/dashboard");
+                console.log('Logged - Yes, Role - Admin');
+                if (nextRoute.access.page == 'login') {
+                    $location.path("/admin/dashboard");
+                }
                 $rootScope.adminNavigation = 1;
             }
-            console.log('hh');
+            console.log('Logged - Yes');
         }
 
     });

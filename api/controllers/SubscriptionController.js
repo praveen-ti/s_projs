@@ -27,16 +27,16 @@ module.exports = {
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT * FROM subscription_package WHERE 1 ORDER BY id ASC";
+                    var query = "SELECT * FROM subscription_package WHERE 1 ORDER BY id DESC";
                     Subscription.query(query, function (err, result) {
                         if (err) {
-                            return res.json(200, {status: 2, error_details: err});
+                            return res.json(200, {status: 2, message: "Error", error_details: err});
                         } else {
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 } else {
-                    return res.json(200, {status: 3, message: 'token expired'});
+                    return res.json(200, {status: 3, message: 'Token expired.'});
                 }
             }
         });
@@ -85,7 +85,7 @@ module.exports = {
                         if (err) {
                             return res.json(200, {status: 2, error_details: err});
                         } else {
-                            return res.json(200, {status: 1, data: result});
+                            return res.json(200, {status: 1, message: 'Success', data: result});
                         }
                     });
 
@@ -142,7 +142,7 @@ module.exports = {
                 }
                 else
                 {
-                    return res.json(200, {status: 3, message: 'token expired'});
+                    return res.json(200, {status: 3, message: 'Token expired.'});
                 }
 
             }

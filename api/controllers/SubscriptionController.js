@@ -102,21 +102,14 @@ module.exports = {
 
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
-            if (err)
-            {
+            if (err) {
                 return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-            }
-            else
-            {
-                if (tokenCheck.status == 1)
-                {
+            } else {
+                if (tokenCheck.status == 1) {
                     Subscription.findOne({id: packageId}).exec(function findCB(err, result) {
-                        if (err)
-                        {
+                        if (err) {
                             return res.json(200, {status: 2, error_details: err});
-                        }
-                        else
-                        {
+                        } else {
                             var packageDetails = {name: req.body.name,
                                 description: (req.body.description) ? req.body.description : '',
                                 cost: (req.body.cost) ? req.body.cost : 0,
@@ -127,21 +120,16 @@ module.exports = {
 
                             var criteria = {id: result.id};
                             Subscription.update(criteria, packageDetails).exec(function (err, updated) {
-                                if (err)
-                                {
+                                if (err) {
                                     return res.json(200, {status: 2, error_details: err});
-                                }
-                                else
-                                {
-                                    return res.json(200, {status: 1, data: updated});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'Success', data: updated});
                                 }
 
                             });
                         }
                     });
-                }
-                else
-                {
+                } else {
                     return res.json(200, {status: 3, message: 'Token expired.'});
                 }
 

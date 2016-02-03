@@ -58,8 +58,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminLoginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'admin',
-                        page: 'login'
+                        role: 'admin'
                     }
                 }).
                 when('/admin/dashboard', {
@@ -80,7 +79,11 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                 }).
                 when('/admin/manageSubAdmin', {
                     templateUrl: 'templates/admin/manageSubAdmin.html',
-                    controller: 'manageSubAdminController'
+                    controller: 'manageSubAdminController',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -120,31 +123,32 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
             } else {
                 console.log('Logged - Yes, Role - Admin');
-                if (nextRoute.access.page == 'login') {
-                    $location.path("/admin/dashboard");
-                }
                 $rootScope.adminNavigation = 1;
             }
             console.log('Logged - Yes');
         }
 
     });
-//    $rootScope.logOut = function () {
-//
-//        UserService.logOut().success(function (data) {
-//            $window.sessionStorage.uid = 0;
-//            $window.sessionStorage.isAuthenticated = "false";
-//            $window.sessionStorage.removeItem('currentUser');
-//            $location.path("/test");
-//        }).error(function (status, data) {
-//            console.log(status);
-//            //console.log(data);
-//        });
-//    }
-//
-//    $rootScope.isLogged = function () {
-//        return $window.sessionStorage.isAuthenticated;
-//    }
+
+    $rootScope.adminLogout = function () {
+
+        $http.post($rootScope.STATIC_URL + 'admins/adminLogout').success(function (response) {
+
+            if (response.status === 1) {
+                $window.sessionStorage.isAuthenticated = 'false';
+                delete $window.sessionStorage.token;
+                $location.path('/admin/login');
+            } else {
+                $scope.login_error_message = "Invalid login credentials";
+            }
+
+        }).error(function () {
+
+            console.log("EROOR - Admin logout.");
+
+        });
+
+    };
 
 
 });

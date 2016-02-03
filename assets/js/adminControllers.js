@@ -3,7 +3,7 @@
 
 var adminControllers = angular.module('adminControllers', ['appServices']);
 
-adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, AuthenticationService) {
+adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
     $rootScope.adminNavigation = 0;
 
@@ -15,17 +15,27 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
             username: username,
             password: password
         };
+        
+        $scope.errorMessage = null;
+        
+        if (!username) {
 
-        if (username && password) {
-            $http.post('admins/adminLogin', params).success(function (response) {
+            $scope.errorMessage = "Please enter username.";
+
+        } else if (!password) {
+
+            $scope.errorMessage = "Please enter password.";
+
+        } else if (username && password) {
+
+            $http.post($rootScope.STATIC_URL + 'admins/adminLogin', params).success(function (response) {
 
                 if (response.status === 1) {
-                    AuthenticationService.isAuthenticated = true;
                     $window.sessionStorage.isAuthenticated = 'true';
                     $window.sessionStorage.token = response.data.token.token;
                     $location.path('/admin/dashboard');
                 } else {
-                    $scope.login_error_message = "Invalid login credentials";
+                    $scope.errorMessage = "Invalid login credentials.";
                 }
 
             }).error(function () {
@@ -33,22 +43,7 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
                 console.log("EROOR _______________");
 
             });
-        } else if (username) {
-            $scope.login_error_message = "Please Enter the password";
-        } else if (password) {
-            $scope.login_error_message = "Please Enter the Username";
-        } else {
-            $scope.login_error_message = "All fields are mandatory";
         }
-    };
-
-    $scope.adminLogout = function () {
-//        if (AuthenticationService.isAuthenticated) {
-//            AuthenticationService.isAuthenticated = false;
-//            $window.sessionStorage.isAuthenticated = 'false';
-//            delete $window.sessionStorage.token;
-//            $location.path("/admin.login");
-//        }
     };
 
 });

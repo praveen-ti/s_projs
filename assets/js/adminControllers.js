@@ -67,6 +67,7 @@ adminControllers.controller('adminDashboardCtrl', function ($scope, $routeParams
 
 adminControllers.controller('manageSubAdminController', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
+    $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     var angParams = {

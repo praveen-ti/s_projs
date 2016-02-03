@@ -48,17 +48,15 @@ module.exports.routes = {
     view: 'index'
   },
   
-  '/admin/dashboard': {
-    view: 'admin'
-  },
-
-  '/admin/login': {
-    view: 'admin'
-  },
-
   '/admin': {
     view: 'admin'
   },
+  
+  '/admin/*': {
+    view: 'admin'
+  },
+
+  
 
 
   /***************************************************************************

@@ -1,47 +1,68 @@
  <div id="wrapper">
+    <nav lass="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-if="adminNavigation == 1">
+        
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="admin/dashboard">Admin Panel</a>
+        </div>
 
-        <!-- Navigation -->
-        <nav lass="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="navController">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="admin/dashboard">Admin Panel</a>
-            </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav">
-
-                <li class="dropdown">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Admin <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href='javascript:void(0)' ng-click="logout()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-                    <!--<li>
-                        <a href="admin/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-                    </li>
+        <ul class="nav navbar-right top-nav">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Admin <b class="caret"></b></a>
+                <ul class="dropdown-menu">
                     <li>
-                        <a href="admin/manageUsers"><i class="fa fa-fw fa-bar-chart-o"></i> Manage Users</a>
-                    </li>-->
-                    <li>
-                        <a href="admin/dashboard"><i class="fa fa-fw fa-table"></i> Admin Users</a>
+                        <a href='javascript:void(0)' ng-click="logout()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                     </li>
                 </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
+            </li>
+        </ul>
 
-        <div ng-view></div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav side-nav">
+                <!--<li>
+                    <a href="admin/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="admin/manageUsers"><i class="fa fa-fw fa-bar-chart-o"></i> Manage Users</a>
+                </li>-->
+                <li>
+                    <a href="admin/dashboard"><i class="fa fa-fw fa-table"></i> Admin Users</a>
+                </li>
+            </ul>
+        </div>
 
-    </div>
+    </nav>
+
+    <nav lass="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-if="adminNavigation == 0">
+        
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="admin/login">Admin</a>
+        </div>
+
+        <ul class="nav navbar-right top-nav">
+            <li class="dropdown">
+                
+            </li>
+        </ul>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            
+        </div>
+
+    </nav>
+
+    <div ng-view></div>
+
+</div>
 

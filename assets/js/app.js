@@ -1,63 +1,118 @@
 'use strict';
 
-var zentiera = angular.module('zentiera', ['adminControllers']);
+var zentiera = angular.module('zentiera', ['userControllers', 'adminControllers', 'appServices']);
 
-zentiera.config(['$routeProvider', '$locationProvider',
 
-    function ($routeProvider, $locationProvider) {
+zentiera.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('TokenInterceptor');
+});
+
+
+zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 
         $locationProvider.html5Mode(true);
-
         $routeProvider.
                 when('/', {
-                    templateUrl: 'templates/index.html'
-                            //controller: 'loginCtrl'
+                    templateUrl: 'templates/index.html',
+                    //controller: 'loginCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'user'
+                    }
+                }).
+                when('/index', {
+                    templateUrl: 'templates/index.html',
+                    controller: 'indexCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'user'
+                    }
                 }).
                 when('/login', {
-                    templateUrl: 'templates/login.html'
-                            //controller: 'loginCtrl'
+                    templateUrl: 'templates/login.html',
+                    controller: 'loginCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'user'
+                    }
+                }).
+                when('/profile', {
+                    templateUrl: 'templates/profile.html',
+                    controller: 'profileCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
                 }).
                 when('/admin', {
                     templateUrl: 'templates/admin/login.html',
-                    controller: 'adminLoginCtrl'
+                    controller: 'adminLoginCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'admin'
+                    }
                 }).
                 when('/admin/login', {
                     templateUrl: 'templates/admin/login.html',
-                    controller: 'adminLoginCtrl'
+                    controller: 'adminLoginCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'admin'
+                    }
                 }).
                 when('/admin/dashboard', {
                     templateUrl: 'templates/admin/dashboard.html',
-                    //controller: 'adminController'
+                    controller: 'adminDashboardCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
                 }).
                 otherwise({
                     redirectTo: '/'
                 });
-
     }
 ]);
 
-zentiera.run(function ($rootScope, $location, $http, $window) {
 
-    $rootScope.STATIC_URL = $location;
+zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationService) {
+
+    $rootScope.STATIC_URL = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
     //$rootScope.STATIC_URL = "http://localhost:2000/";
 
-//    if (angular.isUndefined($window.sessionStorage.isAuthenticated) || angular.isUndefined(($window.sessionStorage.uid))) {
-//        $window.sessionStorage.uid = 0;
-//        $window.sessionStorage.isAuthenticated = "false";
-//    }
-//
-//    $rootScope.$on("$routeChangeStart", function (event, nextRoute, currentRoute) {
-//
-//        if ($window.sessionStorage.isAuthenticated == "true") {
-//            $rootScope.currentUser = CurrentUserService.getCurrentUserData();
-//        }
-//
-//        if ((nextRoute.access.requiredLogin && ($window.sessionStorage.isAuthenticated == "false")) || angular.isUndefined($window.sessionStorage.isAuthenticated)) {
-//            $location.path("/test");
-//        }
-//
-//    });
+    $rootScope.$on("$routeChangeStart", function (event, nextRoute, currentRoute) {
 
+        if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
+            $window.sessionStorage.isAuthenticated = 'false';
+        }
+
+        //console.log('$window.sessionStorage.isAuthenticated');
+        //console.log(nextRoute.access.requiresLogin);
+        //console.log($window.sessionStorage.isAuthenticated);
+        //console.log(angular.isUndefined($window.sessionStorage.token));
+
+        if (nextRoute.access.requiresLogin && ($window.sessionStorage.isAuthenticated === 'false') && angular.isUndefined($window.sessionStorage.token)) {
+            console.log('ee');
+            if (nextRoute.access.role === 'user') {
+                $location.path("/login");
+            } else {
+                $location.path("/admin/login");
+                $rootScope.adminNavigation = 0;
+            }
+            //$window.location.href = "/admin/login";
+
+        } else {
+
+            if (nextRoute.access.role === 'user') {
+
+            } else {
+                $location.path("/admin/dashboard");
+                $rootScope.adminNavigation = 1;
+            }
+            console.log('hh');
+        }
+
+    });
 //    $rootScope.logOut = function () {
 //
 //        UserService.logOut().success(function (data) {

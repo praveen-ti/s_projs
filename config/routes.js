@@ -35,20 +35,28 @@ module.exports.routes = {
   '/': {
     view: 'index'
   },
+  
+  '/index': {
+    view: 'index'
+  },
 
   '/login': {
     view: 'index'
   },
-
-  '/admin': {
-    view: 'adminlogin'
+  
+  '/profile': {
+    view: 'index'
+  },
+  
+  '/admin/dashboard': {
+    view: 'admin'
   },
 
   '/admin/login': {
-    view: 'adminlogin'
+    view: 'admin'
   },
 
-  '/admin/*': {
+  '/admin': {
     view: 'admin'
   },
 

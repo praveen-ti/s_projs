@@ -41,7 +41,7 @@
                                         <td class="text-center">{{ subAdmin.blockStatus}}</td>
                                         <td class="text-center">
                                             <!-- <a href="admin/manageUsers/user/{{user.id}}">View </a> -->
-                                            <a class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
+                                            <a href="javascript:void(0)" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
                                             <a href="javascript:void(0)" id="delete"  ng-click="updateBlockStatus($event,subAdmin.id)"> Delete</a> |
                                             <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>
                                        </td>

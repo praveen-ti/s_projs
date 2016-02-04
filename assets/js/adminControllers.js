@@ -57,7 +57,7 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
                     $scope.errorMessage = "Invalid login credentials.";
                 }
 
-            }).error(function () {
+            }).error(function (err) {
 
                 console.log("EROOR _______________");
 
@@ -284,6 +284,120 @@ adminControllers.controller('adminPackageCtrl', function ($scope, $routeParams, 
         }
 
     }
+
+});
+
+adminControllers.controller('adminMembersCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+
+    var params = {
+        userRole: 'admin',
+        token: $window.sessionStorage.token
+    };
+
+    $http.post($rootScope.STATIC_URL + 'users/getAllMembers', params).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.users = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.users).length / $scope.pageSize);
+            }
+        }
+
+    });
+
+    $scope.updateMemberStatus = function ($event, userId, status) {
+
+        var params = {
+            userId: userId,
+            status: status,
+            token: $window.sessionStorage.token
+        };
+
+        var args = {
+            userRole: 'admin',
+            token: $window.sessionStorage.token
+        };
+
+        if (!confirm('Are you sure you want to ' + status + ' this User?')) {
+            $event.preventDefault();
+        } else {
+
+            $http.post($rootScope.STATIC_URL + 'users/updateUserStatus', params).success(function (response) {
+
+                if (response.status === 1) {
+                    $http.post($rootScope.STATIC_URL + 'users/getAllMembers', args).success(function (data) {
+                        if (data.status === 1) {
+                            $scope.users = data.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.users).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+        }
+    }
+
+    $scope.blacklistAMember = function ($event, userId, status) {
+
+        var params = {
+            userId: userId,
+            status: status,
+            token: $window.sessionStorage.token
+        };
+
+        var args = {
+            userRole: 'admin',
+            token: $window.sessionStorage.token
+        };
+
+        var text = 'blacklist';
+        if (status === 'no') {
+            text = 'whitelist';
+        }
+
+        if (!confirm('Are you sure you want to ' + text + ' this User?')) {
+            $event.preventDefault();
+        } else {
+
+            $http.post($rootScope.STATIC_URL + 'users/blacklistAMember', params).success(function (response) {
+
+                if (response.status === 1) {
+                    $http.post($rootScope.STATIC_URL + 'users/getAllMembers', args).success(function (data) {
+                        if (data.status === 1) {
+                            $scope.users = data.data;
+                        }
+                    });
+                }
+
+            });
+
+        }
+    }
+
+});
+
+adminControllers.controller('adminMemberViewCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+    $rootScope.adminNavigation = 1;
+    
+    var params = {
+        userId: $routeParams.id,
+        userRole: 'admin',
+        token: $window.sessionStorage.token
+    };
+
+    $http.post($rootScope.STATIC_URL + 'users/getUserDetails', params).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.member = response.data;
+        }
+
+    });
 
 });
 

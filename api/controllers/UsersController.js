@@ -304,17 +304,17 @@ module.exports = {
         tokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
             } else {
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT * FROM user WHERE 1 ORDER BY id DESC";
+                    var query = "SELECT u.* FROM user AS u LEFT JOIN userinfo AS ui ON u.id = ui.userId WHERE 1 ORDER BY u.id DESC";
                     User.query(query, function (err, result) {
                         if (err) {
-                            return res.json(200, {status: 2, error_details: err});
+                            return res.json(200, {status: 2, message: 'Error', error: err});
                         } else {
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 } else {
@@ -339,15 +339,80 @@ module.exports = {
         tokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
             } else {
 
                 if (tokenCheck.status == 1) {
-                    User.findOne({id: userId}).exec(function findCB(err, result) {
+                    //User.findOne({id: userId}).exec(function findCB(err, result) {
+                    //    if (err) {
+                    //        return res.json(200, {status: 2, error_details: err});
+                    //    } else {
+                    //        return res.json(200, {status: 1, data: result});
+                    //    }
+                    //});
+                    
+                    var query = "SELECT u.*, u.id AS u_id, ui.*, ui.id AS ui_id FROM user AS u LEFT JOIN userinfo AS ui ON u.id = ui.userId WHERE u.id = " + userId + " LIMIT 1";
+                    User.query(query, function (err, user) {
                         if (err) {
-                            return res.json(200, {status: 2, error_details: err});
+                            return res.json(200, {status: 2, message: 'Error', error: err});
                         } else {
-                            return res.json(200, {status: 1, data: result});
+                            return res.json(200, {status: 1, message: "success", data: user});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    updateUserStatus: function (req, res) {
+
+        var userId = req.body.userId;
+        var status = req.body.status;
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    User.update({id: userId}, {status: status}).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'Success', data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    blacklistAMember: function (req, res) {
+
+        var userId = req.body.userId;
+        var status = req.body.status;
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    User.update({id: userId}, {blacklisted: status}).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'Success', data: result});
                         }
                     });
 
@@ -371,7 +436,7 @@ module.exports = {
 
                 if (tokenCheck.status == 1) {
 
-                    User.update({id: userId}, {status: userConstants.STATUS_BLOCK}).exec(function (err, result) {
+                    User.update({id: userId}, {status: userConstants.STATUS_INACTIVE}).exec(function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, error_details: err});
                         } else {

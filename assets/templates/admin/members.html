@@ -1,0 +1,75 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class="page-header">MEMBERS</h4>
+
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Start: Members Listing -->
+            <div class="col-lg-12">
+
+                <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#addPackage">Add Package</button>
+                <br/><br/> -->
+
+                <div class="form-group" style="width: 400px">
+                    <label style="float: left; width: 20%">Member :</label>
+                    <input type="search" ng-model="userSearch" class="form-control" style="float: right; width: 80%" />
+                </div>
+                <br/><br/>
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr class="info">
+                            <th class="text-center">Sl No</a></th>
+                            <th class="text-center">Firstname</th>
+                            <th class="text-center">Lastname</th>
+                            <th class="text-center">Username</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Blacklisted</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in users| filter:userSearch | startFrom:currentPage * pageSize | limitTo:pageSize"">
+                            <td class="text-center">{{ (($index + 1) + (currentPage * pageSize))}}</td>
+                            <td class="text-center">{{ user.firstname}}</td>
+                            <td class="text-center">{{ user.lastname}}</td>
+                            <td class="text-center"><a href="admin/member/{{user.id}}">{{ user.username}}</a></td>
+                            <td class="text-center"><a href="admin/member/{{user.id}}">{{ user.email}}</a></td>
+                            <td class="text-center">{{ user.status}}</td>
+                            <td class="text-center">{{ user.blacklisted}}</td>
+                            <td class="text-center">
+                                <span><a href="admin/member/{{user.id}}">View </a></span>
+                                <span ng-show="user.blacklisted === 'yes'">| <a href="javascript:void(0)" ng-click="blacklistAMember($event, user.id, 'no')"> Whitelist</a></span>
+                                <span ng-show="user.blacklisted === 'no'">| <a href="javascript:void(0)" ng-click="blacklistAMember($event, user.id, 'yes')"> Blacklist</a></span>
+                                <span ng-show="user.status === 'inactive'">| <a href="javascript:void(0)" ng-click="updateMemberStatus($event, user.id, 'active')"> Active</a></span>
+                                <span ng-show="user.status === 'active'">| <a href="javascript:void(0)" ng-click="updateMemberStatus($event, user.id, 'inactive')"> Inactive</a></span>
+                                <span ng-show="user.status === 'active' || user.status === 'inactive'">| <a href="javascript:void(0)" ng-click="updateMemberStatus($event, user.id, 'delete')"> Delete</a></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <span ng-show="(users.length >= (pageSize + 1))">
+                    <button ng-disabled="currentPage == 0" ng-click="currentPage = currentPage - 1" class="btn btn-default">
+                        Previous
+                    </button>
+                    <span class="btn btn-default">{{currentPage + 1}}/{{numberOfPages()}}</span>
+                    <button ng-disabled="currentPage >= users.length / pageSize - 1" ng-click="currentPage = currentPage + 1" class="btn btn-default">
+                        Next
+                    </button>
+                </span>
+
+            </div>
+            <!-- End: Members Listing -->
+
+        </div>
+
+    </div>
+</div>    

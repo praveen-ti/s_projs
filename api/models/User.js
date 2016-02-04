@@ -45,7 +45,7 @@ module.exports = {
 
         status: {
             type: 'string',
-            enum : [userConstants.STATUS_ACTIVE, userConstants.STATUS_INACTIVE, userConstants.STATUS_BLOCK, userConstants.STATUS_DELETE],
+            enum : [userConstants.STATUS_ACTIVE, userConstants.STATUS_INACTIVE, userConstants.STATUS_DELETE],
             defaultsTo: userConstants.STATUS_ACTIVE
         },
         

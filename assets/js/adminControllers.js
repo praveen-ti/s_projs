@@ -9,6 +9,7 @@ adminControllers.controller('RepeatCtrl', function RepeatController($scope) {
     $scope.number = ($scope.$index + 1) + ($scope.currentPage) * $scope.pageSize;
 
 });
+
 adminControllers.filter('startFrom', function () {
     return function (input, start) {
         if (!input || !input.length) {
@@ -66,9 +67,6 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
 
 });
 
-/*===================================================================================================================================
- Manage Sub Admin Controller - I
- ====================================================================================================================================*/
 adminControllers.controller('adminDashboardCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
     $rootScope.adminNavigation = 1;
 });
@@ -87,6 +85,9 @@ adminControllers.controller('adminPackageCtrl', function ($scope, $routeParams, 
 
         if (response.status == 1) {
             $scope.packages = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.packages).length / $scope.pageSize);
+            }
         }
 
     });
@@ -176,9 +177,9 @@ adminControllers.controller('adminPackageCtrl', function ($scope, $routeParams, 
 
                         if (response.status == 1) {
                             $scope.packages = response.data;
-                            //$scope.numberOfPages = function () {
-                            //    return Math.ceil(($scope.subAdmins).length / $scope.pageSize);
-                            //}
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.packages).length / $scope.pageSize);
+                            }
                         }
                     });
 

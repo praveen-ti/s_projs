@@ -9,9 +9,10 @@
         </div>
 
         <div class="row">
+            <!-- Start: Package Listing -->
             <div class="col-lg-12">
 
-                <button class="btn btn-primary" data-toggle="modal" data-target="#newUser">Add Package</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addPackage">Add Package</button>
                 <br/><br/>
 
                 <div class="form-group" style="width: 400px">
@@ -44,7 +45,7 @@
                             <td class="text-center">{{ package.createdAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
                             <td class="text-center">
                                 <!-- <a href="admin/manageUsers/user/{{user.id}}">View </a> -->
-                                <span><a href="javascript:void(0)" class="span4 proj-div" data-toggle="modal" data-target="#editModal" ng-click="editUser(package.id, $index, currentPage, pageSize)" >Edit </a></span>
+                                <span><a href="javascript:void(0)" class="span4 proj-div" data-toggle="modal" data-target="#editPackage" ng-click="getPackageById(package.id, $index, currentPage, pageSize)" >Edit </a></span>
                                 <span ng-show="package.status === 'inactive' || package.status === 'delete'">| <a href="javascript:void(0)" ng-click="statusUpdate($event, package.id, 'active')"> Active</a></span>
                                 <span ng-show="package.status === 'active' || package.status === 'delete'">| <a href="javascript:void(0)" ng-click="statusUpdate($event, package.id, 'inactive')"> Inactive</a></span>
                                 <span ng-show="package.status !== 'delete'">| <a href="javascript:void(0)" ng-click="statusUpdate($event, package.id, 'delete')"> Delete</a></span>
@@ -66,36 +67,65 @@
                 <!-- </div> -->
 
             </div>
-            <!-- /.row -->
+            <!-- End: Package Listing -->
 
 
-
-            <!--   Add New SubAdmin  Starts   -->
-
-            <div id="newSubAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+            <!-- Start: Add Package -->
+            <div id="addPackage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
-                            <h4 class="modal-title" id="myModalLabel">Add new SubAdmin</h4>
+                            <h4 class="modal-title" id="myModalLabel">Add package</h4>
                         </div>
                         <div class="modal-body">
 
-                            <!-- <p class="error">{{newUser_error_message}}</p>
-                             <p class="error">{{image_upload_error_msg}}</p>
-                             <p class="success">{{newUser_success_message}}</p> -->
-
-                            <form ng-submit="addNewSubAdmin()" class="form-horizontal" role="form" name="newSubAdminAdd" novalidate >
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">Name</label>
+                            <form ng-submit="addPackage()" class="form-horizontal" role="form" name="newSubAdminAdd" novalidate >
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Package Name</label>
                                     <div class="col-sm-8">
-                                        <input class="form-control" type="text" ng-model="newUserName" name="text"/>
+                                        <input class="form-control" type="text" ng-model="name" name="name" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Description:</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" ng-model="description" name="description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Cost</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="cost" name="cost" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Valid Days</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="validDays" name="validDays" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" ng-model="status" name="status" ng-init="status = 'active'">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                            <option value="delete">Delete</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8">
+                                        <span class="text-danger">{{errorMessage}}</span>
                                     </div>
                                 </div>
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                                    <button class="btn btn-primary" type="submit" id="submit">Submit</button>
                                 </div>
                             </form>
 
@@ -104,11 +134,80 @@
                     </div>
                 </div>
             </div>
-            <!--   Add New SubAdmin  Ends   -->
+            <!-- End: Add Package -->
 
+            <!-- Start: Edit Package -->
+            <div id="editPackage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                            <h4 class="modal-title" id="myModalLabel">Edit package</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form ng-submit="updatePackageDetails()" class="form-horizontal" role="form" name="edituser" novalidate >
 
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Package Name</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="packageDetails.name" name="name"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Description</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" ng-model="packageDetails.description" name="description">{{packageDetails.description}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Cost</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="packageDetails.cost" name="Cost"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Valid Days</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="packageDetails.validDays" name="validDays"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group required">
+                                    <label class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        <select ng-model="packageDetails.status" class="form-control">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                            <option value="delete">Delete</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8">
+                                        <span class="text-danger">{{errorMessage}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit" id="submit">Update</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- End: Edit Package -->
 
         </div>
-        <!-- /.container-fluid -->
 
     </div>
+</div>    

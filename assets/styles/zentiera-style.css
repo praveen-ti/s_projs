@@ -2,15 +2,15 @@
 
 
 html {
-   overflow-x: hidden;
+    overflow-x: hidden;
 }
 html body {
     margin-top: 0px;
     background: #fff;
 }
 .zentiera #wrapper{
-  /* padding-left: 0px; */
-   background: #222;
+    /* padding-left: 0px; */
+    background: #222;
 }
 .zentiera nav.navbar-inverse {
     background-color: #222;
@@ -24,4 +24,9 @@ html body {
 .zentiera .side-nav>li>a:hover, .zentiera .navbar-header a.navbar-brand:hover {
     color: #fff;
     background-color: #000;
+}
+
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
 }

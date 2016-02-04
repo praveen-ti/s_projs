@@ -132,7 +132,10 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
     $rootScope.adminLogout = function () {
 
-        $http.post($rootScope.STATIC_URL + 'admins/adminLogout').success(function (response) {
+         var angParams = {
+                token: $window.sessionStorage.token
+            };
+        $http.post($rootScope.STATIC_URL + 'admins/adminLogout', angParams).success(function (response) {
 
             if (response.status === 1) {
                 $window.sessionStorage.isAuthenticated = 'false';

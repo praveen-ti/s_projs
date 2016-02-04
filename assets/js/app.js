@@ -101,6 +101,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/subAdminPrivileges', {
+                    templateUrl: 'templates/admin/subAdminPrivileges.html',
+                    controller: 'subAdminPrivilegesCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

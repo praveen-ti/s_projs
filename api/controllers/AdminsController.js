@@ -532,11 +532,10 @@ console.log(request);
      Admin Logout
      ====================================================================================================================================*/
     adminLogout: function (req, res) {
-        AdmintokenService.deleteToken(req.session.token, function (err, result) {
+        AdmintokenService.deleteToken(req.body.token, function (err, result) {
             if (err) {
                 return res.json(200, {status: 2, message: 'some error occured', error_details: result});
             } else {
-                //req.session.destroy();
                 return res.json(200, {status: 1, message: 'success', data: result});
                 //res.view('login');
             }

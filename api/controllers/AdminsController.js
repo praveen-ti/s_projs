@@ -55,7 +55,9 @@ module.exports = {
 
     getSubadminDetails: function (req, res) {
 var request = req.body.request;
-      /*  AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+console.log(request);
+console.log(req.body.token);
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -65,7 +67,7 @@ var request = req.body.request;
             {
                 console.log("Inside else  ");
                 if (tokenCheck.status == 1)
-                {*/
+                {
                     Admin.findOne({id: request}).exec(function findCB(err, result) {
                         if (err)
                         {
@@ -78,13 +80,13 @@ var request = req.body.request;
                         }
 
                     });
-               /* }
+                }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
             }
-        });*/
+        });
     },
     /*===================================================================================================================================
      Create/Add a subadmin
@@ -136,7 +138,7 @@ var request = req.body.request;
 
     updateAdminDetails: function (req, res) {
 
-       /* AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -144,8 +146,11 @@ var request = req.body.request;
             }
             else
             {
+                console.log("ifffffi");
                 if (tokenCheck.status == 1)
-                {*/
+                {
+                    console.log("1111111111----if");
+                var password = crypto.createHash('md5').update(req.body.password).digest("hex");
                     Admin.findOne({id: req.body.id}).exec(function findCB(err, result) {
                         if (err)
                         {
@@ -158,7 +163,7 @@ var request = req.body.request;
                                 username: req.body.username,
                                 firstname: req.body.firstname,
                                 lastname: req.body.lastname,
-                                password: req.body.password,
+                                password: password,
                                 adminType: req.body.adminType,
                                 blockStatus: req.body.blockStatus
                             };
@@ -171,6 +176,7 @@ var request = req.body.request;
                                 }
                                 else
                                 {
+                                    console.log("updatedAdmin-----------");
                                     console.log(updatedAdmin);
                                     return res.json(200, {status: 1, data: updatedAdmin});
                                 }
@@ -178,14 +184,14 @@ var request = req.body.request;
                             });
                         }
                     });
-               /* }
+                }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
 
             }
-        });*/
+        });
     },
 
  /*===================================================================================================================================
@@ -199,7 +205,7 @@ console.log("updateBlockStatus <<<<<<<<<<<<>>>>>>>>>>>>>>>>>");
 
 var request = req.body.request;
 console.log(request);
-       /* AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -208,7 +214,7 @@ console.log(request);
             else
             {
                 if (tokenCheck.status == 1)
-                {*/
+                {
                     Admin.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
                         if (err)
                         {
@@ -219,32 +225,31 @@ console.log(request);
                             var values = {
                                  blockStatus: request.blockStatus
                             };
-
                             var criteria = {
                                               id          : result.id
                                             };
-                            Admin.update(criteria, values).exec(function (err, deleteAdmin) {
+                            Admin.update(criteria, values).exec(function (err, updateStatus) {
                                 if (err)
                                 {
                                     return res.json(200, {status: 2, error_details: err});
                                 }
                                 else
                                 {
-                                    console.log(deleteAdmin);
-                                    return res.json(200, {status: 1, data: deleteAdmin});
+                                    console.log(updateStatus);
+                                    return res.json(200, {status: 1, data: updateStatus});
                                 }
 
                             });
                         }
                     });
-               /* }
+                }
                 else
                 {
                     return res.json(200, {status: 3, message: 'token expired'});
                 }
 
             }
-        });*/
+        });
     },
 
 

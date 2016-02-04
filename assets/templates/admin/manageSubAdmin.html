@@ -12,7 +12,7 @@
 
                     </div>
                 </div>
-                <!-- /.row -->
+
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -41,9 +41,10 @@
                                         <td class="text-center">{{ subAdmin.blockStatus}}</td>
                                         <td class="text-center">
                                             <!-- <a href="admin/manageUsers/user/{{user.id}}">View </a> -->
-                                            <a href="javascript:void(0)" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
+                                            <a href="" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
                                             <a href="javascript:void(0)" id="delete"  ng-click="updateBlockStatus($event,subAdmin.id)"> Delete</a> |
-                                            <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>
+                                            <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>  |
+                                            <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a>
                                        </td>
                                     </tr>
                                 </tbody>
@@ -59,90 +60,91 @@
 
                             <span ng-hide="subAdmins.length">No user has been registered so far.</span>
                         </div>
-                   <!-- </div> -->
 
+                     </div>
                 </div>
-                <!-- /.row -->
-                </div>
-            <!-- /.container-fluid -->
-        </div>
-
 
 <!-- ########################################################################################## -->
 <!--   Add New SubAdmin  Starts   -->
-
-
-            <div id="newSubAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+        <div class="row" >
+            <div id="newSubAdmin"  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
                             <h4 class="modal-title" id="myModalLabel">Add new SubAdmin</h4>
-                <p class="text-danger">{{ newAddSubAdmin_error_message }}</p>
-
-                <form ng-submit="addNewSubAdmin()" class="form-horizontal" role="form" name="newSubAdminAdd" novalidate >
-
-                      <div class="form-group">
-                        <label class="col-sm-4 control-label">UserName</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" ng-model="newUserName" name="text"/>
+                            <p class="text-danger">{{ errorMessage }}</p>
                         </div>
-                     </div>
 
-                      <div class="form-group">
-                        <label class="col-sm-4 control-label">Password</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="password" ng-model="newPassword" name="text"/>
-                        </div>
+                    <div class="modal-body">
+
+                    <form ng-submit="addNewSubAdmin()" class="form-horizontal" role="form" name="newSubAdminAdd" novalidate >
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">UserName</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" ng-model="newUserName" name="text" required/>
+                            </div>
+                         </div>
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">Password</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="password" ng-model="newPassword" name="text" required/>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">FirstName</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" ng-model="newFirstName" name="text" required/>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">LastName</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" ng-model="newLastName" name="text"/>
+                            </div>
+                          </div>
+
+                          <!--
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">BlockStatus</label>
+                            <div class="col-sm-8">
+                                <select ng-model="newBlockStatus" >
+                                  <option style="display:none" value="">Select</option>
+                                  <option value="active">Active</option>
+                                  <option value="block">Block</option>
+                                  <option value="delete">Delete</option>
+                                </select>
+                            </div>
+                          </div>
+                          -->
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                          </div>
+                   </form>
+
                       </div>
-
-                      <div class="form-group">
-                        <label class="col-sm-4 control-label">FirstName</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" ng-model="newFirstName" name="text"/>
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="col-sm-4 control-label">LastName</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" ng-model="newLastName" name="text"/>
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="col-sm-4 control-label">BlockStatus</label>
-                        <div class="col-sm-8">
-                            <select ng-model="newBlockStatus" >
-                              <option style="display:none" value="">Select</option>
-                              <option value="active">Active</option>
-                              <option value="block">Block</option>
-                              <option value="delete">Delete</option>
-                            </select>
-                        </div>
-                      </div>
-
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
-                      </div>
-                </form>
-
-              </div>
-
                     </div>
                 </div>
             </div>
-            <!--   Add New SubAdmin  Ends   -->
+          </div>
+<!--   Add New SubAdmin  Ends   -->
 
 <!-- ########################################################################################## -->
- <!-- --------Model for user edit--------- -->
-        <div id="editSubAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+<!-- --------Model for SubAdmin edit--------- -->
+    <div class="row">
+       <div id="editSubAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
          <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
                 <h4 class="modal-title" id="myModalLabel">Edit SubAdmin Details</h4>
+                <p class="text-danger">{{ errorMessage }}</p>
               </div>
               <div class="modal-body">
                 <form ng-submit="updateSubAdminDetails()" class="form-horizontal" role="form" name="edituser" novalidate >
@@ -175,7 +177,7 @@
                         </div>
                       </div>
 
-                      <div class="form-group">
+                     <!-- <div class="form-group">
                         <label class="col-sm-4 control-label">BlockStatus</label>
                         <div class="col-sm-8">
                             <select ng-model="editSubAdminDetails.blockStatus" >
@@ -185,7 +187,7 @@
                                <option value="delete">Delete</option>
                             </select>
                         </div>
-                      </div>
+                      </div> -->
 
 
                       <div class="modal-footer">
@@ -195,9 +197,9 @@
 
                 </form>
 
+                </div>
               </div>
-
             </div>
-          </div>
-        </div>
-        <!----------Model for user edit ends----------->
+         </div>
+      </div>
+        <!----------Model for SubAdmin edit Ends----------->

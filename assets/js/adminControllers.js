@@ -298,101 +298,101 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
     $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
-    var request = "";
+    $scope.errorMessage         = "";
+    var request                 = "";
+    var token                   = $window.sessionStorage.token;
 
-    var angParams = {
-        token: $window.sessionStorage.token
-    };
-
-    $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', angParams).success(function (response) {
-
+    $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', {token:token}).success(function (response) {
         if (response.status == 1) {
             $scope.subAdmins = response.data;
             $scope.numberOfPages = function () {
                 return Math.ceil(($scope.subAdmins).length / $scope.pageSize);
             }
+        }else if(response.status == 3){
+
+                //$scope.errorMessage = "Token Expired";
+                 $window.location.href = $rootScope.STATIC_URL +'admin/login';
         }
 
     });
 
-
-
 //Add New Sub Admin
-    $scope.addNewSubAdmin = function () {
+    $scope.addNewSubAdmin = function(){
 
-        var fd = new FormData();
-        var userName = $scope.newUserName;
-        var firstName = $scope.newFirstName;
-        var lastName = $scope.newLastName;
-        var password = $scope.newPassword;
-        var blockStatus = $scope.newBlockStatus;
-        var token = $window.sessionStorage.token;
+        var fd          =   new FormData();
+        var userName    =   $scope.newUserName;
+        var firstName   =   $scope.newFirstName;
+        var lastName    =   $scope.newLastName;
+        var password    =   $scope.newPassword;
+        var blockStatus =   "active";
 
-        $scope.newSubAdmin_error_message = '';
-        $scope.newAddSubAdmin_error_message = '';
-
-
-        if (userName && password && firstName && lastName && blockStatus)
+       if(!userName && !password && !firstName){
+                $scope.errorMessage = "Please Enter all fields";
+       }
+       else if(!userName){
+                $scope.errorMessage = "Please Enter a Username";
+       }
+       else if(!password){
+                $scope.errorMessage = "Please Enter a Password";
+       }
+       else if(!firstName){
+                $scope.errorMessage = "Please Enter a First Name";
+       }
+       else
         {
-            fd.append('username', userName);
-            fd.append('firstname', firstName);
-            fd.append('lastname', lastName);
-            fd.append('password', password);
-            fd.append('blockStatus', blockStatus);
-            fd.append('token', token);
+                    fd.append('username', userName);
+                    fd.append('firstname', firstName);
+                    fd.append('lastname', lastName);
+                    fd.append('password', password);
+                    fd.append('blockStatus', blockStatus);
+                    fd.append('token', token);
 
-            $http.post($rootScope.STATIC_URL + 'admins/addSubadmin', fd, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
+                $http.post($rootScope.STATIC_URL+'admins/addSubadmin',fd, {
 
-            }).success(function (response) {
-                if (response.status == 1)
-                {
-                    console.log("Add success");
-                    console.log(response);
-                    console.log(response.data);
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
 
-                    //$scope.subAdmins.push(response.data);
-                    //$scope.subAdmins.unshift(response.data);
-                    //To get full active admin list
-                    $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', angParams).success(function (response) {
-                        console.log(response);
-                        if (response.status == 1)
-                        {
-                            $scope.subAdmins = response.data;
-                            $scope.numberOfPages = function () {
-                                return Math.ceil(($scope.subAdmins).length / $scope.pageSize);
+                    }).success(function(response) {
+                            if(response.status == 1)
+                            {
+
+                                //$scope.subAdmins.push(response.data);
+                                //$scope.subAdmins.unshift(response.data);
+                                        //To get full active admin list
+                                        $http.post($rootScope.STATIC_URL+'admins/getSubadminList', {token:token}).success(function(response) {
+                                                if(response.status == 1)
+                                                {
+                                                    $scope.subAdmins = response.data;
+                                                    $scope.numberOfPages=function(){
+                                                        return Math.ceil(($scope.subAdmins).length/$scope.pageSize);
+                                                    }
+                                                }
+                                        });
+                                var index          = $scope.index;
+
+                                //console.log($scope.subAdmins.username);
+                                $('#newSubAdmin').modal('hide');
+                                $scope.newUserName      = "";
+                                $scope.newFirstName     = "";
+                                $scope.newLastName      = "";
+                                $scope.newPassword      = "";
+                                $scope.newBlockStatus   = "";
                             }
-                        }
-                    });
-                    var index = $scope.index;
+                       })
+                        .error(function(){
+                             $scope.errorMessage = "Please Try Again";
+                        });
 
-                    //console.log($scope.subAdmins.username);
-                    $('#newSubAdmin').modal('hide');
-                    $scope.newUserName = "";
-                    $scope.newFirstName = "";
-                    $scope.newLastName = "";
-                    $scope.newPassword = "";
-                    $scope.newBlockStatus = "";
-                }
-            })
-                    .error(function () {
-                        console.log("Add error");
-                        $scope.newSubAdmin_error_message = "Error Occured while Posting";
-                    });
-
-        } else {
-            $scope.newAddSubAdmin_error_message = "Please fill all the fields.";
         }
     }
 
 
 // Update Block Status
-    $scope.updateBlockStatus = function ($event, adminId) {
+    $scope.updateBlockStatus = function ($event,adminId) {
 
-        var blockStatus = $event.currentTarget.id;
+var blockStatus = $event.currentTarget.id;
 
-        if (!confirm('Are you sure to delete this subAdmin?'))
+        if (!confirm('Are you sure to '+blockStatus+' this subAdmin?'))
         {
             $event.preventDefault();
         }
@@ -403,102 +403,122 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
             var returnedData = $.grep($scope.subAdmins, function (element, index) {
                 return element.id == adminId;
             });
-            console.log(blockStatus);
-            request = {blockStatus: blockStatus, returnedData: returnedData[0]};
+           console.log(blockStatus);
+            request = {token : token, blockStatus : blockStatus, returnedData: returnedData[0]};
             console.log(request);
 
 
-            $http.post($rootScope.STATIC_URL + 'admins/updateBlockStatus', {request: request}).success(function (response) {
+            $http.post($rootScope.STATIC_URL+'admins/updateBlockStatus',{request: request}).success(function(response) {
 
-                if (response.status == 1)
+                if(response.status == 1)
                 {
-                    //get full user details
-                    var angParams = {
-                        token: $window.sessionStorage.token
-                    };
-                    $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', angParams).success(function (response) {
-                        console.log(response);
-                        if (response.status == 1)
-                        {
-                            $scope.subAdmins = response.data;
-                            $scope.numberOfPages = function () {
-                                return Math.ceil(($scope.subAdmins).length / $scope.pageSize);
+                       //get full user details
+                        $http.post($rootScope.STATIC_URL+'admins/getSubadminList', {token: token}).success(function(response) {
+                            if(response.status == 1)
+                            {
+                                $scope.subAdmins = response.data;
+                                $scope.numberOfPages=function(){
+                                    return Math.ceil(($scope.subAdmins).length/$scope.pageSize);
+                                }
                             }
-                        }
-                    });
+                        }).error(function(){
+                             $scope.errorMessage = "Please Try Again";
+                        });
 
                 }
 
-            });
-        }
+            }).error(function(){
+                             $scope.errorMessage = "Please Try Again";
+             });
+       }
     }
 
 //Edit Subadmin
 
-    $scope.editSubAdmin = function (adminId, index, currentPage, pageSize)
+$scope.editSubAdmin = function(adminId,index,currentPage,pageSize)
     {
-        request = adminId;
-        $scope.index = index;
-        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
-        //get details of a single user
-        $http.post($rootScope.STATIC_URL + 'admins/getSubadminDetails', {request: request}).success(function (response) {
 
-            if (response.status == 1)
+        request = adminId;
+        $scope.index      = index;
+        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);
+        //get details of a single user
+        $http.post($rootScope.STATIC_URL+'admins/getSubadminDetails',{request:request, token:token}).success(function(response) {
+            if(response.status == 1)
             {
                 $scope.editSubAdminDetails = response.data;
-                console.log("$scope.editSubAdminDetails");
-                console.log($scope.editSubAdminDetails);
             }
 
+        }).error(function(){
+                             $scope.errorMessage = "Please Try Again";
         });
 
     }
 
 //Update Subadmin details
-    $scope.updateSubAdminDetails = function ()
+    $scope.updateSubAdminDetails = function()
     {
 
-        var id = $scope.editSubAdminDetails.id;
-        var userName = $scope.editSubAdminDetails.username;
-        var firstName = $scope.editSubAdminDetails.firstname;
-        var lastName = $scope.editSubAdminDetails.lastname;
-        var password = $scope.editSubAdminDetails.password;
-        var blockStatus = $scope.editSubAdminDetails.blockStatus;
-        var index = $scope.index;
+        var id             = $scope.editSubAdminDetails.id;
+        var userName       = $scope.editSubAdminDetails.username;
+        var firstName      = $scope.editSubAdminDetails.firstname;
+        var lastName       = $scope.editSubAdminDetails.lastname;
+        var password       = $scope.editSubAdminDetails.password;
+        var blockStatus    = $scope.editSubAdminDetails.blockStatus;
+        var adminType      = $scope.editSubAdminDetails.adminType;
+        var index          = $scope.index;
 
 
-        if (userName && firstName && lastName && password && blockStatus) {
+       if(!userName && !password && !firstName){
+                $scope.errorMessage = "Please Enter all fields";
+       }
+       else if(!userName){
+                $scope.errorMessage = "Please Enter a Username";
+       }
+       else if(!password){
+                $scope.errorMessage = "Please Enter a Password";
+       }
+       else if(!firstName){
+                $scope.errorMessage = "Please Enter a First Name";
+      }
+      else{
 
-            var fd = new FormData();
+
+
+            var fd        = new FormData();
             fd.append('username', userName);
             fd.append('firstname', firstName);
             fd.append('lastname', lastName);
             fd.append('password', password);
             fd.append('blockStatus', blockStatus);
+            fd.append('adminType', adminType);
             fd.append('id', id);
+            fd.append('token', token);
 
-            $http.post($rootScope.STATIC_URL + 'admins/updateAdminDetails', fd,
-                    {
-                        transformRequest: angular.identity,
-                        headers: {'Content-Type': undefined}
-                    }).success(function (response) {
+            $http.post($rootScope.STATIC_URL+'admins/updateAdminDetails',fd,
+                                    {
+                                        transformRequest: angular.identity,
+                                        headers: {'Content-Type': undefined}
+                                    }).success(function(response) {
 
-                index = $scope.index + $scope.extra;
-                $scope.subAdmins[index].username = userName;
-                $scope.subAdmins[index].firstname = firstName;
-                $scope.subAdmins[index].lastname = lastName;
-                $scope.subAdmins[index].password = password;
-                $scope.subAdmins[index].blockStatus = blockStatus;
+                                        index                                   = $scope.index + $scope.extra;
+                                        $scope.subAdmins[index].username        = userName;
+                                        $scope.subAdmins[index].firstname       = firstName;
+                                        $scope.subAdmins[index].lastname        = lastName;
+                                        $scope.subAdmins[index].password        = password;
+                                        $scope.subAdmins[index].blockStatus     = blockStatus;
+                                        $scope.subAdmins[index].adminType       = adminType;
 
-                $('#editSubAdmin').modal('hide');
+                                        $('#editSubAdmin').modal('hide');
 
-            });
+            }).error(function(){
+                             $scope.errorMessage = "Please Try Again";
+             });
 
-        } else {
-            $scope.editSubAdmin_error_message = "All the fields are required";
+
         }
     }
 
 
 
 });
+

@@ -6,7 +6,7 @@ var adminControllers = angular.module('adminControllers', ['appServices']);
 
 adminControllers.controller('RepeatCtrl', function RepeatController($scope) {
 
-    $scope.number = ($scope.$index + 1) + ($scope.currentPage) * $scope.pageSize;
+    $scope.indexNumber = ($scope.$index + 1) + ($scope.currentPage) * $scope.pageSize;
 
 });
 
@@ -521,4 +521,18 @@ $scope.editSubAdmin = function(adminId,index,currentPage,pageSize)
 
 
 });
+
+/*===================================================================================================================================
+ Sub Admin Privilege Controller   -----
+ ====================================================================================================================================*/
+
+adminControllers.controller('subAdminPrivilegesCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+console.log("<<<<<<<<<<<<<<<   subAdminPrivilegesCtrl   ");
+
+    var token                   = $window.sessionStorage.token;
+    console.log(token);
+
+});
+
+
 

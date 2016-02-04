@@ -34,29 +34,41 @@
                                 <tbody>
                                     <tr ng-repeat="subAdmin in subAdmins | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
-                                        <td class="text-center" ng-controller="RepeatCtrl">{{ number }}</td>
+                                        <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
                                         <td class="text-center">{{ subAdmin.username}}</td>
                                         <td class="text-center">{{ subAdmin.firstname}}</td>
                                         <td class="text-center">{{ subAdmin.lastname}}</td>
                                         <td class="text-center">{{ subAdmin.blockStatus}}</td>
                                         <td class="text-center">
                                             <!-- <a href="admin/manageUsers/user/{{user.id}}">View </a> -->
-                                            <a href="" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
-                                            <a href="javascript:void(0)" id="delete"  ng-click="updateBlockStatus($event,subAdmin.id)"> Delete</a> |
-                                            <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>  |
-                                            <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a>
+                                            <span>
+                                                <a href="" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdmin" ng-click="editSubAdmin(subAdmin.id,$index,currentPage,pageSize)" >Edit </a> |
+                                            </span>
+                                           <!-- <span ng-show="subAdmin.blockStatus != 'delete'">
+                                            </span> -->
+                                            <span>
+                                                <a href="javascript:void(0)" id="delete"  ng-click="updateBlockStatus($event,subAdmin.id)"> Delete</a> |
+                                            </span>
+                                            <span>
+                                                <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>  |
+                                            </span>
+                                            <span>
+                                                <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a>
+                                            </span>
                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-                                Previous
-                            </button>
-                            {{currentPage+1}}/{{numberOfPages()}}
-                            <button ng-disabled="currentPage >= subAdmins.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-                                Next
-                            </button>
+                              <span ng-show="(subAdmins.length >= (pageSize + 1))">
+                                    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                                        Previous
+                                    </button>
+                                    {{currentPage+1}}/{{numberOfPages()}}
+                                    <button ng-disabled="currentPage >= subAdmins.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                                        Next
+                                    </button>
+                             </span>
 
                             <span ng-hide="subAdmins.length">No user has been registered so far.</span>
                         </div>

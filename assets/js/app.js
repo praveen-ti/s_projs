@@ -86,8 +86,48 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     }
                 }).
                 when('/admin/member/:id', {
-                    templateUrl: 'templates/admin/memberview.html',
-                    controller: 'adminMemberViewCtrl',
+                    templateUrl: 'templates/admin/memberInfo.html',
+                    controller: 'adminMemberInfoCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/member/:id/review', {
+                    templateUrl: 'templates/admin/memberReview.html',
+                    controller: 'adminMemberReviewCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/member/:id/subscription', {
+                    templateUrl: 'templates/admin/memberSubscription.html',
+                    controller: 'adminMemberSubscriptionCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/member/:id/referral', {
+                    templateUrl: 'templates/admin/memberReferral.html',
+                    controller: 'adminMemberReferralCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/member/:id/photo', {
+                    templateUrl: 'templates/admin/memberPhoto.html',
+                    controller: 'adminMemberPhotoCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/member/:id/video', {
+                    templateUrl: 'templates/admin/memberVideo.html',
+                    controller: 'adminMemberVideoCtrl',
                     access: {
                         requiresLogin: true,
                         role: 'admin'

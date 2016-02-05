@@ -560,7 +560,7 @@ console.log(request);
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                return res.json(200, {status: 2, message: 'Error in token check', error: tokenCheck});
             } else {
 
                 if (tokenCheck.status == 1)
@@ -577,13 +577,13 @@ console.log(request);
                             if (updatedData.length == 0) {
                                 return res.json(200, {status: 2, message: "Error in review status updation"});
                             } else {
-                                return res.json(200, {status: 1, message: "success", updatedData: updatedData});
+                                return res.json(200, {status: 1, message: "success", data: updatedData});
                             }
                         }
                     });
 
                 } else {
-                    return res.json(200, {status: 3, message: 'token expired'});
+                    return res.json(200, {status: 3, message: 'Token expired'});
                 }
             }
         });

@@ -39,7 +39,7 @@ body {
     
     #page-wrapper {
         /* padding: 10px; */
-        padding:10px 10px 10px 225px;
+        padding:30px 10px 10px 225px;
     }
 }
 
@@ -127,6 +127,7 @@ ul.alert-dropdown {
         bottom: 0;
         overflow-x: hidden;
         padding-bottom: 40px;
+        margin-top: 2px;
     }
 
     .side-nav>li>a {

@@ -1,0 +1,32 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class="page-header">MEMBER - REFERRALS</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <a class="btn btn-primary" href="admin/member/{{userId}}">Info</a>
+                <a class="btn btn-primary" href="admin/member/{{userId}}/review">Reviews</a>
+                <a class="btn btn-primary" href="admin/member/{{userId}}/subscription">Subscriptions</a>
+                <a class="btn btn-primary active" href="admin/member/{{userId}}/referral">Referrals</a>
+                <a class="btn btn-primary" href="admin/member/{{userId}}/photo">Photos</a>
+                <a class="btn btn-primary" href="admin/member/{{userId}}/video">Videos</a>
+            </div>
+            <div class="col-lg-6">
+                <label>Name: <a href="admin/member/{{member.id}}">{{member.firstname + ' ' + member.lastname + ' ( ' + member.username + ' ) '}}</a></label><br/>
+                <label>Email: <a href="admin/member/{{member.id}}">{{member.email}}</a></label>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div style="border-bottom: 1px solid #eee; margin-bottom: 15px;">&nbsp;</div>
+            </div>
+        </div>
+
+    </div>
+</div>

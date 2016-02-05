@@ -350,8 +350,50 @@ module.exports = {
                     //        return res.json(200, {status: 1, data: result});
                     //    }
                     //});
+
+                    var query = "SELECT u.*, u.id AS u_id, ui.*, ui.id AS ui_id, sp.name AS packageName " +
+                            "FROM user AS u " +
+                            "LEFT JOIN userinfo AS ui ON u.id = ui.userId " +
+                            "LEFT JOIN subscription_package AS sp ON u.subscriptionPackageId = sp.id " +
+                            "WHERE u.id = " + userId +
+                            " LIMIT 1";
+                    User.query(query, function (err, user) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: user});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    getUserBasicDetails: function (req, res) {
+
+        var userId = req.body.userId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
                     
-                    var query = "SELECT u.*, u.id AS u_id, ui.*, ui.id AS ui_id FROM user AS u LEFT JOIN userinfo AS ui ON u.id = ui.userId WHERE u.id = " + userId + " LIMIT 1";
+                    var query = "SELECT u.* FROM user AS u WHERE u.id = " + userId + " LIMIT 1";
                     User.query(query, function (err, user) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});
@@ -1279,6 +1321,41 @@ module.exports = {
 
         });
 
+    },
+    getUserReviews: function (req, res) {
+
+        var userRole = req.body.userRole;
+        var userId = req.body.userId;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT r.*, u.id AS uid, u.firstname, u.lastname FROM review AS r LEFT JOIN user AS u ON u.id = r.reviewerId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
+                    Review.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
     }
 
 };

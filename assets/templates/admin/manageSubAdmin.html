@@ -6,9 +6,9 @@
                 <!-- Page Heading -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">
+                        <h4 class="page-header">
                             Manage Sub Admin
-                        </h1>
+                        </h4>
 
                     </div>
                 </div>
@@ -16,7 +16,7 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <button class="span4 proj-div" data-toggle="modal" data-target="#newSubAdmin">Add new subAdmin</button> <br/><br/>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#newSubAdmin">Add new subAdmin</button> <br/><br/>
                        <div class="table-responsive">
                             <p>SubAdmin :- <input type="search" ng-model="searchText"/></p>
                             </br></br>
@@ -53,8 +53,13 @@
                                                 <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>  |
                                             </span>
                                             <span>
-                                                <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a>
+                                                <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a> |
                                             </span>
+                                            <span>
+                                                <a href="admin/manageSubAdmin/subAdmin/{{subAdmin.id}}">Privileges</a>
+                                            </span>
+
+
                                        </td>
                                     </tr>
                                 </tbody>
@@ -70,7 +75,7 @@
                                     </button>
                              </span>
 
-                            <span ng-hide="subAdmins.length">No user has been registered so far.</span>
+                            <span ng-hide="subAdmins.length">No SubAdmin Found</span>
                         </div>
 
                      </div>
@@ -159,7 +164,7 @@
                 <p class="text-danger">{{ errorMessage }}</p>
               </div>
               <div class="modal-body">
-                <form ng-submit="updateSubAdminDetails()" class="form-horizontal" role="form" name="edituser" novalidate >
+                <form ng-submit="updateSubAdminDetails()" class="form-horizontal" role="form" name="editsubadmin" novalidate >
 
                       <div class="form-group">
                         <label class="col-sm-4 control-label">UserName</label>

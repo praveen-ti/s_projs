@@ -858,42 +858,50 @@ console.log("<<<<<<<<<<<<<<<   subAdminDetailsCtrl   ");
         $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
             if(response.status == 1)
             {
-                console.log("subAdminPrivileges  ");
+                console.log("subAdminPrivileges  =======");
                 console.log(response);
                 $scope.subAdminPrivileges = response.data;
+                $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.subAdminPrivileges).length / $scope.pageSize);
+                 }
             }
 
         }).error(function(){
                              $scope.errorMessage = "Please Try Again";
         });
 
-
-// Get All Privileges
-$scope.getAllPrivileges = function()
+/* ****************************************************Need To Complete *************/
+// Get All Remaining Privileges
+$scope.getRemainingPrivileges = function()
     {
 
         /*request = {adminId : adminId};
         $scope.index      = index;
         $scope.extra      = parseInt(currentPage)*parseInt(pageSize);*/
-        //get details of a single user
-        $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegesList',{token:token}).success(function(response) {
-            if(response.status == 1)
-            {
-                console.log("All Privileges");
-                console.log(response);
-                $scope.privileges = response.data;
-            }
 
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
-        });
+        request = {adminId : adminId};
+        //get Remaining Privileges of sub Admin
+            $http.post($rootScope.STATIC_URL+'admins/getRemainingPrivilegesList',{request : request,token:token}).success(function(response) {
+                if(response.status == 1)
+                {
+                    console.log("All Remaining Privileges");
+                    console.log(response);
+                    $scope.subAdminRemainingPrivileges = response.data;
+                    console.log($scope.subAdminRemainingPrivileges);
+                }
+
+            }).error(function(){
+                                 $scope.errorMessage = "Please Try Again";
+            });
 
     }
 
 
 $scope.selectedSAPrivilege = function () {
-        $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
+        $scope.checkedSAPrivilege = $filter('filter')($scope.subAdminRemainingPrivileges, {checked: true});
     }
+
+
 //Add New Sub Admin Privilege
     $scope.addNewSubAdminPrivileges = function(){
 
@@ -901,16 +909,30 @@ $scope.selectedSAPrivilege = function () {
         var chkPrivilegeArray          =   $scope.checkedSAPrivilege;
         console.log("Selected CheckBOx");
         console.log(adminId);
+
+        console.log("chkPrivilegeArray   ===============");
         console.log(chkPrivilegeArray);
+
         request = {chkPrivilegeArray : chkPrivilegeArray, adminId : adminId};
                 $http.post($rootScope.STATIC_URL+'admins/setSubadminPrivilege',{request : request, token:token})
                         .success(function(response) {
                             if(response.status == 1)
                             {
 
-                          console.log("setSubadminPrivilege ====>>");
-                          console.log(response);
 
+                                request           = {adminId : adminId};
+                                //get Privileges of a single user
+                                $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
+                                    if(response.status == 1)
+                                    {
+                                        console.log("subAdminPrivileges  ");
+                                        console.log(response);
+                                        $scope.subAdminPrivileges = response.data;
+                                    }
+
+                                }).error(function(){
+                                                     $scope.errorMessage = "Please Try Again";
+                                });
                                 var index          = $scope.index;
 
                                 //console.log($scope.subAdmins.username);
@@ -935,13 +957,15 @@ $scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
         }
         else
         {
+            console.log("prvlLogId  ------------");
+            console.log(prvlLogId);
             //request = {token : token, privilegeId: privilegeId};
 
              $http.post($rootScope.STATIC_URL+'admins/deleteSubadminPrivilege',{id:prvlLogId, token:token}).success(function(response) {
 
                 if(response.status == 1)
                 {
-                    console.log(response);
+                    //console.log(response);
 
                         request           = {adminId : adminId};
                         //get Privileges of a single user
@@ -956,11 +980,12 @@ $scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
                         }).error(function(){
                                              $scope.errorMessage = "Please Try Again";
                         });
-                }
+               }
 
             }).error(function(){
                              $scope.errorMessage = "Please Try Again";
             });
+
        }
     }
 

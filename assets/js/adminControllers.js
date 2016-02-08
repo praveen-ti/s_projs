@@ -865,18 +865,24 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
     request = {adminId: adminId};
 
 
-    //get Privileges of a single user
-    $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
-        if (response.status == 1)
-        {
-            console.log("subAdminPrivileges  ");
-            console.log(response);
-            $scope.subAdminPrivileges = response.data;
-        }
+
+        //get Privileges of a single user
+        $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
+            if(response.status == 1)
+            {
+                console.log("subAdminPrivileges  =======");
+                console.log(response);
+                $scope.subAdminPrivileges = response.data;
+                $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.subAdminPrivileges).length / $scope.pageSize);
+                 }
+            }
+
 
     }).error(function () {
         $scope.errorMessage = "Please Try Again";
     });
+
 
 
 // Get All Privileges
@@ -898,13 +904,43 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
         }).error(function () {
             $scope.errorMessage = "Please Try Again";
         });
+    }
+
+/* ****************************************************Need To Complete *************/
+// Get All Remaining Privileges
+$scope.getRemainingPrivileges = function()
+    {
+
+        /*request = {adminId : adminId};
+        $scope.index      = index;
+        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);*/
+
+        request = {adminId : adminId};
+        //get Remaining Privileges of sub Admin
+            $http.post($rootScope.STATIC_URL+'admins/getRemainingPrivilegesList',{request : request,token:token}).success(function(response) {
+                if(response.status == 1)
+                {
+                    console.log("All Remaining Privileges");
+                    console.log(response);
+                    $scope.subAdminRemainingPrivileges = response.data;
+                    console.log($scope.subAdminRemainingPrivileges);
+                }
+
+            }).error(function(){
+                                 $scope.errorMessage = "Please Try Again";
+            });
+
 
     }
 
 
-    $scope.selectedSAPrivilege = function () {
-        $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
+
+$scope.selectedSAPrivilege = function () {
+        $scope.checkedSAPrivilege = $filter('filter')($scope.subAdminRemainingPrivileges, {checked: true});
+
     }
+
+
 //Add New Sub Admin Privilege
     $scope.addNewSubAdminPrivileges = function () {
 
@@ -912,17 +948,32 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
         var chkPrivilegeArray = $scope.checkedSAPrivilege;
         console.log("Selected CheckBOx");
         console.log(adminId);
+
+        console.log("chkPrivilegeArray   ===============");
         console.log(chkPrivilegeArray);
-        request = {chkPrivilegeArray: chkPrivilegeArray, adminId: adminId};
-        $http.post($rootScope.STATIC_URL + 'admins/setSubadminPrivilege', {request: request, token: token})
-                .success(function (response) {
-                    if (response.status == 1)
-                    {
 
-                        console.log("setSubadminPrivilege ====>>");
-                        console.log(response);
+        request = {chkPrivilegeArray : chkPrivilegeArray, adminId : adminId};
+                $http.post($rootScope.STATIC_URL+'admins/setSubadminPrivilege',{request : request, token:token})
+                        .success(function(response) {
+                            if(response.status == 1)
+                            {
 
-                        var index = $scope.index;
+
+                                request           = {adminId : adminId};
+                                //get Privileges of a single user
+                                $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
+                                    if(response.status == 1)
+                                    {
+                                        console.log("subAdminPrivileges  ");
+                                        console.log(response);
+                                        $scope.subAdminPrivileges = response.data;
+                                    }
+
+                                }).error(function(){
+                                                     $scope.errorMessage = "Please Try Again";
+                                });
+                                var index          = $scope.index;
+
 
                         //console.log($scope.subAdmins.username);
                         $('#newSubAdminPrivilege').modal('hide');
@@ -946,13 +997,15 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
         }
         else
         {
+            console.log("prvlLogId  ------------");
+            console.log(prvlLogId);
             //request = {token : token, privilegeId: privilegeId};
 
             $http.post($rootScope.STATIC_URL + 'admins/deleteSubadminPrivilege', {id: prvlLogId, token: token}).success(function (response) {
 
                 if (response.status == 1)
                 {
-                    console.log(response);
+                    //console.log(response);
 
                     request = {adminId: adminId};
                     //get Privileges of a single user
@@ -964,15 +1017,18 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
                             $scope.subAdminPrivileges = response.data;
                         }
 
-                    }).error(function () {
-                        $scope.errorMessage = "Please Try Again";
-                    });
-                }
+                        }).error(function(){
+                                             $scope.errorMessage = "Please Try Again";
+                        });
+               }
+
 
             }).error(function () {
                 $scope.errorMessage = "Please Try Again";
             });
-        }
+
+       }
+
     }
 
 });

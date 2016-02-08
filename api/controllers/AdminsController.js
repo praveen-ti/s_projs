@@ -88,6 +88,8 @@ console.log(req.body.token);
             }
         });
     },
+
+
     /*===================================================================================================================================
      Create/Add a subadmin
      ====================================================================================================================================*/
@@ -288,7 +290,104 @@ console.log(request);
         });*/
     },
 
+/*===================================================================================================================================
+     Get RemainingPrivilegesList of SubAdmin
+   ====================================================================================================================================*/
 
+
+    getRemainingPrivilegesList: function (req, res) {
+console.log("ENTEREDDDDDDDDDDDD  getRemainingPrivilegesList");
+var request = req.body.request;
+console.log(request.adminId);
+console.log(req.body.token);
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    //Query to know Subadmin have already the privilege or not
+                    Admin_privilege_log.find({adminId: request.adminId}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log("getRemainingPrivilegesList >>>>>>>>>>>");
+                            console.log(result);
+
+                               //If the subadmin Already have other Privilege
+                              if(result.length!=0){
+                                  console.log("result.length!=0");
+                                  console.log(result.length);
+                                  findRemainingArray = [];
+                                    result.forEach(function(factor, index){
+
+                                            console.log(factor);
+                                            console.log(index);
+                                            findRemainingArray.push(factor.privilegeId);
+
+                                    });
+                                        //Query to get Remaining Privileges
+                                       // var query = "SELECT * FROM  admin_privilege_log WHERE  adminId ="+request.adminId+" privilegeId NOT IN ("+findRemainingArray+")";
+                                       var query = "SELECT * FROM  admin_privilege WHERE  id NOT IN ("+findRemainingArray+")";
+
+                                        console.log("query------");
+                                        console.log(query);
+                                        Admin_privilege_log.query(query, function (err, remainingPrivilege) {
+                                                if (err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+
+                                                        return res.json(200, {status: 1, message: "success", data: remainingPrivilege});
+
+                                                }
+                                            });
+                                        //return res.json(200, {status: 1, data: result});
+                            }
+                            else{
+                                    console.log("result.length==0");
+                                    console.log(result.length);
+
+                                    //Query to get Remaining Privileges
+                                        var query = "SELECT * FROM  admin_privilege";
+                                        console.log("query------");
+                                        console.log(query);
+                                        Admin_privilege_log.query(query, function (err, remainingPrivilege) {
+                                                if (err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+
+                                                        return res.json(200, {status: 1, message: "success", data: remainingPrivilege});
+
+                                                }
+                                            });
+                                        //return res.json(200, {status: 1, data: result});
+
+                                }
+                        }
+
+                    });
+
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
 
     /*===================================================================================================================================
      Set subadmin privileges
@@ -297,6 +396,9 @@ console.log(request);
 var request = req.body.request;
 var chkPrivilegeArray =  request.chkPrivilegeArray;
 
+console.log("chkPrivilegeArray =================");
+console.log(chkPrivilegeArray);
+console.log(request);
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
@@ -308,22 +410,22 @@ var chkPrivilegeArray =  request.chkPrivilegeArray;
                 if (tokenCheck.status == 1)
                 {
 
-
+var query = "";
         var chkPrivilegeIdArray = [];
         chkPrivilegeArray.forEach(function(factor, index){
 
                 console.log(factor);
                 console.log(index);
-                chkPrivilegeIdArray.push(factor.id);
+                chkPrivilegeIdArray.push("("+request.adminId+","+factor.id+",'','')");
+
         });
 
+console.log(chkPrivilegeIdArray);
 
-                    var values = {
-                        adminId: request.adminId,
-                        privilegeId: chkPrivilegeIdArray,
-                    };
-                    Admin_privilege_log.create(values).exec(function (err, result) {
-                        if (err)
+var query = "INSERT INTO admin_privilege_log(adminId, privilegeId,createdAt,updatedAt) VALUES "+chkPrivilegeIdArray;
+console.log(query);
+                 Admin_privilege_log.query(query, function (err, result) {
+                      if (err)
                         {
                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                         } else
@@ -331,7 +433,7 @@ var chkPrivilegeArray =  request.chkPrivilegeArray;
                             console.log(result);
                             return res.json(200, {status: 1, message: 'success', data: result});
                         }
-                    });
+                 });
 
                 }
                 else
@@ -357,7 +459,7 @@ console.log(request);
             {
                 if (tokenCheck.status == 1)
                 {
-                    Admin_privilege_log.destroy({id: request.id}).exec(function deleteCB(err) {
+                    Admin_privilege_log.destroy({id: req.body.id}).exec(function deleteCB(err) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});

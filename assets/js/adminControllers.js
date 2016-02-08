@@ -493,6 +493,18 @@ adminControllers.controller('adminMemberSubscriptionCtrl', function ($scope, $ro
 
     });
     
+    $http.post($rootScope.STATIC_URL + 'subscription/getUserSubscriptions', userParams).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.subscriptions = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.subscriptions).length / $scope.pageSize);
+            }
+        }
+
+    });
+    
+    
 });
 
 adminControllers.controller('adminMemberReferralCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {

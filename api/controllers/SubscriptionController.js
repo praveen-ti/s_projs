@@ -168,6 +168,40 @@ module.exports = {
             
         });
 
+    },
+    getUserSubscriptions: function (req, res) {
+
+        var userId = req.body.userId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+                    var query = "SELECT sp.*,spl.subscribedDate FROM subscription_package_log AS spl LEFT JOIN subscription_package AS sp ON spl.subscriptionPackageId = sp.id WHERE spl.userId = " + userId + " ORDER BY spl.id DESC";
+                    SubscriptionLog.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: "Error", error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'Token expired.'});
+                }
+            }
+        });
     }
 
 };

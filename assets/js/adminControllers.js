@@ -492,7 +492,7 @@ adminControllers.controller('adminMemberSubscriptionCtrl', function ($scope, $ro
         }
 
     });
-    
+
     $http.post($rootScope.STATIC_URL + 'subscription/getUserSubscriptions', userParams).success(function (response) {
 
         if (response.status == 1) {
@@ -503,8 +503,8 @@ adminControllers.controller('adminMemberSubscriptionCtrl', function ($scope, $ro
         }
 
     });
-    
-    
+
+
 });
 
 adminControllers.controller('adminMemberReferralCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
@@ -526,7 +526,7 @@ adminControllers.controller('adminMemberReferralCtrl', function ($scope, $routeP
         }
 
     });
-    
+
     $http.post($rootScope.STATIC_URL + 'users/getReferredUsers', userParams).success(function (response) {
 
         if (response.status == 1) {
@@ -576,6 +576,17 @@ adminControllers.controller('adminMemberVideoCtrl', function ($scope, $routePara
 
         if (response.status == 1) {
             $scope.member = response.data[0];
+        }
+
+    });
+
+    $http.post($rootScope.STATIC_URL + 'users/getVideosByUserId', userParams).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.videos = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.videos).length / $scope.pageSize);
+            }
         }
 
     });
@@ -732,9 +743,9 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
     {
 
 
-        request = {adminId : adminId};
-        $scope.index      = index;
-        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);
+        request = {adminId: adminId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
         //get details of a single user
         $http.post($rootScope.STATIC_URL + 'admins/getSubadminDetails', {request: request, token: token}).success(function (response) {
             if (response.status == 1)
@@ -812,26 +823,26 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
         }
     }
 
-/*
-//Privileges of SubAdmin
-$scope.subAdminPrivileges = function(adminId)
-    {
-
-        request           = {adminId : adminId};
-        //get Privileges of a single user
-        $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
-            if(response.status == 1)
-            {
-                console.log(response);
-                $scope.editSubAdminDetails = response.data;
-            }
-
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
-        });
-
-    }
-*/
+    /*
+     //Privileges of SubAdmin
+     $scope.subAdminPrivileges = function(adminId)
+     {
+     
+     request           = {adminId : adminId};
+     //get Privileges of a single user
+     $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
+     if(response.status == 1)
+     {
+     console.log(response);
+     $scope.editSubAdminDetails = response.data;
+     }
+     
+     }).error(function(){
+     $scope.errorMessage = "Please Try Again";
+     });
+     
+     }
+     */
 
 });
 
@@ -841,93 +852,93 @@ $scope.subAdminPrivileges = function(adminId)
 
 
 adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter) {
-console.log("<<<<<<<<<<<<<<<   subAdminDetailsCtrl   ");
-    $rootScope.adminNavigation  = 1;
-    $scope.errorMessage         = "";
-    $scope.currentPage          = 0;
-    $scope.pageSize             = 10;
-    var adminId                 = $routeParams.adminId;
-    var request                 = "";
-    var token                   = $window.sessionStorage.token;
+    console.log("<<<<<<<<<<<<<<<   subAdminDetailsCtrl   ");
+    $rootScope.adminNavigation = 1;
+    $scope.errorMessage = "";
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
     console.log(token);
 
-    request           = {adminId : adminId};
+    request = {adminId: adminId};
 
 
-        //get Privileges of a single user
-        $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
-            if(response.status == 1)
-            {
-                console.log("subAdminPrivileges  ");
-                console.log(response);
-                $scope.subAdminPrivileges = response.data;
-            }
+    //get Privileges of a single user
+    $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log("subAdminPrivileges  ");
+            console.log(response);
+            $scope.subAdminPrivileges = response.data;
+        }
 
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
-        });
+    }).error(function () {
+        $scope.errorMessage = "Please Try Again";
+    });
 
 
 // Get All Privileges
-$scope.getAllPrivileges = function()
+    $scope.getAllPrivileges = function ()
     {
 
         /*request = {adminId : adminId};
-        $scope.index      = index;
-        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);*/
+         $scope.index      = index;
+         $scope.extra      = parseInt(currentPage)*parseInt(pageSize);*/
         //get details of a single user
-        $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegesList',{token:token}).success(function(response) {
-            if(response.status == 1)
+        $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {token: token}).success(function (response) {
+            if (response.status == 1)
             {
                 console.log("All Privileges");
                 console.log(response);
                 $scope.privileges = response.data;
             }
 
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
         });
 
     }
 
 
-$scope.selectedSAPrivilege = function () {
+    $scope.selectedSAPrivilege = function () {
         $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
     }
 //Add New Sub Admin Privilege
-    $scope.addNewSubAdminPrivileges = function(){
+    $scope.addNewSubAdminPrivileges = function () {
 
         //$scope.newPrivilegeName = {};
-        var chkPrivilegeArray          =   $scope.checkedSAPrivilege;
+        var chkPrivilegeArray = $scope.checkedSAPrivilege;
         console.log("Selected CheckBOx");
         console.log(adminId);
         console.log(chkPrivilegeArray);
-        request = {chkPrivilegeArray : chkPrivilegeArray, adminId : adminId};
-                $http.post($rootScope.STATIC_URL+'admins/setSubadminPrivilege',{request : request, token:token})
-                        .success(function(response) {
-                            if(response.status == 1)
-                            {
+        request = {chkPrivilegeArray: chkPrivilegeArray, adminId: adminId};
+        $http.post($rootScope.STATIC_URL + 'admins/setSubadminPrivilege', {request: request, token: token})
+                .success(function (response) {
+                    if (response.status == 1)
+                    {
 
-                          console.log("setSubadminPrivilege ====>>");
-                          console.log(response);
+                        console.log("setSubadminPrivilege ====>>");
+                        console.log(response);
 
-                                var index          = $scope.index;
+                        var index = $scope.index;
 
-                                //console.log($scope.subAdmins.username);
-                                $('#newSubAdminPrivilege').modal('hide');
+                        //console.log($scope.subAdmins.username);
+                        $('#newSubAdminPrivilege').modal('hide');
 
-                            }
-                       })
-                        .error(function(){
-                             $scope.errorMessage = "Please Try Again";
-                        });
+                    }
+                })
+                .error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
 
 
     }
 
 
 
-$scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
+    $scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
 
         if (!confirm('Are you sure to delete this Privilege?'))
         {
@@ -937,31 +948,31 @@ $scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
         {
             //request = {token : token, privilegeId: privilegeId};
 
-             $http.post($rootScope.STATIC_URL+'admins/deleteSubadminPrivilege',{id:prvlLogId, token:token}).success(function(response) {
+            $http.post($rootScope.STATIC_URL + 'admins/deleteSubadminPrivilege', {id: prvlLogId, token: token}).success(function (response) {
 
-                if(response.status == 1)
+                if (response.status == 1)
                 {
                     console.log(response);
 
-                        request           = {adminId : adminId};
-                        //get Privileges of a single user
-                        $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
-                            if(response.status == 1)
-                            {
-                                console.log("subAdminPrivileges  ");
-                                console.log(response);
-                                $scope.subAdminPrivileges = response.data;
-                            }
+                    request = {adminId: adminId};
+                    //get Privileges of a single user
+                    $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            console.log("subAdminPrivileges  ");
+                            console.log(response);
+                            $scope.subAdminPrivileges = response.data;
+                        }
 
-                        }).error(function(){
-                                             $scope.errorMessage = "Please Try Again";
-                        });
+                    }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
                 }
 
-            }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
             });
-       }
+        }
     }
 
 });
@@ -973,110 +984,109 @@ $scope.deleteSubAdminPrivilege = function ($event, prvlLogId) {
 
 adminControllers.controller('privilegesCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
-        $rootScope.adminNavigation  = 1;
-        $scope.currentPage          = 0;
-        $scope.pageSize             = 10;
-        $scope.errorMessage         = "";
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
 
-        var adminId                 = $routeParams.adminId;
-        var request                 = "";
-        var token                   = $window.sessionStorage.token;
-        console.log(token);
+    var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log(token);
 
-        request           = {adminId : adminId};
+    request = {adminId: adminId};
 
 
-            //List All Privileges
-            $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegesList',{token:token}).success(function(response) {
-                if(response.status == 1)
-                {
-                    console.log("All Privileges");
-                    console.log(response);
-                    $scope.privileges = response.data;
-                }
+    //List All Privileges
+    $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {token: token}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log("All Privileges");
+            console.log(response);
+            $scope.privileges = response.data;
+        }
 
-                }).error(function(){
-                    $scope.errorMessage = "Please Try Again";
-            });
+    }).error(function () {
+        $scope.errorMessage = "Please Try Again";
+    });
 
 //Add New Privilege
 
-$scope.addNewPrivilege = function(){
-console.log("Add Clicked");
-        $scope.errorMessage   = "";
+    $scope.addNewPrivilege = function () {
+        console.log("Add Clicked");
+        $scope.errorMessage = "";
 
-        var fd          =   new FormData();
-        var name        =   $scope.newName;
-        var description =   $scope.newDescription;
+        var fd = new FormData();
+        var name = $scope.newName;
+        var description = $scope.newDescription;
 
 
-       if(!name && !description){
-                $scope.errorMessage = "Please Enter all fields";
-       }
-       else if(!name){
-                $scope.errorMessage = "Please Enter a Name";
-       }
-       else if(!description){
-                $scope.errorMessage = "Please Enter a Description";
-       }
-       else
+        if (!name && !description) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!name) {
+            $scope.errorMessage = "Please Enter a Name";
+        }
+        else if (!description) {
+            $scope.errorMessage = "Please Enter a Description";
+        }
+        else
         {
-                    fd.append('name', name);
-                    fd.append('description', description);
-                    fd.append('token', token);
+            fd.append('name', name);
+            fd.append('description', description);
+            fd.append('token', token);
 
-                $http.post($rootScope.STATIC_URL+'adminprivileges/addPrivilege',fd, {
+            $http.post($rootScope.STATIC_URL + 'adminprivileges/addPrivilege', fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
 
-                        transformRequest: angular.identity,
-                        headers: {'Content-Type': undefined}
+            }).success(function (response) {
+                if (response.status == 1)
+                {
+                    //List All Privileges
+                    $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            console.log("All Privileges");
+                            console.log(response);
+                            $scope.privileges = response.data;
+                        }
 
-                    }).success(function(response) {
-                            if(response.status == 1)
-                            {
-                                        //List All Privileges
-                                       $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegesList',{token:token}).success(function(response) {
-                                            if(response.status == 1)
-                                            {
-                                                console.log("All Privileges");
-                                                console.log(response);
-                                                $scope.privileges = response.data;
-                                            }
+                    }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
 
-                                        }).error(function(){
-                                                $scope.errorMessage = "Please Try Again";
-                                        });
-
-                                var index          = $scope.index;
-                                $('#newPrivilege').modal('hide');
-                                $scope.newName          = "";
-                                $scope.newDescription   = "";
-                            }
-                       })
-                        .error(function(){
-                             $scope.errorMessage = "Please Try Again";
-                        });
+                    var index = $scope.index;
+                    $('#newPrivilege').modal('hide');
+                    $scope.newName = "";
+                    $scope.newDescription = "";
+                }
+            })
+                    .error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
 
         }
     }
 
 //Edit Privilege
 
-$scope.editPrivilege = function(privilegeId,index,currentPage,pageSize)
+    $scope.editPrivilege = function (privilegeId, index, currentPage, pageSize)
     {
-        $scope.errorMessage         = "";
-        request           = {privilegeId : privilegeId};
-        $scope.index      = index;
-        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);
+        $scope.errorMessage = "";
+        request = {privilegeId: privilegeId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
 
         //get current privilege
-        $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegeDetails',{request:request, token:token}).success(function(response) {
-            if(response.status == 1)
+        $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegeDetails', {request: request, token: token}).success(function (response) {
+            if (response.status == 1)
             {
                 $scope.editPrivilegeDetails = response.data;
             }
 
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
         });
 
     }
@@ -1084,48 +1094,48 @@ $scope.editPrivilege = function(privilegeId,index,currentPage,pageSize)
 
 
 //Update Privilege details
-    $scope.updatePrivilegeDetails = function()
+    $scope.updatePrivilegeDetails = function ()
     {
-console.log("Entered Update Privilege");
-        var id              = $scope.editPrivilegeDetails.id;
-        var name            = $scope.editPrivilegeDetails.name;
-        var description     = $scope.editPrivilegeDetails.description;
-        var index           = $scope.index;
+        console.log("Entered Update Privilege");
+        var id = $scope.editPrivilegeDetails.id;
+        var name = $scope.editPrivilegeDetails.name;
+        var description = $scope.editPrivilegeDetails.description;
+        var index = $scope.index;
 
 
-       if(!name && !description){
-                $scope.errorMessage = "Please Enter all fields";
-       }
-       else if(!name){
-                $scope.errorMessage = "Please Enter a Name";
-       }
-       else if(!description){
-                $scope.errorMessage = "Please Enter a Description";
-       }
-       else
+        if (!name && !description) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!name) {
+            $scope.errorMessage = "Please Enter a Name";
+        }
+        else if (!description) {
+            $scope.errorMessage = "Please Enter a Description";
+        }
+        else
         {
 
-            var fd        = new FormData();
+            var fd = new FormData();
             fd.append('name', name);
             fd.append('description', description);
             fd.append('id', id);
             fd.append('token', token);
 
-            $http.post($rootScope.STATIC_URL+'adminprivileges/updatePrivilegeDetails',fd,
-                                    {
-                                        transformRequest: angular.identity,
-                                        headers: {'Content-Type': undefined}
-                                    }).success(function(response) {
+            $http.post($rootScope.STATIC_URL + 'adminprivileges/updatePrivilegeDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
 
-                                        index                                  = $scope.index + $scope.extra;
-                                        $scope.privileges[index].name          = name;
-                                        $scope.privileges[index].description   = description;
+                index = $scope.index + $scope.extra;
+                $scope.privileges[index].name = name;
+                $scope.privileges[index].description = description;
 
-                                        $('#editPrivilege').modal('hide');
+                $('#editPrivilege').modal('hide');
 
-            }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
-             });
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
 
 
         }
@@ -1136,7 +1146,7 @@ console.log("Entered Update Privilege");
 
 //Delete Privilege
 
-$scope.deletePrivilege = function ($event,privilegeId) {
+    $scope.deletePrivilege = function ($event, privilegeId) {
 
         if (!confirm('Are you sure to delete this Privilege?'))
         {
@@ -1144,30 +1154,30 @@ $scope.deletePrivilege = function ($event,privilegeId) {
         }
         else
         {
-            request = {token : token, privilegeId: privilegeId};
+            request = {token: token, privilegeId: privilegeId};
 
-             $http.post($rootScope.STATIC_URL+'adminprivileges/deletePrivilege',{request:request}).success(function(response) {
+            $http.post($rootScope.STATIC_URL + 'adminprivileges/deletePrivilege', {request: request}).success(function (response) {
 
-                if(response.status == 1)
+                if (response.status == 1)
                 {
                     console.log(response);
 
-                        //Get All privileges
-                        $http.post($rootScope.STATIC_URL+'adminprivileges/getPrivilegesList',{token:token}).success(function(response) {
-                                if(response.status == 1)
-                                {
-                                    $scope.privileges = response.data;
-                                }
+                    //Get All privileges
+                    $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.privileges = response.data;
+                        }
 
-                            }).error(function(){
-                                             $scope.errorMessage = "Please Try Again";
-                            });
+                    }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
                 }
 
-            }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
             });
-       }
+        }
     }
 
 
@@ -1180,84 +1190,84 @@ $scope.deletePrivilege = function ($event,privilegeId) {
 
 adminControllers.controller('settingsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
-        $rootScope.adminNavigation  = 1;
-        $scope.currentPage          = 0;
-        $scope.pageSize             = 10;
-        $scope.errorMessage         = "";
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
 
-        var request                 = "";
-        var token                   = $window.sessionStorage.token;
+    var request = "";
+    var token = $window.sessionStorage.token;
 
- //List All Settings
-            $http.post($rootScope.STATIC_URL+'settings/getSettingsList',{token:token}).success(function(response) {
-                if(response.status == 1)
-                {
-                    $scope.settings = response.data;
-                }
+    //List All Settings
+    $http.post($rootScope.STATIC_URL + 'settings/getSettingsList', {token: token}).success(function (response) {
+        if (response.status == 1)
+        {
+            $scope.settings = response.data;
+        }
 
-                }).error(function(){
-                    $scope.errorMessage = "Please Try Again";
-            });
+    }).error(function () {
+        $scope.errorMessage = "Please Try Again";
+    });
 
 
 //Edit Settings
-$scope.editSettings = function(settingsId,index,currentPage,pageSize)
+    $scope.editSettings = function (settingsId, index, currentPage, pageSize)
     {
-        $scope.errorMessage         = "";
-        request           = {settingsId : settingsId};
-        $scope.index      = index;
-        $scope.extra      = parseInt(currentPage)*parseInt(pageSize);
+        $scope.errorMessage = "";
+        request = {settingsId: settingsId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
 
         //get Settings List
-        $http.post($rootScope.STATIC_URL+'settings/getSettingsDetails',{request:request, token:token}).success(function(response) {
-            if(response.status == 1)
+        $http.post($rootScope.STATIC_URL + 'settings/getSettingsDetails', {request: request, token: token}).success(function (response) {
+            if (response.status == 1)
             {
                 $scope.editSettingsDetails = response.data;
                 console.log($scope.editSettingsDetails);
             }
 
-        }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
         });
 
     }
 
 
 //Update Settings
-$scope.updateSettingsDetails = function()
+    $scope.updateSettingsDetails = function ()
     {
-        var id              = $scope.editSettingsDetails.id;
-        var key             = $scope.editSettingsDetails.key;
-        var value           = $scope.editSettingsDetails.value;
-        var index           = $scope.index;
+        var id = $scope.editSettingsDetails.id;
+        var key = $scope.editSettingsDetails.key;
+        var value = $scope.editSettingsDetails.value;
+        var index = $scope.index;
 
 
-       if(!value){
-                $scope.errorMessage = "Please Enter a Value";
-       }
-       else
+        if (!value) {
+            $scope.errorMessage = "Please Enter a Value";
+        }
+        else
         {
 
-            var fd        = new FormData();
+            var fd = new FormData();
             fd.append('key', key);
             fd.append('value', value);
             fd.append('id', id);
             fd.append('token', token);
 
-            $http.post($rootScope.STATIC_URL+'settings/updateSettingsDetails',fd,
-                                    {
-                                        transformRequest: angular.identity,
-                                        headers: {'Content-Type': undefined}
-                                    }).success(function(response) {
+            $http.post($rootScope.STATIC_URL + 'settings/updateSettingsDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
 
-                                        index                                  = $scope.index + $scope.extra;
-                                        $scope.settings[index].value          = value;
+                index = $scope.index + $scope.extra;
+                $scope.settings[index].value = value;
 
-                                        $('#editSettings').modal('hide');
+                $('#editSettings').modal('hide');
 
-            }).error(function(){
-                             $scope.errorMessage = "Please Try Again";
-             });
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
 
 
         }

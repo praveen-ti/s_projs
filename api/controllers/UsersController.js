@@ -858,7 +858,6 @@ module.exports = {
     getVideosByUserId: function (req, res) {
 
         var userId = req.body.userId;
-        var videoId = req.body.videoId;
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
 
@@ -872,7 +871,7 @@ module.exports = {
         tokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                return res.json(200, {status: 2, message: 'Token check.', error: tokenCheck});
             } else {
 
                 if (tokenCheck.status == 1)
@@ -880,13 +879,13 @@ module.exports = {
                     var query = "SELECT v.* FROM video AS v WHERE v.userId = " + userId + " ORDER BY v.id ASC";
                     Video.query(query, function (err, result) {
                         if (err) {
-                            return res.json(200, {status: 2, error_details: err});
+                            return res.json(200, {status: 2, message: "Error", error: err});
                         } else {
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "Success", data: result});
                         }
                     });
                 } else {
-                    return res.json(200, {status: 3, message: 'token expired'});
+                    return res.json(200, {status: 3, message: 'Token expired'});
                 }
             }
         });

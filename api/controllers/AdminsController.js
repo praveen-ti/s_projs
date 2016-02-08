@@ -55,7 +55,7 @@ module.exports = {
 
     getSubadminDetails: function (req, res) {
 var request = req.body.request;
-console.log(request);
+console.log(request.adminId);
 console.log(req.body.token);
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
@@ -68,7 +68,7 @@ console.log(req.body.token);
                 console.log("Inside else  ");
                 if (tokenCheck.status == 1)
                 {
-                    Admin.findOne({id: request}).exec(function findCB(err, result) {
+                    Admin.findOne({id: request.adminId}).exec(function findCB(err, result) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});
@@ -146,10 +146,8 @@ console.log(req.body.token);
             }
             else
             {
-                console.log("ifffffi");
                 if (tokenCheck.status == 1)
                 {
-                    console.log("1111111111----if");
                 var password = crypto.createHash('md5').update(req.body.password).digest("hex");
                     Admin.findOne({id: req.body.id}).exec(function findCB(err, result) {
                         if (err)
@@ -296,6 +294,8 @@ console.log(request);
      Set subadmin privileges
      ====================================================================================================================================*/
     setSubadminPrivilege: function (req, res) {
+var request = req.body.request;
+var chkPrivilegeArray =  request.chkPrivilegeArray;
 
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
@@ -307,9 +307,20 @@ console.log(request);
             {
                 if (tokenCheck.status == 1)
                 {
+
+
+        var chkPrivilegeIdArray = [];
+        chkPrivilegeArray.forEach(function(factor, index){
+
+                console.log(factor);
+                console.log(index);
+                chkPrivilegeIdArray.push(factor.id);
+        });
+
+
                     var values = {
-                        adminId: tokenCheck.tokenDetails.adminId,
-                        privilegeId: req.body.privilegeId
+                        adminId: request.adminId,
+                        privilegeId: chkPrivilegeIdArray,
                     };
                     Admin_privilege_log.create(values).exec(function (err, result) {
                         if (err)
@@ -317,9 +328,11 @@ console.log(request);
                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                         } else
                         {
-                            return res.json(200, {status: 1, message: 'success', result: result});
+                            console.log(result);
+                            return res.json(200, {status: 1, message: 'success', data: result});
                         }
                     });
+
                 }
                 else
                 {
@@ -332,7 +345,8 @@ console.log(request);
      Delete a subadmin privilege
      ====================================================================================================================================*/
     deleteSubadminPrivilege: function (req, res) {
-
+var request = req.body.request;
+console.log(request);
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
@@ -343,7 +357,7 @@ console.log(request);
             {
                 if (tokenCheck.status == 1)
                 {
-                    Admin_privilege_log.destroy({id: req.body.id}).exec(function deleteCB(err) {
+                    Admin_privilege_log.destroy({id: request.id}).exec(function deleteCB(err) {
                         if (err)
                         {
                             return res.json(200, {status: 2, error_details: err});
@@ -362,42 +376,8 @@ console.log(request);
             }
         });
     },
-    /*===================================================================================================================================
-     Get all Privileges
-     ====================================================================================================================================*/
 
-    getPrivilegesList: function (req, res) {
 
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
-
-            if (err)
-            {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-            }
-            else
-            {
-                if (tokenCheck.status == 1)
-                {
-                    var query = "SELECT * FROM admin_privilege ORDER BY createdAt DESC";
-                    Admin_privilege.query(query, function (err, result) {
-                        if (err)
-                        {
-                            return res.json(200, {status: 2, error_details: err});
-                        }
-                        else
-                        {
-                            console.log(result);
-                            return res.json(200, {status: 1, message: "success", result: result});
-                        }
-                    });
-                }
-                else
-                {
-                    return res.json(200, {status: 3, message: 'token expired'});
-                }
-            }
-        });
-    },
     /*===================================================================================================================================
      Get Each subadmin's Privilege[for subadmin only]
      ====================================================================================================================================*/
@@ -405,6 +385,10 @@ console.log(request);
 
     getSubadminPrivileges: function (req, res) {
 
+var request = req.body.request;
+console.log("===== getSubadminPrivileges ====");
+console.log(request);
+
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
@@ -415,16 +399,16 @@ console.log(request);
             {
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT ap.name, ap.description" +
+                    var query = "SELECT ap.name, ap.description, apl.id prvlLogId" +
                             " FROM" +
                             " admin_privilege_log apl" +
                             " INNER JOIN" +
                             " admin_privilege ap" +
                             " ON" +
                             " apl.privilegeId = ap.id" +
-                            " AND apl.adminId = " + tokenCheck.tokenDetails.adminId +
+                            " AND apl.adminId = " + request.adminId +
                             " ORDER BY apl.createdAt DESC";
-
+//console.log(query);
                     Admin_privilege_log.query(query, function (err, result) {
                         if (err)
                         {
@@ -432,8 +416,12 @@ console.log(request);
                         }
                         else
                         {
-                            console.log(result);
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            if(result != ""){
+                                return res.json(200, {status: 1, message: "success", data: result});
+                            }
+                            else{
+                                return res.json(200, {status: 1, message: "success", data: "No Privilege Found"});
+                            }
                         }
                     });
                 }
@@ -448,7 +436,7 @@ console.log(request);
      List subadmin's Privilege List[for superadmin only]
      ====================================================================================================================================*/
 
-
+/*
     listSubadminPrivileges: function (req, res) {
 
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
@@ -461,7 +449,7 @@ console.log(request);
             {
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT apl.id, apl.adminId, ap.name, ap.description, adm.firstname, adm.lastname, CONCAT( adm.firstname, adm.lastname ) AS adminName" +
+                    var query = "SELECT apl.id, apl.adminId, ap.name, ap.description, CONCAT( adm.firstname, adm.lastname ) AS adminName" +
                             " FROM admin_privilege_log apl" +
                             " INNER JOIN admin_privilege ap ON apl.privilegeId = ap.id" +
                             " INNER JOIN admin adm ON adm.id = apl.adminId" +
@@ -475,7 +463,7 @@ console.log(request);
                         else
                         {
                             console.log(result);
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 }
@@ -486,7 +474,7 @@ console.log(request);
             }
         });
     },
-
+*/
 
     /*===================================================================================================================================
      Admin Login
@@ -660,9 +648,6 @@ console.log(request);
 
 
      },*/
-
-
-
 
 };
 

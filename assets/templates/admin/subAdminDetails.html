@@ -1,0 +1,113 @@
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="page-header">
+                            Sub Admin Details
+                        </h4>
+
+                    </div>
+                </div>
+
+<!-- #########################################################################################################################
+                                   Sub Admin Privileges - Starts
+##############################################################################################################################-->
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <button class="btn btn-primary" data-toggle="modal" ng-click="getAllPrivileges()" data-target="#newSubAdminPrivilege">Add SubAdmin Privilege</button> <br/><br/>
+                       <div class="table-responsive">
+                            <h4 class="page-header">
+                                Sub Admin Privileges
+                            </h4>
+                            <span ng-show="subAdminPrivileges.data == 'No Privilege Found'">No Privilege Found</span>
+                            <table class="table table-striped table-hover" ng-show="subAdminPrivileges.data != 'No Privilege Found'">
+                                <thead>
+                                    <tr class="info">
+                                        <th class="text-center">Sl No</a></th>
+                                        <th class="text-center">Privilege Name</th>
+                                        <th class="text-center">Description</th>
+                                        <th class="text-center">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="subAdminPrivilege in subAdminPrivileges">
+
+                                        <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
+                                        <td class="text-center">{{ subAdminPrivilege.name }}</td>
+                                        <td class="text-center">{{ subAdminPrivilege.description }}</td>
+                                        <td class="text-center">
+                                            <span>
+                                                <a href="" class="span4 proj-div" data-toggle="modal" data-target="#editSubAdminPrivilege" ng-click="editSubAdminPrivilege(privilege.id,$index,currentPage,pageSize)" >Edit </a> |
+                                            </span>
+                                             <span>
+                                                    <a href="javascript:void(0)"  ng-click="deleteSubAdminPrivilege($event,subAdminPrivilege.prvlLogId)"> Delete</a>
+                                             </span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                     </div>
+                </div>
+
+
+ <!-- *********************************************Not Completed**************************************************** -->
+         <div class="row" >
+            <div id="newSubAdminPrivilege"  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog">
+
+
+                    <div class="modal-content">
+                        <div class="modal-header" ng-show="privilege.length ==''">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                            <h4 class="modal-title" id="myModalLabel">No Privilege To Select</h4>
+
+                       </div>
+                        <div class="modal-header" ng-show="privilege.length !=''">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                            <h4 class="modal-title" id="myModalLabel">Select Privilege</h4>
+                            <p class="text-danger">{{ errorMessage }}</p>
+                        </div>
+
+                    <div class="modal-body" ng-show="privilege.length !=''">
+
+                    <form ng-submit="addNewSubAdminPrivileges()" class="form-horizontal"  role="form" name="newSubAdminPrivilegeAdd" novalidate >
+
+
+                                  <div class="form-group" ng-repeat="privilege in privileges">
+
+                                    <label class="col-sm-4">{{privilege.name}}</label>
+
+                                    <div class="col-sm-8">
+                                        <input type="checkbox" ng-model="privilege.checked" ng-change="selectedSAPrivilege()" value="{{privilege.name}}"/>
+                                           {{privilege.name}}
+
+                                    </div>
+                                 </div>
+
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                          </div>
+                   </form>
+
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+<!-- #########################################################################################################################
+                                    Sub Admin Privileges - ENDS
+##############################################################################################################################-->
+
+    </div>
+</div>
+

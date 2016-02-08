@@ -19,7 +19,7 @@ module.exports = {
         },
 
         privilegeId: {
-            type: 'integer',
+            type: 'string',
         },
   }
 };

@@ -141,9 +141,25 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
-                when('/admin/subAdminPrivileges', {
-                    templateUrl: 'templates/admin/subAdminPrivileges.html',
-                    controller: 'subAdminPrivilegesCtrl',
+                 when('/admin/manageSubAdmin/subAdmin/:adminId', {
+                     templateUrl: 'templates/admin/subAdminDetails.html',
+                     controller: 'subAdminDetailsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/Privileges', {
+                    templateUrl: 'templates/admin/privileges.html',
+                    controller: 'privilegesCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/Settings', {
+                    templateUrl: 'templates/admin/settings.html',
+                    controller: 'settingsCtrl',
                     access: {
                         requiresLogin: true,
                         role: 'admin'

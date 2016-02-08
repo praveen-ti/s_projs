@@ -11,7 +11,7 @@ module.exports = {
                                                    Create a cms Page
  ====================================================================================================================================*/
 
-createCmsPage : function(req, res) {
+addCmsPage : function(req, res) {
 
          AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -25,7 +25,6 @@ createCmsPage : function(req, res) {
                             {
                                  var values = {
                                                 pageName                  :       req.body.pageName,
-                                                title                     :       req.body.title,
                                                 content                   :       req.body.content,
                                               };
                                  Cmspage.create(values).exec(function(err, result){
@@ -34,8 +33,8 @@ createCmsPage : function(req, res) {
                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                                         } else
                                         {
-                                            console.log(result);
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+                                            //console.log(result);
+                                            return res.json(200, {status: 1, message: 'success', data: result});
                                         }
                                     });
                             }
@@ -52,7 +51,7 @@ createCmsPage : function(req, res) {
  ====================================================================================================================================*/
 
 
-    updateCmsPage : function(req, res) {
+    updateCmsPageDetails : function(req, res) {
 
 
           AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
@@ -66,19 +65,7 @@ createCmsPage : function(req, res) {
                          if(tokenCheck.status == 1)
                             {
 
-                var cmsPageDetails = '{"cmsPageDetails" :'+
-                                       ' {'+
-                                            ' "id":'+req.body.cmsPageId+','+
-                                            ' "pageName": "'+req.body.pageName+'",'+
-                                            ' "title": "'+req.body.title+'",'+
-                                            ' "content": "'+req.body.content+'"'+
-                                            ' "status": "'+req.body.status+'"'+
-                                        ' }'+
-                                       ' }';
-                 console.log(cmsPageDetails);
-                var jsonCmsPageDetails = JSON.parse(cmsPageDetails);
-
-                                Cmspage.findOne({id: jsonCmsPageDetails.cmsPageDetails.id}).exec(function findCB(err, result) {
+                                Cmspage.findOne({id: req.body.id}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -88,10 +75,8 @@ createCmsPage : function(req, res) {
                                         if(typeof result != "undefined")
                                         {
                                                 var values = {
-                                                               pageName                 :       jsonCmsPageDetails.cmsPageDetails.pageName,
-                                                               title                    :       jsonCmsPageDetails.cmsPageDetails.title,
-                                                               content                  :       jsonCmsPageDetails.cmsPageDetails.content,
-                                                               status                   :       jsonCmsPageDetails.cmsPageDetails.status,
+                                                               pageName                 :       req.body.pageName,
+                                                               content                  :       req.body.content,
                                                               };
                                                 //return res.json(200, {status: 1, message: 'success'});
                                                 var criteria = {id: result.id};
@@ -102,7 +87,7 @@ createCmsPage : function(req, res) {
                                                     }
                                                     else
                                                     {
-                                                        return res.json(200, {status: 1, updatedCmsPage: updatedCmsPage});
+                                                        return res.json(200, {status: 1, data: updatedCmsPage});
                                                     }
 
                                                 });
@@ -129,6 +114,7 @@ createCmsPage : function(req, res) {
 
     getCmsPageList : function(req, res) {
 
+console.log("getCmsPageList-------------------------");
         AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -148,7 +134,7 @@ createCmsPage : function(req, res) {
                                         else
                                         {
                                             console.log(result);
-                                            return res.json(200, {status: 1, message: "success", result: result});
+                                            return res.json(200, {status: 1, message: "success", data: result});
                                         }
                                     });
                             }
@@ -166,9 +152,10 @@ createCmsPage : function(req, res) {
 
  getCmsPageDetails : function(req, res) {
 
-        var userRole = req.body.userRole;
-        var tokenService = tokenService || {};
-
+        var request         = req.body.request;
+        var userRole        = req.body.userRole;
+        var tokenService    = tokenService || {};
+console.log(userRole);
         if (userRole == 'user') {
             tokenService = UsertokenService;
 
@@ -188,15 +175,7 @@ createCmsPage : function(req, res) {
                         if(tokenCheck.status == 1)
                             {
 
-                                 var cmsPageDetails = '{"cmsPageDetails" :'+
-                                       ' {'+
-                                            ' "id":'+req.body.cmsPageId+
-                                        ' }'+
-                                       ' }';
-                                console.log(cmsPageDetails);
-                                var jsonCmsPageDetails = JSON.parse(cmsPageDetails);
-
-                                Cmspage.findOne({id: jsonCmsPageDetails.cmsPageDetails.id}).exec(function findCB(err, result) {
+                                Cmspage.findOne({id: request.cmsPageId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -224,7 +203,9 @@ createCmsPage : function(req, res) {
  ====================================================================================================================================*/
 deleteCmsPage : function(req, res) {
 
-         AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+var request = req.body.request;
+
+         AdmintokenService.checkToken(request.token, function(err, tokenCheck) {
 
                     if(err)
                     {
@@ -234,7 +215,7 @@ deleteCmsPage : function(req, res) {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                 Cmspage.destroy({id: req.body.cmsPageId}, function(err, result){
+                                 Cmspage.destroy({id: request.cmsPageId}, function(err, result){
                                         if (err)
                                         {
                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});

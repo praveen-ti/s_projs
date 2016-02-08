@@ -991,7 +991,7 @@ module.exports = {
         tokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err) {
-                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                return res.json(200, {status: 2, message: 'Error token check.', error: tokenCheck});
             } else {
 
                 if (tokenCheck.status == 1)
@@ -999,13 +999,49 @@ module.exports = {
                     var query = "SELECT p.* FROM photos AS p WHERE p.userId = " + userId + " ORDER BY p.id ASC";
                     Photos.query(query, function (err, result) {
                         if (err) {
-                            return res.json(200, {status: 2, error_details: err});
+                            return res.json(200, {status: 2, message: "Error", error: err});
                         } else {
-                            return res.json(200, {status: 1, message: "success", result: result});
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 } else {
-                    return res.json(200, {status: 3, message: 'token expired'});
+                    return res.json(200, {status: 3, message: 'Token expired'});
+                }
+            }
+        });
+
+    },
+    getPhotoById: function (req, res) {
+
+        var photoId = req.body.photoId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error token check.', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT p.* FROM photos AS p WHERE p.id = " + photoId + " LIMIT 1";
+                    Photos.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: "Error", error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'Token expired'});
                 }
             }
         });

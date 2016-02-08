@@ -1356,6 +1356,41 @@ module.exports = {
                 }
             }
         });
+    },
+    getReferredUsers: function (req, res) {
+
+        var userRole = req.body.userRole;
+        var userId = req.body.userId;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT u.* FROM user AS u WHERE u.referredUserId = " + userId + " ORDER BY u.id ASC";
+                    User.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
     }
 
 };

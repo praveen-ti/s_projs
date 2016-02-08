@@ -526,6 +526,17 @@ adminControllers.controller('adminMemberReferralCtrl', function ($scope, $routeP
         }
 
     });
+    
+    $http.post($rootScope.STATIC_URL + 'users/getReferredUsers', userParams).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.refferedUsers = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.refferedUsers).length / $scope.pageSize);
+            }
+        }
+
+    });
 });
 
 adminControllers.controller('adminMemberPhotoCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {

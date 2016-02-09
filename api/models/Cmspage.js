@@ -19,19 +19,9 @@ module.exports = {
             type: 'string',
         },
 
-       title: {
-            type: 'string',
-        },
-
        content: {
             type: 'string',
         },
-
-        status: {
-                type: 'string',
-                enum: ['active','inactive'],
-                defaultsTo: 'active',
-          },
 
   }
 };

@@ -165,6 +165,22 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                 when('/admin/manageCmsPage', {
+                    templateUrl: 'templates/admin/manageCmsPage.html',
+                    controller: 'manageCmsPageCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                 when('/admin/manageCmsPage/:cmsPageId', {
+                     templateUrl: 'templates/admin/cmsPageDetails.html',
+                     controller: 'cmsPageDetailsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

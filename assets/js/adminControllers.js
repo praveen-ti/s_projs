@@ -860,7 +860,7 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
      //Privileges of SubAdmin
      $scope.subAdminPrivileges = function(adminId)
      {
-     
+
      request           = {adminId : adminId};
      //get Privileges of a single user
      $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
@@ -869,11 +869,11 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
      console.log(response);
      $scope.editSubAdminDetails = response.data;
      }
-     
+
      }).error(function(){
      $scope.errorMessage = "Please Try Again";
      });
-     
+
      }
      */
 
@@ -1364,3 +1364,286 @@ adminControllers.controller('settingsCtrl', function ($scope, $routeParams, $roo
 
 
 });
+
+/*===================================================================================================================================
+ Manage CMS Page Controller   -----
+ ====================================================================================================================================*/
+
+adminControllers.controller('manageCmsPageCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        console.log("manageCmsPageCtrl");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+        //To get full active CMS Page list
+        $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageList', {token: token}).success(function (response) {
+console.log("getCmsPageList   ---- inside");
+console.log(response);
+            if (response.status == 1) {
+                $scope.cmsPages = response.data;
+                $scope.numberOfPages = function () {
+                    return Math.ceil(($scope.cmsPages).length / $scope.pageSize);
+                }
+            } else if (response.status == 3) {
+
+                //$scope.errorMessage = "Token Expired";
+                $window.location.href = $rootScope.STATIC_URL + 'admin/login';
+            }
+
+
+        });
+
+
+  //Add New CMS Page
+    $scope.addNewCmsPage = function () {
+
+        var fd          = new FormData();
+        var pageName    = $scope.newPageName;
+        var content     = $scope.newContent;
+
+        if (!pageName && !content) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!pageName) {
+            $scope.errorMessage = "Please Enter a PageName";
+        }
+        else if (!content) {
+            $scope.errorMessage = "Please Enter a Content";
+        }
+        else
+        {
+            fd.append('pageName', pageName);
+            fd.append('content', content);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'cmspage/addCmsPage', fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+
+            }).success(function (response) {
+                if (response.status == 1)
+                {
+
+                    //To get full active CMS Page list
+                    $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.cmsPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.cmsPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                    var index = $scope.index;
+
+                    //console.log($scope.subAdmins.username);
+                    $('#newCmsPage').modal('hide');
+                    $scope.newPageName  = "";
+                    $scope.newContent   = "";
+
+                }
+            }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
+
+        }
+    }
+
+/*
+
+//Edit CMS Page
+
+    $scope.editCmsPages = function (cmsPageId, index, currentPage, pageSize)
+    {
+        console.log("editCmsPage   >>>");
+
+        $scope.errorMessage = "";
+        request = {cmsPageId: cmsPageId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
+
+        //get Cms Page Details
+        $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                $scope.editCmsPageDetails = response.data;
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+        });
+
+    }
+
+//Update CMS Page details
+    $scope.updateCmsPageDetails = function ()
+    {
+
+        var id              = $scope.editCmsPageDetails.id;
+        var pageName        = $scope.editCmsPageDetails.pageName;
+        var content         = $scope.editCmsPageDetails.content;
+        var index           = $scope.index;
+
+
+        if (!pageName && !content) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!pageName) {
+            $scope.errorMessage = "Please Enter a Page Name";
+        }
+        else if (!content) {
+            $scope.errorMessage = "Please Enter a Content";
+        }
+        else
+        {
+
+            var fd = new FormData();
+            fd.append('pageName', pageName);
+            fd.append('content', content);
+            fd.append('id', id);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'cmspage/updateCmsPageDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+                index                               = $scope.index + $scope.extra;
+                $scope.cmsPages[index].pageName     = pageName;
+                $scope.cmsPages[index].content      = content;
+
+                $('#editCmsPage').modal('hide');
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+*/
+   //Delete CMS Page
+
+    $scope.deleteCmsPage = function ($event, cmsPageId) {
+
+        if (!confirm('Are you sure to delete this CMS Page?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            request = {token: token, cmsPageId: cmsPageId};
+
+            $http.post($rootScope.STATIC_URL + 'cmspage/deleteCmsPage', {request: request}).success(function (response) {
+
+                if (response.status == 1)
+                {
+                    console.log(response);
+
+                   //To get full active CMS Page list
+                    $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.cmsPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.cmsPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+});
+
+
+/*===================================================================================================================================
+   CMS Page Details Controller   -----
+ ====================================================================================================================================*/
+
+adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        console.log("cmsPageDetailsCtrl");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var cmsPageId = $routeParams.cmsPageId;
+
+         request = {cmsPageId: cmsPageId};
+
+//get Cms Page Details
+        $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.editCmsPageDetails = response.data;
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+//Update CMS Page details
+    $scope.updateCmsPageDetails = function ()
+    {
+console.log("updateCmsPageDetails  ------");
+        var id              = $scope.editCmsPageDetails.id;
+        var pageName        = $scope.editCmsPageDetails.pageName;
+        var content         = $scope.editCmsPageDetails.content;
+        var index           = $scope.index;
+
+
+        if (!pageName && !content) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!pageName) {
+            $scope.errorMessage = "Please Enter a Page Name";
+        }
+        else if (!content) {
+            $scope.errorMessage = "Please Enter a Content";
+        }
+        else
+        {
+
+            var fd = new FormData();
+            fd.append('pageName', pageName);
+            fd.append('content', content);
+            fd.append('id', id);
+            fd.append('token', token);
+console.log("fd--------------");
+console.log(content);
+            $http.post($rootScope.STATIC_URL + 'cmspage/updateCmsPageDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+                $scope.successMessage               = "Successfully Updated";
+
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+
+});
+

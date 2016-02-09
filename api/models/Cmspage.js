@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var cmsPageConstants = sails.config.constants.cmsPage;
+
 module.exports = {
 
   attributes: {
@@ -21,6 +23,13 @@ module.exports = {
 
        content: {
             type: 'string',
+        },
+
+      //status of cmsPage, Admin can block a cms page for an interval
+         status: {
+            type                : 'string',
+            enum                : [cmsPageConstants.STATUS_ACTIVE, cmsPageConstants.STATUS_INACTIVE],
+            defaultsTo          : cmsPageConstants.STATUS_ACTIVE,
         },
 
   }

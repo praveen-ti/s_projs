@@ -54,7 +54,7 @@ module.exports = {
  ====================================================================================================================================*/
 
 
-    updateAdPosition : function(req, res) {
+    updateAdPositionDetails : function(req, res) {
 
 
           AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
@@ -68,14 +68,7 @@ module.exports = {
                          if(tokenCheck.status == 1)
                             {
 
-                var adPositionDetails = '{"adPositionDetails" : {"id":'+req.body.adPositionId+', "name": "'+req.body.name+'", "description": "'+req.body.description+'", "cost": '+req.body.cost+'}}';
-                 console.log(adPositionDetails);
-                var jsonAdPositionDetails = JSON.parse(adPositionDetails);
-
-                console.log(jsonAdPositionDetails);
-                console.log(tokenCheck.tokenDetails.adminId);
-
-                                Adposition.findOne({id: jsonAdPositionDetails.adPositionDetails.id}).exec(function findCB(err, result) {
+                                Adposition.findOne({id: req.body.id}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -84,9 +77,9 @@ module.exports = {
                                     {
                                         console.log(result);
                                         var values = {
-                                                       name                 :       jsonAdPositionDetails.adPositionDetails.name,
-                                                       description          :       jsonAdPositionDetails.adPositionDetails.description,
-                                                       cost                 :       jsonAdPositionDetails.adPositionDetails.cost,
+                                                       name                 :       req.body.name,
+                                                       description          :       req.body.description,
+                                                       cost                 :       req.body.cost,
                                                       };
                                         //return res.json(200, {status: 1, message: 'success'});
                                         var criteria = {id: result.id};
@@ -97,7 +90,7 @@ module.exports = {
                                             }
                                             else
                                             {
-                                                return res.json(200, {status: 1, updatedAdPosition: updatedAdPosition});
+                                                return res.json(200, {status: 1, data: updatedAdPosition});
                                             }
 
                                         });
@@ -111,6 +104,151 @@ module.exports = {
 
                  }
           });
+    },
+
+
+/*===================================================================================================================================
+                                                        Get all AdPositions
+ ====================================================================================================================================*/
+
+    getAdPositionList : function(req, res) {
+
+
+        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                    var query ="SELECT * FROM adposition ORDER BY createdAt DESC";
+                                    Adposition.query(query, function(err, result) {
+                                        if(err)
+                                        {
+                                            return res.json(200, {status: 2, error_details: err});
+                                        }
+                                        else
+                                        {
+
+                                            return res.json(200, {status: 1, message: "success", data: result});
+                                        }
+                                    });
+                            }
+                        else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+/*===================================================================================================================================
+                                                        Get AdPositions in Detail[By both admin & user]
+ ====================================================================================================================================*/
+
+ getAdPositionDetails : function(req, res) {
+
+        var request         = req.body.request;
+        var userRole        = req.body.userRole;
+        var tokenService    = tokenService || {};
+console.log(userRole);
+        if (userRole == 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole == 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+         tokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                                Adposition.findOne({id: request.adPositionId}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        return res.json(200, {status: 1, data: result});
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+/*===================================================================================================================================
+    AdPositionStatus update
+    ====================================================================================================================================*/
+
+
+    updateAdPositionStatus: function (req, res) {
+
+
+        var request = req.body.request;
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Adposition.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                 status: request.adPositionStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+
+                            Adposition.update(criteria, values).exec(function (err, updateStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+
+                                    return res.json(200, {status: 1, data: updateStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
     },
 
 
@@ -153,6 +291,11 @@ module.exports = {
                     }
         });
     },
+
+
+
+
+
 
 
 };

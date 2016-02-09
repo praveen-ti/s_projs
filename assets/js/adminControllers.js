@@ -1454,81 +1454,46 @@ console.log(response);
         }
     }
 
-/*
 
-//Edit CMS Page
+// Update Status
+    $scope.updateCmsPageStatus = function ($event, cmsPageId) {
 
-    $scope.editCmsPages = function (cmsPageId, index, currentPage, pageSize)
-    {
-        console.log("editCmsPage   >>>");
+        var cmsPageStatus = $event.currentTarget.id;
 
-        $scope.errorMessage = "";
-        request = {cmsPageId: cmsPageId};
-        $scope.index = index;
-        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
-
-        //get Cms Page Details
-        $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
-            console.log(response);
-            if (response.status == 1)
-            {
-                $scope.editCmsPageDetails = response.data;
-            }
-
-        }).error(function () {
-            $scope.errorMessage = "Please Try Again";
-        });
-
-    }
-
-//Update CMS Page details
-    $scope.updateCmsPageDetails = function ()
-    {
-
-        var id              = $scope.editCmsPageDetails.id;
-        var pageName        = $scope.editCmsPageDetails.pageName;
-        var content         = $scope.editCmsPageDetails.content;
-        var index           = $scope.index;
-
-
-        if (!pageName && !content) {
-            $scope.errorMessage = "Please Enter all fields";
-        }
-        else if (!pageName) {
-            $scope.errorMessage = "Please Enter a Page Name";
-        }
-        else if (!content) {
-            $scope.errorMessage = "Please Enter a Content";
+        if (!confirm('Are you sure to ' + cmsPageStatus + ' this subAdmin?'))
+        {
+            $event.preventDefault();
         }
         else
         {
+            var returnedData = $.grep($scope.cmsPages, function (element, index) {
+                return element.id == cmsPageId;
+            });
 
-            var fd = new FormData();
-            fd.append('pageName', pageName);
-            fd.append('content', content);
-            fd.append('id', id);
-            fd.append('token', token);
+            request = {token: token, cmsPageStatus: cmsPageStatus, returnedData: returnedData[0]};
 
-            $http.post($rootScope.STATIC_URL + 'cmspage/updateCmsPageDetails', fd,
-                    {
-                        transformRequest: angular.identity,
-                        headers: {'Content-Type': undefined}
-                    }).success(function (response) {
-
-                index                               = $scope.index + $scope.extra;
-                $scope.cmsPages[index].pageName     = pageName;
-                $scope.cmsPages[index].content      = content;
-
-                $('#editCmsPage').modal('hide');
+            $http.post($rootScope.STATIC_URL + 'cmspage/updateCmsPageStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+                    //To get full active Ad Page list
+                    $http.post($rootScope.STATIC_URL + 'cmspage/getCmsPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.cmsPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.cmsPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
 
             }).error(function () {
                 $scope.errorMessage = "Please Try Again";
             });
-
-
         }
     }
-*/
+
+
    //Delete CMS Page
 
     $scope.deleteCmsPage = function ($event, cmsPageId) {
@@ -1647,3 +1612,425 @@ console.log(content);
 
 });
 
+
+/*===================================================================================================================================
+ Manage Ad Page Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+        //To get full active AD Page list
+        $http.post($rootScope.STATIC_URL + 'adpage/getAdPageList', {token: token}).success(function (response) {
+        console.log("getAdPageList   ---- inside");
+        console.log(response);
+            if (response.status == 1) {
+                $scope.adPages = response.data;
+                $scope.numberOfPages = function () {
+                    return Math.ceil(($scope.adPages).length / $scope.pageSize);
+                }
+            } else if (response.status == 3) {
+
+                //$scope.errorMessage = "Token Expired";
+                $window.location.href = $rootScope.STATIC_URL + 'admin/login';
+            }
+
+
+        });
+/*
+ //Add New Ad Page
+    $scope.addNewAdPage = function () {
+
+        var fd              = new FormData();
+        var name            = $scope.newName;
+        var description     = $scope.newDescription;
+        var cost            = $scope.newCost;
+
+        if (!name && !description && !cost) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!name) {
+            $scope.errorMessage = "Please Enter a Name";
+        }
+        else if (!description) {
+            $scope.errorMessage = "Please Enter a Description";
+        }
+        else if (!cost) {
+            $scope.errorMessage = "Please Enter a Cost";
+        }
+        else
+        {
+            fd.append('name', name);
+            fd.append('description', description);
+            fd.append('cost', cost);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'adpage/createAdPage', fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+
+            }).success(function (response) {
+                if (response.status == 1)
+                {
+
+                    //To get full active Ad Page list
+                    $http.post($rootScope.STATIC_URL + 'adpage/getAdPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.adPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.adPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                    var index = $scope.index;
+
+                    //console.log($scope.subAdmins.username);
+                    $('#newAdPage').modal('hide');
+                    $scope.newName                  = "";
+                    $scope.newDescription           = "";
+                    $scope.newCost                  = "";
+                    $scope.errorMessage             = "";
+
+                }
+            }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+                    });
+
+        }
+    }
+*/
+//Edit Ad Page
+
+    $scope.editAdPages = function (adPageId, index, currentPage, pageSize)
+    {
+        console.log("editAdPages   >>>");
+
+        $scope.errorMessage = "";
+        request = {adPageId: adPageId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
+
+        //get Cms Page Details
+        $http.post($rootScope.STATIC_URL + 'adpage/getAdPageDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                $scope.editAdPageDetails = response.data;
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+        });
+
+    }
+
+//Update Ad Page details
+    $scope.updateAdPageDetails = function ()
+    {
+
+        var id              = $scope.editAdPageDetails.id;
+        var name            = $scope.editAdPageDetails.name;
+        var description     = $scope.editAdPageDetails.description;
+        var cost            = $scope.editAdPageDetails.cost;
+        var index           = $scope.index;
+
+
+        if (!cost || isNaN(cost)) {
+            $scope.errorMessage = "Please Enter a Valid Cost";
+        }
+        else
+        {
+
+            var fd = new FormData();
+            fd.append('name', name);
+            fd.append('description', description);
+            fd.append('cost', cost);
+            fd.append('id', id);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'adpage/updateAdPageDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+                index                               = $scope.index + $scope.extra;
+                $scope.adPages[index].name          = name;
+                $scope.adPages[index].description   = description;
+                $scope.adPages[index].cost          = cost;
+
+
+                $('#editAdPage').modal('hide');
+                $scope.errorMessage                  = "";
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+
+ //Delete Ad Page
+    $scope.deleteAdPage = function ($event, adPageId) {
+
+        if (!confirm('Are you sure to delete this Ad Page?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            request = {token: token, adPageId: adPageId};
+
+            $http.post($rootScope.STATIC_URL + 'adpage/deleteAdPage', {request: request}).success(function (response) {
+
+                if (response.status == 1)
+                {
+                    console.log(response);
+
+                   //To get full active Ad Page list
+                    $http.post($rootScope.STATIC_URL + 'adpage/getAdPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.adPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.adPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+// Update Status
+    $scope.updateAdPageStatus = function ($event, adPageId) {
+
+        var adPageStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + adPageStatus + ' this subAdmin?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.adPages, function (element, index) {
+                return element.id == adPageId;
+            });
+
+            request = {token: token, adPageStatus: adPageStatus, returnedData: returnedData[0]};
+console.log(adPageStatus);
+console.log(returnedData[0]);
+            $http.post($rootScope.STATIC_URL + 'adpage/updateAdPageStatus', {request: request}).success(function (response) {
+
+                if (response.status == 1)
+                {
+                    //To get full active Ad Page list
+                    $http.post($rootScope.STATIC_URL + 'adpage/getAdPageList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.adPages = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.adPages).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+
+
+});
+
+
+/*===================================================================================================================================
+ Manage Ad Position Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('manageAdPositionCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+        //To get full active AD Position list
+        $http.post($rootScope.STATIC_URL + 'adposition/getAdPositionList', {token: token}).success(function (response) {
+            if (response.status == 1) {
+                $scope.adPositions = response.data;
+                $scope.numberOfPages = function () {
+                    return Math.ceil(($scope.adPositions).length / $scope.pageSize);
+                }
+            } else if (response.status == 3) {
+
+                //$scope.errorMessage = "Token Expired";
+                $window.location.href = $rootScope.STATIC_URL + 'admin/login';
+            }
+
+
+        });
+
+//Edit Ad Page
+
+    $scope.editAdPositions = function (adPositionId, index, currentPage, pageSize)
+    {
+
+        $scope.errorMessage     = "";
+        request                 = {adPositionId: adPositionId};
+        $scope.index            = index;
+        $scope.extra            = parseInt(currentPage) * parseInt(pageSize);
+
+        //get Cms Page Details
+        $http.post($rootScope.STATIC_URL + 'adposition/getAdPositionDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                $scope.editAdPositionDetails = response.data;
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+        });
+
+    }
+
+//Update Ad Position details
+    $scope.updateAdPositionDetails = function ()
+    {
+
+        var id              = $scope.editAdPositionDetails.id;
+        var name            = $scope.editAdPositionDetails.name;
+        var description     = $scope.editAdPositionDetails.description;
+        var cost            = $scope.editAdPositionDetails.cost;
+        var index           = $scope.index;
+
+
+        if (!cost || isNaN(cost)) {
+            $scope.errorMessage = "Please Enter a Valid Cost";
+        }
+        else
+        {
+
+            var fd = new FormData();
+            fd.append('name', name);
+            fd.append('description', description);
+            fd.append('cost', cost);
+            fd.append('id', id);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'adposition/updateAdPositionDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+                index                               = $scope.index + $scope.extra;
+                $scope.adPages[index].name          = name;
+                $scope.adPages[index].description   = description;
+                $scope.adPages[index].cost          = cost;
+
+
+                $('#editAdPosition').modal('hide');
+                $scope.errorMessage                  = "";
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+
+ //Delete Ad Position
+    $scope.deleteAdPosition = function ($event, adPositionId) {
+
+        if (!confirm('Are you sure to delete this Ad Position?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            request = {token: token, adPositionId: adPositionId};
+
+            $http.post($rootScope.STATIC_URL + 'adposition/deleteAdPosition', {request: request}).success(function (response) {
+
+                if (response.status == 1)
+                {
+                    console.log(response);
+
+                   //To get full active Ad Position list
+                    $http.post($rootScope.STATIC_URL + 'adposition/getAdPositionList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.adPositions = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.adPositions).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+// Update Status
+    $scope.updateAdPositionStatus = function ($event, adPositionId) {
+
+        var adPositionStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + adPositionStatus + ' this subAdmin?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.adPositions, function (element, index) {
+                return element.id == adPositionId;
+            });
+
+            request = {token: token, adPositionStatus: adPositionStatus, returnedData: returnedData[0]};
+            $http.post($rootScope.STATIC_URL + 'adposition/updateAdPositionStatus', {request: request}).success(function (response) {
+
+                if (response.status == 1)
+                {
+                    //To get full active Ad Position list
+                    $http.post($rootScope.STATIC_URL + 'adposition/getAdPositionList', {token: token}).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            $scope.adPositions = response.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.adPositions).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+
+
+});

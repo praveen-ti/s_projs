@@ -5,6 +5,8 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var adPositionConstants = sails.config.constants.adPosition;
+
 module.exports = {
 
   attributes: {
@@ -24,6 +26,13 @@ module.exports = {
 
            cost: {
                 type: 'integer',
+           },
+
+          //active or inactive . Admin can block an Adpage for a particular time interval
+            status: {
+                type                : 'string',
+                enum                : [adPositionConstants.STATUS_ACTIVE, adPositionConstants.STATUS_INACTIVE],
+                defaultsTo          : adPositionConstants.STATUS_ACTIVE,
            },
   }
 };

@@ -10,7 +10,7 @@ module.exports = {
 
 
 /*===================================================================================================================================
-                                                   Create an AdPage
+                                                   Create/Add an AdPage
  ====================================================================================================================================*/
 
 
@@ -55,7 +55,7 @@ module.exports = {
  ====================================================================================================================================*/
 
 
-    updateAdPage : function(req, res) {
+    updateAdPageDetails : function(req, res) {
 
 
           AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
@@ -69,14 +69,7 @@ module.exports = {
                          if(tokenCheck.status == 1)
                             {
 
-                var adPageDetails = '{"adPageDetails" : {"id":'+req.body.adPageId+', "name": "'+req.body.name+'", "description": "'+req.body.description+'", "cost": '+req.body.cost+'}}';
-                 console.log(adPageDetails);
-                var jsonAdPageDetails = JSON.parse(adPageDetails);
-
-                console.log(jsonAdPageDetails);
-                console.log(tokenCheck.tokenDetails.adminId);
-
-                                Adpage.findOne({id: jsonAdPageDetails.adPageDetails.id}).exec(function findCB(err, result) {
+                                Adpage.findOne({id: req.body.id}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -85,9 +78,9 @@ module.exports = {
                                     {
                                         console.log(result);
                                         var values = {
-                                                       name                 :       jsonAdPageDetails.adPageDetails.name,
-                                                       description          :       jsonAdPageDetails.adPageDetails.description,
-                                                       cost                 :       jsonAdPageDetails.adPageDetails.cost,
+                                                       name                 :       req.body.name,
+                                                       description          :       req.body.description,
+                                                       cost                 :       req.body.cost,
                                                       };
                                         //return res.json(200, {status: 1, message: 'success'});
                                         var criteria = {id: result.id};
@@ -98,7 +91,7 @@ module.exports = {
                                             }
                                             else
                                             {
-                                                return res.json(200, {status: 1, updatedAdPage: updatedAdPage});
+                                                return res.json(200, {status: 1, data: updatedAdPage});
                                             }
 
                                         });
@@ -114,17 +107,15 @@ module.exports = {
           });
     },
 
-
-
-
 /*===================================================================================================================================
-                                                   Delete an AdPage
+                                                        Get all AdPages
  ====================================================================================================================================*/
 
- deleteAdPage : function(req, res) {
+    getAdPageList : function(req, res) {
 
+        console.log("getAdPageList-------------------------");
 
-          AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
                     {
@@ -134,7 +125,155 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                Adpage.destroy({id: req.body.adPageId}).exec(function deleteCB(err){
+                                    var query ="SELECT * FROM adpage ORDER BY createdAt DESC";
+                                    Adpage.query(query, function(err, result) {
+                                        if(err)
+                                        {
+                                            return res.json(200, {status: 2, error_details: err});
+                                        }
+                                        else
+                                        {
+                                            console.log(result);
+                                            return res.json(200, {status: 1, message: "success", data: result});
+                                        }
+                                    });
+                            }
+                        else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+/*===================================================================================================================================
+                                                        Get AdPages in Detail[By both admin & user]
+ ====================================================================================================================================*/
+
+ getAdPageDetails : function(req, res) {
+
+        var request         = req.body.request;
+        var userRole        = req.body.userRole;
+        var tokenService    = tokenService || {};
+console.log(userRole);
+        if (userRole == 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole == 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+         tokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                                Adpage.findOne({id: request.adPageId}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                        console.log(result);
+                                        return res.json(200, {status: 1, data: result});
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
+
+/*===================================================================================================================================
+    AdPageStatus update
+    ====================================================================================================================================*/
+
+
+    updateAdPageStatus: function (req, res) {
+
+console.log("updateAdPageStatus <<<<<<<<<<<<>>>>>>>>>>>>>>>>>");
+
+var request = req.body.request;
+console.log(request);
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Adpage.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                 status: request.adPageStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+
+                            Adpage.update(criteria, values).exec(function (err, updateStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+
+                                    return res.json(200, {status: 1, data: updateStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
+    },
+
+
+/*===================================================================================================================================
+                                                   Delete an AdPage
+ ====================================================================================================================================*/
+
+ deleteAdPage : function(req, res) {
+
+var request = req.body.request;
+          AdmintokenService.checkToken(request.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                Adpage.destroy({id: request.adPageId}).exec(function deleteCB(err){
                                     if(err)
                                     {
                                         console.log("error");

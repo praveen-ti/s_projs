@@ -208,6 +208,26 @@ module.exports.constants = {
 
     },
 
+    adPage: {
+
+        STATUS_ACTIVE                        : 'active',
+        STATUS_INACTIVE                      : 'inactive',
+    },
+
+    adPosition: {
+
+        STATUS_ACTIVE                        : 'active',
+        STATUS_INACTIVE                      : 'inactive',
+    },
+
+    cmsPage: {
+
+        STATUS_ACTIVE                        : 'active',
+        STATUS_INACTIVE                      : 'inactive',
+    },
+
+
+
 
 
 

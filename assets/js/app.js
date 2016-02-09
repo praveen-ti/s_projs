@@ -181,6 +181,22 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                 when('/admin/manageAdvertisement/page', {
+                     templateUrl: 'templates/admin/manageAdPage.html',
+                     controller: 'manageAdPageCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/manageAdvertisement/position', {
+                     templateUrl: 'templates/admin/manageAdPosition.html',
+                     controller: 'manageAdPositionCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

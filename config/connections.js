@@ -51,9 +51,9 @@ module.exports.connections = {
   someMysqlServer: {
     adapter: 'sails-mysql',
     host: 'localhost',
-    user: 'node',
-    password: 'Node123#@!',
-    database: 'node_zentiera'
+    user: 'root',
+    password: 'root',
+    database: 'zentiera'
   },
 
   /***************************************************************************

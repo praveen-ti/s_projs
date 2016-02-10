@@ -2034,3 +2034,149 @@ adminControllers.controller('manageAdPositionCtrl', function ($scope, $routePara
 
 
 });
+
+
+/*===================================================================================================================================
+ Manage Ad User Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('manageAdUserCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+
+console.log("manageAdUserCtrl   >>>>>>>>>>>");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+        //To get full User Ad list
+        $http.post($rootScope.STATIC_URL + 'aduser/getAdUserList', {token: token, userRole : userRole}).success(function (response) {
+
+            if (response.status == 1) {
+                $scope.adUsers = response.data;
+                $scope.numberOfPages = function () {
+                    return Math.ceil(($scope.adUsers).length / $scope.pageSize);
+                }
+            } else if (response.status == 3) {
+
+                //$scope.errorMessage = "Token Expired";
+                $window.location.href = $rootScope.STATIC_URL + 'admin/login';
+            }
+
+
+        });
+
+// Update Status
+    $scope.updateAdUserStatus = function ($event, adUserId) {
+
+        var adUserStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + adUserStatus + ' this subAdmin?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.adUsers, function (element, index) {
+                return element.id == adUserId;
+            });
+
+            request = {token: token, adUserStatus: adUserStatus, returnedData: returnedData[0]};
+            $http.post($rootScope.STATIC_URL + 'aduser/updateAdUserStatus', {request: request}).success(function (response) {
+console.log("updateAdUserStatus     response ");
+console.log(response);
+                if (response.status == 1)
+                {
+                     //To get full User Ad list
+                        $http.post($rootScope.STATIC_URL + 'aduser/getAdUserList', {token: token, userRole : userRole}).success(function (response) {
+                            if (response.status == 1) {
+                                $scope.adUsers = response.data;
+                                $scope.numberOfPages = function () {
+                                    return Math.ceil(($scope.adUsers).length / $scope.pageSize);
+                                }
+                            }
+                        });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+// Update BannerType
+    $scope.updateAdBannerType = function ($event, adUserId) {
+
+        var adBannerType = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + adBannerType + ' this subAdmin?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.adUsers, function (element, index) {
+                return element.id == adUserId;
+            });
+
+            request = {token: token, adBannerType: adBannerType, returnedData: returnedData[0]};
+            $http.post($rootScope.STATIC_URL + 'aduser/updateAdBannerType', {request: request}).success(function (response) {
+console.log("updateAdBannerType     response ");
+console.log(response);
+                if (response.status == 1)
+                {
+                     //To get full User Ad list
+                        $http.post($rootScope.STATIC_URL + 'aduser/getAdUserList', {token: token, userRole : userRole}).success(function (response) {
+                            if (response.status == 1) {
+                                $scope.adUsers = response.data;
+                                $scope.numberOfPages = function () {
+                                    return Math.ceil(($scope.adUsers).length / $scope.pageSize);
+                                }
+                            }
+                        });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+
+});
+
+/*===================================================================================================================================
+ Manage Ad User Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('adUserDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+
+console.log("adUserDetailsCtrl   >>>>>>>>>>>");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var userAdId = $routeParams.userAdId;
+
+        request = {userAdId: userAdId};
+
+        //get Ad User Details
+        $http.post($rootScope.STATIC_URL + 'aduser/getAdUserDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    //$scope.editCmsPageDetails = response.data;
+                    $scope.adUsersDetails = response.data;
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+});

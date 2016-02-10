@@ -114,7 +114,6 @@ addCmsPage : function(req, res) {
 
     getCmsPageList : function(req, res) {
 
-console.log("getCmsPageList-------------------------");
         AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -196,6 +195,59 @@ console.log(userRole);
         });
     },
 
+/*===================================================================================================================================
+    CMSPageStatus update
+    ====================================================================================================================================*/
+
+
+    updateCmsPageStatus: function (req, res) {
+
+        var request = req.body.request;
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Cmspage.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                 status: request.cmsPageStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+
+                            Cmspage.update(criteria, values).exec(function (err, updateStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updateStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
+    },
 
 
 /*===================================================================================================================================

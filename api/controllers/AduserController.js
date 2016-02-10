@@ -5,7 +5,9 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var adUserConstants = sails.config.constants.adUser;
+var adUserConstants         = sails.config.constants.adUser;
+var userSettingsConstants   = sails.config.constants.userSettings;
+
 
 module.exports = {
 
@@ -63,9 +65,10 @@ module.exports = {
                          change status Active/Inactive/Delete of a user's Banner Img By Admin Or By useritself
  ============================================================================== ======================================================*/
 
- updateAdUser : function(req, res) {
+ updateAdUserStatus : function(req, res) {
 
-
+var request = req.body.request;
+    /*
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
          var userId = "";
@@ -76,9 +79,10 @@ module.exports = {
         } else if (userRole == 'admin') {
             tokenService = AdmintokenService;
         }
+*/
+         AdmintokenService.checkToken(request.token, function(err, tokenCheck) {
 
-         tokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
+                                  /*
                                 //Delete by user itself OR by admin
                                     if (userRole == 'user') {
                                         userId = tokenCheck.tokenDetails.userId;
@@ -86,7 +90,7 @@ module.exports = {
                                     } else if (userRole == 'admin') {
                                         userId = req.body.userId;
                                     }
-
+                                */
                     if(err)
                     {
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
@@ -95,24 +99,15 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                var adUserDetails = '{"adUserDetails" :'+
-                                                ' {'+
-                                                 ' "adId": '+req.body.adId+','+
-                                                 ' "status": "'+req.body.status+'",'+
-                                                 ' "bannerType": "'+req.body.bannerType+'",'+
-                                                 ' "userId": '+req.body.userId+
-                                                ' }'+
-                                        ' }';
-                                var jsonAdUserDetails = JSON.parse(adUserDetails);
 
-                                Aduser.findOne({id: req.body.adId}).exec(function findCB(err, result) {
+                                Aduser.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
                                     }
                                     else
                                     {
-                                              if (userRole == 'admin') {
+                                              /*if (userRole == 'admin') {
                                                    var values = {
                                                        bannerType                :       jsonAdUserDetails.adUserDetails.bannerType,
                                                        status                    :       jsonAdUserDetails.adUserDetails.status,
@@ -122,24 +117,94 @@ module.exports = {
                                                     var values = {
                                                         status                    :       "delete",
                                                       };
-                                              }
+                                              }*/
 
 
-                                        //return res.json(200, {status: 1, message: 'success'});
-                                        var criteria = {id: result.id};
-                                        Aduser.update(criteria, values).exec(function(err, updatedAdUser) {
-                                            if(err)
-                                            {
-                                                return res.json(200, {status: 2, error_details: err});
-                                            }
-                                            else
-                                            {
-                                                return res.json(200, {status: 1, updatedAdUser: updatedAdUser});
-                                            }
+                                       var values = {
+                                                     status         : request.adUserStatus
+                                                };
 
-                                        });
+                                       var criteria = {
+                                                       id          : result.id
+                                                };
+console.log(values);
+console.log(criteria);
+                                            Aduser.update(criteria, values).exec(function(err, updatedAdUser) {
+                                                if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    return res.json(200, {status: 1, data: updatedAdUser});
+                                                }
+
+                                            });
                                     }
-                                  });
+
+                                });
+
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+      });
+    },
+
+
+
+
+/*===================================================================================================================================
+                         change Banner Type
+ ============================================================================== ======================================================*/
+
+ updateAdBannerType : function(req, res) {
+
+var request = req.body.request;
+
+         AdmintokenService.checkToken(request.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+
+                                Aduser.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                       var values = {
+                                                     bannerType         : request.adBannerType
+                                                };
+
+                                       var criteria = {
+                                                       id          : result.id
+                                                };
+console.log(values);
+console.log(criteria);
+                                            Aduser.update(criteria, values).exec(function(err, updatedAdUser) {
+                                                if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    return res.json(200, {status: 1, data: updatedAdUser});
+                                                }
+
+                                            });
+                                    }
+
+                                });
 
                             }
                             else
@@ -156,12 +221,12 @@ module.exports = {
                                                         Get all Advertisements(By admin & User)
  ====================================================================================================================================*/
 
-    getAdList : function(req, res) {
+    getAdUserList : function(req, res) {
 
         var userRole        =   req.body.userRole;
         var tokenService    =   tokenService || {};
         var userId          =   "";
-        var sensualAdStatus =   "enable";
+        var switchKey       =   req.body.userRole;
 
         if (userRole == 'user') {
             tokenService = UsertokenService;
@@ -172,11 +237,11 @@ module.exports = {
 
          tokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
-                        if (userRole == 'user') {
+                        //if (userRole == 'user') {
                             userId = tokenCheck.tokenDetails.userId;
-                        } else if (userRole == 'admin') {
-                            userId = req.body.userId;
-                        }
+                        //} else if (userRole == 'admin') {
+                        //    userId = req.body.userId;
+                        //}
 
                     if(err)
                     {
@@ -187,51 +252,84 @@ module.exports = {
                         if(tokenCheck.status == 1)
                             {
 
-                                    Usersettings.findOne({userId: userId, sensualAdStatus: sensualAdStatus}).exec(function findCB(err, sensualCheck) {
-                                    if(err)
+
+                                switch (switchKey)
                                     {
-                                        return res.json(200, {status: 2, error_details: err});
+
+                                           case 'user':
+
+                                                        Usersettings.findOne({userId: userId, sensualAdStatus: userSettingsConstants.SENSUAL_ADSTATUS_ENABLE}).exec(function findCB(err, sensualCheck) {
+                                                                if(err)
+                                                                {
+                                                                    return res.json(200, {status: 2, error_details: err});
+                                                                }
+                                                                else
+                                                                {
+                                                                    if(typeof sensualCheck != 'undefined'){
+
+                                                                            query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+" AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"' ORDER BY  createdAt DESC";
+
+                                                                    }
+                                                                    else{
+
+
+                                                                            query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+
+                                                                                    " AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"'"+
+                                                                                    " AND bannerType = 'therapeutic'"+
+                                                                                    " ORDER BY  createdAt DESC";
+                                                                    }
+
+                                                                        Aduser.query(query, function(err, result) {
+                                                                                if(err)
+                                                                                {
+                                                                                    return res.json(200, {status: 2, error_details: err});
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    return res.json(200, {status: 1, message: "success", data: result});
+                                                                                }
+                                                                       });
+                                                                }
+
+                                                            });
+                                           break;
+
+                                           case 'admin':
+                                                           //query ="SELECT * FROM  aduser ORDER BY  createdAt DESC";
+                                                          /* query = "SELECT ausr.id, ausr.banner, ausr.bannerType, ausr.status, ausr.totalCost,"+
+                                                                    " ausr.adStartDate, ausr.adEndDate, CONCAT( usr.firstname,' ',usr.lastname ) userName,"+
+                                                                    " apg.name adPageName, apo.name adPositionName,"+
+                                                                    " CAST( ausr.adEndDate AS DATE ) adExpDate,"+
+                                                                    " CAST( ausr.adEndDate AS TIME ) adExpTime,"+
+                                                                    " MONTHNAME( ausr.adEndDate ) adExpMonth,"+
+                                                                    " DAY( ausr.adEndDate ) adExpDay,"+
+                                                                    " YEAR( ausr.adEndDate ) adExpYear"+
+                                                                    " FROM aduser ausr"+
+                                                                    " INNER JOIN user usr ON ausr.userId = usr.id"+
+                                                                    " INNER JOIN adpage apg ON ausr.adPageId = apg.id"+
+                                                                    " INNER JOIN adposition apo ON ausr.adPositionId = apo.id"+
+                                                                    " ORDER BY ausr.createdAt DESC";
+                                                             */
+                                                           query="SELECT ausr.id, ausr.banner, ausr.bannerType, ausr.status,ausr.totalCost,"+
+                                                                  " MONTHNAME( ausr.adEndDate ) adExpMonth,"+
+                                                                  " DAY( ausr.adEndDate ) adExpDay,"+
+                                                                  " YEAR( ausr.adEndDate ) adExpYear"+
+                                                                  " FROM aduser ausr"+
+                                                                  " ORDER BY createdAt DESC ";
+                                                           Aduser.query(query, function(err, result) {
+                                                                            if(err)
+                                                                            {
+                                                                                return res.json(200, {status: 2, error_details: err});
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                return res.json(200, {status: 1, message: "success", data: result});
+                                                                            }
+                                                           });
+                                            break;
                                     }
-                                    else
-                                    {
-                                        if(typeof sensualCheck != 'undefined'){
-
-                                            if (userRole == 'user') {
-                                                query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+" AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"' ORDER BY  createdAt DESC";
 
 
-                                            } else if (userRole == 'admin') {
-                                                query ="SELECT * FROM  aduser WHERE status = '"+adUserConstants.ADUSER_STATUS_ACTIVE+"' ORDER BY  createdAt DESC";
-                                            }
-
-                                        }
-                                        else{
-
-                                            if (userRole == 'user') {
-                                                query ="SELECT * FROM  aduser WHERE userId = "+tokenCheck.tokenDetails.userId+
-                                                        " AND status != '"+adUserConstants.ADUSER_STATUS_DELETE+"'"+
-                                                        " AND bannerType = 'therapeutic'"+
-                                                        " ORDER BY  createdAt DESC";
-
-                                            } else if (userRole == 'admin') {
-                                                query ="SELECT * FROM  aduser WHERE status = '"+adUserConstants.ADUSER_STATUS_ACTIVE+"' ORDER BY  createdAt DESC";
-                                            }
-
-                                        }
-
-                                            Aduser.query(query, function(err, result) {
-                                                    if(err)
-                                                    {
-                                                        return res.json(200, {status: 2, error_details: err});
-                                                    }
-                                                    else
-                                                    {
-                                                        return res.json(200, {status: 1, message: "success", result: result});
-                                                    }
-                                           });
-                                    }
-
-                                });
                             }
                         else
                             {
@@ -249,8 +347,9 @@ module.exports = {
  ====================================================================================================================================*/
 
 
-    getAdDetails : function(req, res) {
+    getAdUserDetails : function(req, res) {
 
+        var request  = req.body.request;
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
 
@@ -271,7 +370,7 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                Aduser.findOne({id: req.body.adId}).exec(function findCB(err, result) {
+                                /*Aduser.findOne({id: request.userAdId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -280,7 +379,46 @@ module.exports = {
                                     {
 
                                         console.log(result);
-                                        return res.json(200, {status: 1, result: result});
+                                        return res.json(200, {status: 1, data: result});
+
+
+                                    }
+
+                                });*/
+                                Aduser.findOne({id: request.userAdId}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+
+console.log(result.userId);
+                                      query = "SELECT ausr.id, ausr.banner, ausr.bannerType, ausr.status, ausr.totalCost,"+
+                                                " ausr.adStartDate, ausr.adEndDate, CONCAT( usr.firstname,' ',usr.lastname ) userName,"+
+                                                " apg.name adPageName, apo.name adPositionName,"+
+                                                " CAST( ausr.adEndDate AS DATE ) adExpDate,"+
+                                                " CAST( ausr.adEndDate AS TIME ) adExpTime,"+
+                                                " MONTHNAME( ausr.adEndDate ) adExpMonth,"+
+                                                " DAY( ausr.adEndDate ) adExpDay,"+
+                                                " YEAR( ausr.adEndDate ) adExpYear"+
+                                                " FROM aduser ausr"+
+                                                " INNER JOIN user usr ON ausr.userId = "+result.userId+" AND ausr.id = "+request.userAdId+" AND usr.id = "+request.userAdId+
+                                                " INNER JOIN adpage apg ON ausr.adPageId = apg.id"+
+                                                " INNER JOIN adposition apo ON ausr.adPositionId = apo.id"+
+                                                " ORDER BY ausr.createdAt DESC";
+                                       Aduser.query(query, function(err, adDetails) {
+                                                        if(err)
+                                                        {
+                                                            return res.json(200, {status: 2, error_details: err});
+                                                        }
+                                                        else
+                                                        {
+                                                            console.log(query);
+                                                            console.log(adDetails);
+                                                            return res.json(200, {status: 1, message: "success", data: adDetails});
+                                                        }
+                                       });
                                     }
 
                                 });
@@ -292,6 +430,10 @@ module.exports = {
                     }
         });
     },
+
+
+
+
 
 
 };

@@ -42,6 +42,12 @@ module.exports = {
           type: 'string',
           enum : [photoConstants.ACCESS_TYPE_PRIVATE, photoConstants.ACCESS_TYPE_PUBLIC],
           defaultsTo: photoConstants.ACCESS_TYPE_PUBLIC
+      },
+      
+      status: {
+          type: 'string',
+          enum : [photoConstants.STATUS_ACTIVE, photoConstants.STATUS_INACTIVE, photoConstants.STATUS_DELETE],
+          defaultsTo: photoConstants.STATUS_ACTIVE
       }
       
 

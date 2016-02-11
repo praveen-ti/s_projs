@@ -13,3 +13,5 @@ CREATE TABLE IF NOT EXISTS `video` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+ALTER TABLE `video` ADD `status` ENUM( 'active', 'inactive' ) NOT NULL DEFAULT 'active' AFTER `accessType` ;
+

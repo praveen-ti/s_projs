@@ -43,6 +43,12 @@ module.exports = {
           type: 'string',
           enum : [videoConstants.ACCESS_TYPE_PRIVATE, videoConstants.ACCESS_TYPE_PUBLIC],
           defaultsTo: videoConstants.ACCESS_TYPE_PUBLIC
+      },
+      
+      status: {
+          type: 'string',
+          enum : [videoConstants.STATUS_ACTIVE, videoConstants.STATUS_INACTIVE, videoConstants.STATUS_DELETE],
+          defaultsTo: videoConstants.STATUS_ACTIVE
       }
   }
 };

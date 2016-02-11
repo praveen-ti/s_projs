@@ -43,10 +43,12 @@
                             <tr class="info">
                                 <th class="text-center">#</a></th>
                                 <th class="text-center">Title</th>
-                                <th class="text-center">Description</th>
+                                <th class="text-center" style="width: 30%;">Description</th>
                                 <th class="text-center">Url</th>
                                 <th class="text-center">Access Type</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Created On</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,7 +58,11 @@
                                 <td class="text-center">{{ video.description}}</td>
                                 <td class="text-center">{{ video.videoUrl}}</td>
                                 <td class="text-center">{{ video.accessType}}</td>
+                                <td class="text-center">{{ video.status}}</td>
                                 <td class="text-center">{{ video.createdDatetime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                                <td class="text-center">
+                                    <a href="javascript: void(0);" data-toggle="modal" data-target="#viewVideo" ng-click="getVideoDetails(video.id, $index, currentPage, pageSize)">View</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -75,7 +81,27 @@
                 <div ng-show="(videos.length <= 0)" class="alert alert-info">
                     <strong>Info!</strong> No video found.
                 </div>
+                
+                <!-- Start: View Video -->
+                <div id="viewVideo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                                <h4 class="modal-title" id="myModalLabel">{{videoDetails.title}}</h4>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="caption"><p>{{ videoDetails.description}}</p></div>
+                                <div class="caption"><p><strong>Video Url: </strong> {{ videoDetails.videoUrl}}</p></div>
+                                <div class="caption"><p><strong>Access type: </strong> {{ videoDetails.accessType}}</p></div>
+                                <div class="caption"><p><strong>Status: </strong> {{ videoDetails.status}}</p></div>
+                                <div class="caption"><p><strong>Created At: </strong> {{ videoDetails.createdDatetime | date:'yyyy-MM-dd HH:mm:ss'}}</p></div>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
+                <!-- End: View Video -->
 
             </div>
         </div>

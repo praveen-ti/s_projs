@@ -75,11 +75,17 @@ module.exports.constants = {
     },
     video: {
         ACCESS_TYPE_PRIVATE: 'private',
-        ACCESS_TYPE_PUBLIC: 'public'
+        ACCESS_TYPE_PUBLIC: 'public',
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
+        STATUS_DELETE: 'delete'
     },
     photo: {
         ACCESS_TYPE_PRIVATE: 'private',
-        ACCESS_TYPE_PUBLIC: 'public'
+        ACCESS_TYPE_PUBLIC: 'public',
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
+        STATUS_DELETE: 'delete'
     },
 
     review: {

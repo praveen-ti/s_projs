@@ -45,7 +45,8 @@
                             <td class="text-center">{{ user.status}}</td>
                             <td class="text-center">{{ user.blacklisted}}</td>
                             <td class="text-center">
-                                <span><a href="admin/member/{{user.id}}">View </a></span>
+                                <span><a href="admin/member/{{user.id}}">View </a></span> |
+                                <span><a href="admin/member/{{user.id}}/subscription">Subscriptions</a></span>
                                 <span ng-show="user.blacklisted === 'yes'">| <a href="javascript:void(0)" ng-click="blacklistAMember($event, user.id, 'no')"> Whitelist</a></span>
                                 <span ng-show="user.blacklisted === 'no'">| <a href="javascript:void(0)" ng-click="blacklistAMember($event, user.id, 'yes')"> Blacklist</a></span>
                                 <span ng-show="user.status === 'inactive'">| <a href="javascript:void(0)" ng-click="updateMemberStatus($event, user.id, 'active')"> Active</a></span>

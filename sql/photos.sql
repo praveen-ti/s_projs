@@ -12,3 +12,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+ALTER TABLE `photos` ADD `status` ENUM( 'active', 'inactive', 'delete' ) NOT NULL DEFAULT 'active' AFTER `accessType` ;
+
+ALTER TABLE `photos` ADD `createdAt` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `status` ;
+

@@ -623,6 +623,27 @@ adminControllers.controller('adminMemberVideoCtrl', function ($scope, $routePara
         }
 
     });
+    
+    $scope.getVideoDetails = function (videoId, index, currentPage, pageSize) {
+
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
+
+        var params = {
+            videoId: videoId,
+            userRole: 'admin',
+            token: $window.sessionStorage.token
+        };
+
+        $http.post($rootScope.STATIC_URL + 'users/getVideoById', params).success(function (response) {
+
+            if (response.status == 1) {
+                $scope.videoDetails = response.data[0];
+            }
+
+        });
+
+    }
 });
 
 

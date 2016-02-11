@@ -785,6 +785,7 @@ module.exports = {
         var title = req.body.title;
         var description = req.body.description;
         var accessType = req.body.accessType;
+        var status = req.body.status;
 
         UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
@@ -798,7 +799,7 @@ module.exports = {
 
                         if (limitCheck.exceed === false) {
 
-                            Video.update({id: videoId}, {userId: userId, videoUrl: videoUrl, title: title, description: description, accessType: accessType}).exec(function (err, result) {
+                            Video.update({id: videoId}, {userId: userId, videoUrl: videoUrl, title: title, description: description, accessType: accessType, status: status}).exec(function (err, result) {
                                 if (err) {
                                     return res.json(200, {status: 2, error_details: err});
                                 } else {
@@ -818,6 +819,42 @@ module.exports = {
             }
 
         });
+    },
+    getVideoById: function (req, res) {
+
+        var videoId = req.body.videoId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error token check.', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT v.* FROM video AS v WHERE v.id = " + videoId + " LIMIT 1";
+                    Video.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: "Error", error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'Token expired'});
+                }
+            }
+        });
+
     },
     deleteVideo: function (req, res) {
 
@@ -897,6 +934,7 @@ module.exports = {
         var title = req.body.title;
         var description = req.body.description;
         var accessType = req.body.accessType;
+        var status = req.body.staus;
         var imagePath = '../../assets/images/pics';
 
         UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
@@ -939,7 +977,8 @@ module.exports = {
                                                         imageName: filePath[1],
                                                         title: title,
                                                         description: description,
-                                                        accessType: accessType
+                                                        accessType: accessType,
+                                                        status: status
                                                     };
 
                                                     Photos.create(imageData).exec(function (err, result) {

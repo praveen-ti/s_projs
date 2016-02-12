@@ -30,3 +30,7 @@ html body {
     content:"*";
     color:red;
 }
+
+body.modal-open {
+    padding-right: 0px !important;
+}

@@ -1,0 +1,52 @@
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="page-header">
+                            Blog Details
+                        </h4>
+
+                    </div>
+                </div>
+
+<!-- #########################################################################################################################
+                             Get Blog Details - Starts
+##############################################################################################################################-->
+        <div class="row">
+            <div class="col-lg-12" ng-repeat="blogDetail in blogDetails">
+{{ blogDetails }}
+                   <div class="row">
+                       <label class="col-lg-3"> Author Type</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.authorType}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3"> Author</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.authorId}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3"> Title</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.title}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Description</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.description}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Status</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.blogStatus}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Approval Status</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetail.approvalStatus}}</label></label>
+                   </div>
+
+            </div>
+        </div>
+<!-- #########################################################################################################################
+                             Get Blog Details - Ends
+##############################################################################################################################-->
+     </div>
+</div>

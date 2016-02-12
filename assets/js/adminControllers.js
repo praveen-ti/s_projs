@@ -623,7 +623,7 @@ adminControllers.controller('adminMemberVideoCtrl', function ($scope, $routePara
         }
 
     });
-    
+
     $scope.getVideoDetails = function (videoId, index, currentPage, pageSize) {
 
         $scope.index = index;
@@ -2169,7 +2169,7 @@ console.log(response);
 });
 
 /*===================================================================================================================================
- Manage Ad User Controller   -----
+ Ad User Details Controller   -----
  ====================================================================================================================================*/
 adminControllers.controller('adUserDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
@@ -2199,5 +2199,146 @@ console.log("adUserDetailsCtrl   >>>>>>>>>>>");
                     $scope.errorMessage = "Please Try Again";
         });
 
+});
+
+
+
+/*===================================================================================================================================
+ Manage Blog Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+
+        console.log("manageBlogCtrl   >>>>>>>>>>>");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var userAdId = $routeParams.userAdId;
+
+
+        //get all Blog List
+        $http.post($rootScope.STATIC_URL + 'blog/getBlogList', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.blogs = response.data;
+                    console.log($scope.blogs);
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+// Update Status
+    $scope.updateBlogStatus = function ($event, blogId) {
+
+        var blogStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + blogStatus + ' this blog?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.blogs, function (element, index) {
+                return element.id == blogId;
+            });
+
+            request = {token: token, blogStatus: blogStatus, returnedData: returnedData[0]};
+
+            $http.post($rootScope.STATIC_URL + 'blog/updateBlogStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+                        //get all Blog List
+                        $http.post($rootScope.STATIC_URL + 'blog/getBlogList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                            if (response.status == 1)
+                            {
+                                    $scope.blogs = response.data;
+                            }
+
+                        }).error(function () {
+                                    $scope.errorMessage = "Please Try Again";
+                        });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+ // Update ApprovalStatus
+    $scope.updateApprovalStatus = function ($event, blogId) {
+
+        var approvalStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + approvalStatus + ' this blog?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.blogs, function (element, index) {
+                return element.id == blogId;
+            });
+
+            request = {token: token, approvalStatus: approvalStatus, returnedData: returnedData[0]};
+
+            $http.post($rootScope.STATIC_URL + 'blog/updateApprovalStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+                        //get all Blog List
+                        $http.post($rootScope.STATIC_URL + 'blog/getBlogList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                            if (response.status == 1)
+                            {
+                                    $scope.blogs = response.data;
+                            }
+
+                        }).error(function () {
+                                    $scope.errorMessage = "Please Try Again";
+                        });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+});
+
+
+/*===================================================================================================================================
+Blog Details  Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('blogDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var blogId = $routeParams.blogId;
+
+        request = {blogId: blogId};
+
+        //get Ad User Details
+        $http.post($rootScope.STATIC_URL + 'blog/getBlogDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.blogDetails = response.data;
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
 
 });

@@ -183,9 +183,10 @@ module.exports = {
 
     getBlogList : function(req, res) {
 
-        var userRole = req.body.userRole;
-        var tokenService = tokenService || {};
-        var authorId = "";
+        var userRole        = req.body.userRole;
+        var tokenService    = tokenService || {};
+        var authorId        = "";
+        var switchKey       = req.body.userRole;
 
         if (userRole == 'user') {
             tokenService = UsertokenService;
@@ -196,13 +197,13 @@ module.exports = {
 
          tokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
-                                    //Assigning value to authorId
+                                  /*  //Assigning value to authorId
                                     if (userRole == 'user') {
                                         authorId = tokenCheck.tokenDetails.userId;
 
                                     } else if (userRole == 'admin') {
                                         authorId = tokenCheck.tokenDetails.adminId;
-                                    }
+                                    }*/
 
                     if(err)
                     {
@@ -212,12 +213,38 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                console.log(userRole);
+                                switch (switchKey)
+                                    {
+                                     case 'user' :
+
+                                     break;
+
+                                     case 'admin' :
+
+                                     console.log("admin >>>>>>> Switch");
+                                                var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
+                                                console.log(query);
+                                                Blog.query(query, function(err, result) {
+                                                    if(err)
+                                                    {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    }
+                                                    else
+                                                    {
+                                                        //console.log(result);
+                                                        return res.json(200, {status: 1, message: "success", data: result});
+                                                    }
+                                                });
+
+                                     break;
+                                    }
+
+                                //console.log(userRole);
                                 /*var query ="SELECT * FROM  blog WHERE"+
                                             " authorType =  '"+userRole+"' AND"+
                                             " authorId =  "+authorId+
                                             " ORDER BY createdAt DESC";*/
-                                   var query ="SELECT * FROM  blog"+
+                              /*     var query ="SELECT * FROM  blog"+
                                                 "WHERE blogStatus = "+blogConstants.BLOG_STATUS_ACTIVE+
                                                 "approvalStatus != "+blogConstants.APPROVAL_STATUS_REJECTED+
                                                 "ORDER BY createdAt DESC";
@@ -232,7 +259,7 @@ module.exports = {
                                         console.log(result);
                                         return res.json(200, {status: 1, message: "success", result: result});
                                     }
-                                });
+                                }); */
                             }
                             else
                             {
@@ -242,7 +269,174 @@ module.exports = {
         });
     },
 
+/*===================================================================================================================================
+   Update blogStatus
+ ====================================================================================================================================*/
+    updateBlogStatus: function(req, res) {
+console.log("updateBlogStatus ????????>>>>>><<<<<<<<    ");
+         var request = req.body.request;
 
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Blog.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                        blogStatus          :    request.blogStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+
+                            Blog.update(criteria, values).exec(function (err, updateBlogStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updateBlogStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
+    },
+
+
+/*===================================================================================================================================
+  Update approvalStatus
+ ====================================================================================================================================*/
+
+  updateApprovalStatus: function(req, res) {
+
+         var request = req.body.request;
+
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Blog.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                        approvalStatus          :    request.approvalStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+console.log(values);
+console.log(criteria);
+                            Blog.update(criteria, values).exec(function (err, updateApprovalStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updateApprovalStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
+    },
+
+/*===================================================================================================================================
+  Get Blog details
+ ====================================================================================================================================*/
+
+
+    getBlogDetails : function(req, res) {
+
+        var request  = req.body.request;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        if (userRole == 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole == 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+         tokenService.checkToken(req.body.token, function(err, tokenCheck) {
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                Blog.findOne({id: request.blogId}).exec(function findCB(err, result) {
+                                    if(err)
+                                    {
+                                        return res.json(200, {status: 2, error_details: err});
+                                    }
+                                    else
+                                    {
+                                       query = "SELECT * FROM  blog WHERE id="+request.blogId+" ORDER BY createdAt DESC";
+                                       Blog.query(query, function(err, blogDetails) {
+                                                if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    return res.json(200, {status: 1, message: "success", data: blogDetails});
+                                                }
+                                       });
+                                    }
+
+                                });
+                            }
+                            else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
 
 /*===================================================================================================================================
                                                    Create a Comment for A Blog
@@ -309,60 +503,6 @@ module.exports = {
          });
     },
 
-/*===================================================================================================================================
-                                                   approvalStatus for a BlogComment By admin
- ====================================================================================================================================*/
-    approvalStatusUpdate: function(req, res) {
-
-
-         AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                    if(err)
-                    {
-                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
-                    }
-                    else
-                    {
-                        if(tokenCheck.status == 1)
-                            {
-
-                               Blog_comment.findOne({id: req.body.commentId}).exec(function findCB(err, result) {
-                                    if(err)
-                                    {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                        console.log(result);
-                                            var values = {
-                                                    approvalStatus       :   req.body.approvalStatus,
-                                                  };
-
-                                            var criteria = {id: result.id};
-                                            Blog_comment.update(criteria, values).exec(function(err, updatedBlogComment) {
-                                                if(err)
-                                                {
-                                                    return res.json(200, {status: 2, error_details: err});
-                                                }
-                                                else
-                                                {
-                                                    return res.json(200, {status: 1, updatedBlogComment: updatedBlogComment});
-                                                }
-
-                                            });
-                                    }
-
-                              });
-
-
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                   }
-         });
-    },
 
 /*===================================================================================================================================
                                                       Delete Blog Comments

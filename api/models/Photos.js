@@ -48,6 +48,10 @@ module.exports = {
           type: 'string',
           enum : [photoConstants.STATUS_ACTIVE, photoConstants.STATUS_INACTIVE, photoConstants.STATUS_DELETE],
           defaultsTo: photoConstants.STATUS_ACTIVE
+      },
+      
+      createdAt: {
+          type: 'datetime'
       }
       
 

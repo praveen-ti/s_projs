@@ -49,6 +49,10 @@ module.exports = {
           type: 'string',
           enum : [videoConstants.STATUS_ACTIVE, videoConstants.STATUS_INACTIVE, videoConstants.STATUS_DELETE],
           defaultsTo: videoConstants.STATUS_ACTIVE
+      },
+      
+      createdDatetime: {
+          type: 'datetime'
       }
   }
 };

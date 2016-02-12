@@ -22,9 +22,9 @@ module.exports = {
             },
            //To check admin or not
            authorType : {
-                type: 'string',
-                enum: [blogConstants.AUTHOR_TYPE_SUPERADMIN, blogConstants.AUTHOR_TYPE_SUBADMIN, blogConstants.AUTHOR_TYPE_USER],
-                defaultsTo: 'super_admin',
+                type            : 'string',
+                enum            : [blogConstants.AUTHOR_TYPE_SUPERADMIN, blogConstants.AUTHOR_TYPE_SUBADMIN, blogConstants.AUTHOR_TYPE_USER],
+                defaultsTo      : blogConstants.AUTHOR_TYPE_SUPERADMIN,
             },
 
            title : {

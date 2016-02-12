@@ -16,31 +16,41 @@
                              Get Blog Details - Starts
 ##############################################################################################################################-->
         <div class="row">
-            <div class="col-lg-12" ng-repeat="blogDetail in blogDetails">
-{{ blogDetails }}
+            <div class="col-lg-12">
+                <span>
+                    <a href="" class="span4 proj-div" data-target="#editBlog" data-toggle="modal" ng-click="editBlog(blogDetail.id,$index,currentPage,pageSize)" name="editBlog">Edit </a> |
+                </span>
+                <span>
+                    <a href="admin/blog/comments/{{blogDetails.id}}" class="span4 proj-div"> Comments </a>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+
                    <div class="row">
                        <label class="col-lg-3"> Author Type</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.authorType}}</label></label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.authorType}}</label></label>
                    </div>
                    <div class="row">
                        <label class="col-lg-3"> Author</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.authorId}}</label></label>
-                   </div>
-                   <div class="row">
-                       <label class="col-lg-3"> Title</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.title}}</label></label>
-                   </div>
-                   <div class="row">
-                       <label class="col-lg-3">Description</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.description}}</label></label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.authorId}}</label></label>
                    </div>
                    <div class="row">
                        <label class="col-lg-3">Status</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.blogStatus}}</label></label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.blogStatus}}</label></label>
                    </div>
                    <div class="row">
                        <label class="col-lg-3">Approval Status</label>
-                       <label class="col-lg-9 ng-binding">{{blogDetail.approvalStatus}}</label></label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.approvalStatus}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3"> Title</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.title}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Description</label>
+                       <label class="col-lg-9 ng-binding">{{blogDetails.description}}</label></label>
                    </div>
 
             </div>
@@ -48,5 +58,52 @@
 <!-- #########################################################################################################################
                              Get Blog Details - Ends
 ##############################################################################################################################-->
+
+<!-- #########################################################################################################################
+   Edit Blog - Starts
+##############################################################################################################################-->
+
+<div class="row">
+       <div id="editBlog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+         <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                <h4 class="modal-title" id="myModalLabel">Edit Blog</h4>
+                <p class="text-danger">{{ errorMessage }}</p>
+              </div>
+              <div class="modal-body">
+                <form ng-submit="updateBlogDetails()" class="form-horizontal" role="form" novalidate >
+
+                                  <div class="form-group">
+                                    <label class="col-sm-4 control-label">Title</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" ng-model="editBlogDetails.title" name="text"/>
+                                    </div>
+                                 </div>
+
+                                 <div class="form-group">
+                                    <label class="col-sm-4 control-label">Description</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" type="text" ng-model="editBlogDetails.description" name="text"></textarea>
+                                    </div>
+                                 </div>
+
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                                  </div>
+
+
+                </form>
+
+                </div>
+              </div>
+            </div>
+         </div>
+      </div>
      </div>
 </div>
+<!-- #########################################################################################################################
+    Edit Blog - Ends
+##############################################################################################################################-->

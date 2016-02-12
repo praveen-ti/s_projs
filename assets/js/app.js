@@ -229,6 +229,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                 when('/admin/blog/comments/:blogId', {
+                     templateUrl: 'templates/admin/blogComments.html',
+                     controller: 'blogCommentsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

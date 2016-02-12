@@ -2217,7 +2217,6 @@ adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $r
         var request = "";
         var token = $window.sessionStorage.token;
         var userRole = "admin";
-        var userAdId = $routeParams.userAdId;
 
 
         //get all Blog List
@@ -2232,6 +2231,67 @@ adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $r
         }).error(function () {
                     $scope.errorMessage = "Please Try Again";
         });
+
+
+
+
+//Add New Blog
+      $scope.addNewBlog = function () {
+
+        console.log("ENETERED ===========");
+        $scope.errorMessage = "";
+
+        var fd              = new FormData();
+        var title           = $scope.newTitle;
+        var description     = $scope.newDescription;
+
+
+        if (!title && !description) {
+            $scope.errorMessage = "Please Enter all fields";
+        }
+        else if (!title) {
+            $scope.errorMessage = "Please Enter a Title";
+        }
+        else if (!description) {
+            $scope.errorMessage = "Please Enter a Description";
+        }
+        else
+        {
+            fd.append('title', title);
+            fd.append('description', description);
+            fd.append('userRole', userRole);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'blog/addBlog', fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+
+            }).success(function (response) {
+                if (response.status == 1)
+                {
+                  //get all Blog List
+                        $http.post($rootScope.STATIC_URL + 'blog/getBlogList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                            if (response.status == 1)
+                            {
+                                    $scope.blogs = response.data;
+                            }
+
+                        }).error(function () {
+                                    $scope.errorMessage = "Please Try Again";
+                        });
+                    var index = $scope.index;
+                    $('#newBlog').modal('hide');
+                    $scope.newTitle = "";
+                    $scope.newDescription = "";
+                }
+               }).error(function () {
+                        $scope.errorMessage = "Please Try Again";
+               });
+
+        }
+
+}
+
 
 
 // Update Status
@@ -2340,5 +2400,156 @@ adminControllers.controller('blogDetailsCtrl', function ($scope, $routeParams, $
         }).error(function () {
                     $scope.errorMessage = "Please Try Again";
         });
+
+
+//Edit Blog
+
+    $scope.editBlog = function (index, currentPage, pageSize)
+    {
+        $scope.errorMessage = "";
+        request = {blogId: blogId};
+        $scope.index = index;
+        $scope.extra = parseInt(currentPage) * parseInt(pageSize);
+
+        //get Blog Details
+        $http.post($rootScope.STATIC_URL + 'blog/getBlogDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+        console.log("get blog Details >>>>>>>>>>>");
+        console.log(response);
+
+            if (response.status == 1)
+            {
+                $scope.editBlogDetails = response.data;
+
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+        });
+
+    }
+
+ //Update Ad Position details
+    $scope.updateBlogDetails = function ()
+    {
+
+        var id              = $scope.editBlogDetails.id;
+        var title           = $scope.editBlogDetails.title;
+        var description     = $scope.editBlogDetails.description;
+        var index           = $scope.index;
+
+
+        if (!title)
+        {
+            $scope.errorMessage = "Please Enter a Title";
+        }
+        else  if (!description)
+        {
+            $scope.errorMessage = "Please Enter a Description";
+        }
+        else
+        {
+
+            var fd = new FormData();
+            fd.append('title', title);
+            fd.append('description', description);
+            fd.append('id', id);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'blog/updateBlogDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+                index                            = $scope.index + $scope.extra;
+                $scope.blogDetails.title         = title;
+                $scope.blogDetails.description   = description;
+
+                $('#editBlog').modal('hide');
+                $scope.errorMessage                  = "";
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+
+});
+
+
+/*===================================================================================================================================
+Blog Comments  Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('blogCommentsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var blogId = $routeParams.blogId;
+
+        request = {blogId: blogId};
+
+        //get Comment List
+        $http.post($rootScope.STATIC_URL + 'blog/getBlogcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.blogComments = response.data;
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+// Update ApprovalStatus
+    $scope.updateBlogCommentApprovalStatus = function ($event, blogCommentId) {
+
+console.log("request   Entered ");
+console.log(blogCommentId);
+        var approvalStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + approvalStatus + ' this blog?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+
+            request = {token: token, approvalStatus: approvalStatus, blogCommentId: blogCommentId};
+
+            $http.post($rootScope.STATIC_URL + 'blog/updateBlogCommentApprovalStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+
+                    request = {blogId: blogId};
+                        //get Comment List
+                        $http.post($rootScope.STATIC_URL + 'blog/getBlogcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                            console.log(response);
+                            console.log("response }}}}}}}}");
+                            if (response.status == 1)
+                            {
+                                    $scope.blogComments = response.data;
+                            }
+
+                        }).error(function () {
+                                    $scope.errorMessage = "Please Try Again";
+                        });
+
+
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
 
 });

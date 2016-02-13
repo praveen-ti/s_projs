@@ -1588,7 +1588,8 @@ adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams
 //Update CMS Page details
     $scope.updateCmsPageDetails = function ()
     {
-console.log("updateCmsPageDetails  ------");
+
+
         var id              = $scope.editCmsPageDetails.id;
         var pageName        = $scope.editCmsPageDetails.pageName;
         var content         = $scope.editCmsPageDetails.content;
@@ -2225,7 +2226,11 @@ adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $r
             if (response.status == 1)
             {
                     $scope.blogs = response.data;
-                    console.log($scope.blogs);
+
+                    $scope.numberOfPages = function () {
+                        return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                     }
+
             }
 
         }).error(function () {
@@ -2274,6 +2279,10 @@ adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $r
                             if (response.status == 1)
                             {
                                     $scope.blogs = response.data;
+
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                                     }
                             }
 
                         }).error(function () {
@@ -2501,6 +2510,10 @@ adminControllers.controller('blogCommentsCtrl', function ($scope, $routeParams, 
             if (response.status == 1)
             {
                     $scope.blogComments = response.data;
+
+                    $scope.numberOfPages = function () {
+                        return Math.ceil(($scope.blogComments).length / $scope.pageSize);
+                     }
             }
 
         }).error(function () {

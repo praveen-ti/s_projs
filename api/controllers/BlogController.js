@@ -114,24 +114,51 @@ console.log("Entered Add Blog -----------------------------");
                                     }
                                     else
                                     {
-                                      /* query = "SELECT * FROM  blog WHERE id="+request.blogId+" ORDER BY createdAt DESC";
-                                       Blog.query(query, function(err, blogDetails) {
+
+                                        var switchKey = result.authorType;
+                                        switch (switchKey)
+                                            {
+                                             case 'user' :
+
+                                                        query = "SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                                                    " blg.blogStatus, blg.approvalStatus,"+
+                                                                    " CONCAT( usr.firstname, ' ', usr.lastname ) username"+
+                                                                    " FROM blog blg"+
+                                                                    " INNER JOIN user usr ON blg.authorId = usr.id"+
+                                                                    " WHERE blg.id = "+result.id;
+                                             break;
+
+                                             case 'admin' :
+
+                                                      query = "SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                                                " blg.blogStatus, blg.approvalStatus,"+
+                                                                " CONCAT( adm.firstname, ' ', adm.lastname ) username"+
+                                                                " FROM blog blg"+
+                                                                " INNER JOIN admin adm ON blg.authorId = adm.id"+
+                                                                " WHERE blg.id = "+result.id;
+
+                                              break;
+                                            }
+
+                                          Blog.query(query, function(err, blogDetails) {
                                                 if(err)
                                                 {
                                                     return res.json(200, {status: 2, error_details: err});
                                                 }
                                                 else
                                                 {
-                                                    console.log(blogDetails);
-                                                    return res.json(200, {status: 1, message: "success", data: blogDetails});
+
+                                                    return res.json(200, {status: 1, message: "success", data: blogDetails[0]});
                                                 }
-                                       });*/
-                                       console.log("result     >>>>>>>>>>>>>>>>>>>");
-                                       console.log(result);
-                                       return res.json(200, {status: 1, message: "success", data: result});
+                                            });
+
+
                                     }
 
                                 });
+
+
+
                             }
                             else
                             {
@@ -279,7 +306,35 @@ console.log("Entered Add Blog -----------------------------");
 
                                      case 'admin' :
 
-                                     console.log("admin >>>>>>> Switch");
+
+                                //Query to get name of author from user table or admin table
+                                /* query =    " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                            " blg.blogStatus, blg.approvalStatus,"+
+                                            " CONCAT( usr.firstname, ' ', usr.lastname ) username"+
+                                            " FROM blog blg"+
+                                            " INNER JOIN user usr ON blg.authorId = usr.id"+
+                                            " WHERE blg.authorType = 'user'"+
+                                            " UNION"+
+                                            " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                            " blg.blogStatus, blg.approvalStatus,"+
+                                            " CONCAT( adm.firstname, ' ', adm.lastname ) username"+
+                                            " FROM blog blg"+
+                                            " INNER JOIN admin adm ON blg.authorId = adm.id"+
+                                            " WHERE blg.authorType = 'admin'"+
+                                            " ORDER BY id";
+
+
+                                               Blog.query(query, function(err, blogDetails) {
+                                                        if(err)
+                                                        {
+                                                            return res.json(200, {status: 2, error_details: err});
+                                                        }
+                                                        else
+                                                        {
+                                                            console.log(blogDetails);
+                                                            return res.json(200, {status: 1, message: "success", data: blogDetails});
+                                                        }
+                                               });*/
                                                 var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
                                                 console.log(query);
                                                 Blog.query(query, function(err, result) {
@@ -572,12 +627,12 @@ getBlogcommentList : function(req, res) {
                         if(tokenCheck.status == 1)
                             {
 
-                                //var query ="SELECT * FROM Blog_comment ORDER BY createdAt DESC";
-                                /*var query ="SELECT * FROM blog_comment WHERE blogId= "+request.blogId+
-                                            " AND approvalStatus != "+blogConstants.APPROVAL_STATUS_REJECTED+
-                                            " ORDER BY createdAt DESC";*/
-                               var query ="SELECT * FROM blog_comment WHERE blogId= "+request.blogId+" ORDER BY createdAt DESC";
- console.log(query);
+                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) username,"+
+                                           " usr.profilePic,blgcmt.id, blgcmt.comment, blgcmt.approvalStatus"+
+                                           " FROM blog_comment blgcmt"+
+                                           " INNER JOIN user usr ON blgcmt.userId = usr.id"+
+                                           " ORDER BY blgcmt.createdAt DESC ";
+
                                 Blog_comment.query(query, function(err, result) {
                                     if(err)
                                     {
@@ -585,12 +640,6 @@ getBlogcommentList : function(req, res) {
                                     }
                                     else
                                     {
-                                       /* if(result.length!=0){
-                                            return res.json(200, {status: 1, message: "success", result: result});
-                                        }
-                                        else{
-                                            return res.json(200, {status: 3, message: "success", result: "No result Found"});
-                                        }*/
 
                                         return res.json(200, {status: 1, message: "success", data: result});
                                     }
@@ -636,10 +685,7 @@ getBlogcommentList : function(req, res) {
                             var criteria = {
                                               id          : result.id
                                             };
-console.log("Blog_comment  APPROVE STATUS");
-console.log(values);
-console.log(criteria);
-console.log(request);
+
                             Blog_comment.update(criteria, values).exec(function (err, updateApprovalStatus) {
                                 if (err)
                                 {
@@ -647,8 +693,6 @@ console.log(request);
                                 }
                                 else
                                 {
-                                    console.log("updateApprovalStatus >>>>>>>>>>");
-                                    console.log(updateApprovalStatus);
                                     return res.json(200, {status: 1, data: updateApprovalStatus});
                                 }
 

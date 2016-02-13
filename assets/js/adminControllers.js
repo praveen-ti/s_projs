@@ -906,7 +906,7 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
 
 
 adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter) {
-    console.log("<<<<<<<<<<<<<<<   subAdminDetailsCtrl   ");
+
     $rootScope.adminNavigation = 1;
     $scope.errorMessage = "";
     $scope.currentPage = 0;
@@ -924,9 +924,8 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
     $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
         if (response.status == 1)
         {
-            console.log("subAdminPrivileges  =======");
-            console.log(response);
             $scope.subAdminPrivileges = response.data;
+
             $scope.numberOfPages = function () {
                 return Math.ceil(($scope.subAdminPrivileges).length / $scope.pageSize);
             }

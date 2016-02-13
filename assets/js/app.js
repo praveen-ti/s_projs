@@ -237,6 +237,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/poll/list', {
+                     templateUrl: 'templates/admin/managePoll.html',
+                     controller: 'managePollCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

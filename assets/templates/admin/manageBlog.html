@@ -12,7 +12,6 @@
                     </div>
                 </div>
 
-
 <!-- #########################################################################################################################
                              Get All Blogs - Starts
 ##############################################################################################################################-->
@@ -26,9 +25,9 @@
                                 <thead>
                                     <tr class="info">
                                         <th class="text-center">#</a></th>
-                                    <!--    <th class="text-center">Author Name</th>
-                                        <th class="text-center">Author Type</th> -->
                                         <th class="text-center">Title</th>
+                                        <th class="text-center">Author Name</th>
+                                        <th class="text-center">Author Type</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Approval Status</th>
                                         <th class="text-center">&nbsp;</th>
@@ -39,14 +38,14 @@
                                     <tr ng-repeat="blog in blogs | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
                                         <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
-                                       <!-- <td class="text-center">
-                                                {{ blog.authorId }}
+                                        <td class="text-center">
+                                                {{ blog.title }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blog.authorname }}
                                         </td>
                                         <td class="text-center">
                                                 {{ blog.authorType }}
-                                        </td> -->
-                                        <td class="text-center">
-                                                {{ blog.title }}
                                         </td>
                                         <td class="text-center">
                                                 {{ blog.blogStatus }}
@@ -70,10 +69,10 @@
                                             <!-- <span ng-show="blog.approvalStatus == 'inactive'"> -->
                                              <!--   <a href="javascript:void(0)" id="pending" ng-click="updateApprovalStatus($event,blog.id)"> Pending </a> | -->
                                            <!-- </span> -->
-                                            <span ng-show="(blog.approvalStatus == 'rejected' && blog.authorType != 'admin') || (blog.approvalStatus == 'pending' && blog.approvalStatus == 'approved')">
-                                                <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>
+                                            <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'rejected')">
+                                                <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>|
                                              </span>
-                                            <span ng-show="(blog.approvalStatus == 'approved' && blog.authorType != 'admin') || (blog.approvalStatus == 'pending' && blog.approvalStatus == 'rejected')">
+                                            <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'approved')">
                                                 <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,blog.id)"> Reject </a>
                                             </span>
                                             <span>
@@ -95,7 +94,7 @@
                                     </button>
                              </span>
 
-                            <span ng-hide="blogs.length">No AdPage Found</span>
+                            <span ng-hide="blogs.length">No Blog Found</span>
                         </div>
 
                      </div>

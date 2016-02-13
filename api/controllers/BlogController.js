@@ -308,34 +308,23 @@ console.log("Entered Add Blog -----------------------------");
 
 
                                 //Query to get name of author from user table or admin table
-                                /* query =    " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                query =    " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " CONCAT( usr.firstname, ' ', usr.lastname ) username"+
+                                            " CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
                                             " FROM blog blg"+
                                             " INNER JOIN user usr ON blg.authorId = usr.id"+
                                             " WHERE blg.authorType = 'user'"+
                                             " UNION"+
                                             " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " CONCAT( adm.firstname, ' ', adm.lastname ) username"+
+                                            " CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
                                             " FROM blog blg"+
                                             " INNER JOIN admin adm ON blg.authorId = adm.id"+
                                             " WHERE blg.authorType = 'admin'"+
                                             " ORDER BY id";
 
 
-                                               Blog.query(query, function(err, blogDetails) {
-                                                        if(err)
-                                                        {
-                                                            return res.json(200, {status: 2, error_details: err});
-                                                        }
-                                                        else
-                                                        {
-                                                            console.log(blogDetails);
-                                                            return res.json(200, {status: 1, message: "success", data: blogDetails});
-                                                        }
-                                               });*/
-                                                var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
+                                               // var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
                                                 console.log(query);
                                                 Blog.query(query, function(err, result) {
                                                     if(err)

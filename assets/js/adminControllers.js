@@ -2566,3 +2566,125 @@ console.log(blogCommentId);
 
 
 });
+
+
+
+
+
+/*===================================================================================================================================
+Manage Poll  Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+
+        //get all Poll List
+        $http.post($rootScope.STATIC_URL + 'poll/getPollList', {request: request, token: token, userRole: userRole}).success(function (response) {
+            if (response.status == 1)
+            {
+                    $scope.polls = response.data;
+                    $scope.numberOfPages = function () {
+                        return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                     }
+
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+
+// Update Status
+    $scope.updatePollStatus = function ($event, pollId) {
+        var pollStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + pollStatus + ' this Poll?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.polls, function (element, index) {
+                return element.id == pollId;
+            });
+
+            request = {token: token, pollStatus: pollStatus, returnedData: returnedData[0]};
+
+            $http.post($rootScope.STATIC_URL + 'poll/updatePollStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+                        //get all Poll List
+                            $http.post($rootScope.STATIC_URL + 'poll/getPollList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                        $scope.polls = response.data;
+                                        $scope.numberOfPages = function () {
+                                            return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                                         }
+
+                                }
+
+                            }).error(function () {
+                                        $scope.errorMessage = "Please Try Again";
+                            });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+
+// Update ApprovalStatus
+    $scope.updateApprovalStatus = function ($event, pollId) {
+
+        var approvalStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + approvalStatus + ' this poll?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+            var returnedData = $.grep($scope.polls, function (element, index) {
+                return element.id == pollId;
+            });
+
+            request = {token: token, approvalStatus: approvalStatus, returnedData: returnedData[0]};
+
+            $http.post($rootScope.STATIC_URL + 'poll/updateApprovalStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+                        //get all Poll List
+                            $http.post($rootScope.STATIC_URL + 'poll/getPollList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                        $scope.polls = response.data;
+                                        $scope.numberOfPages = function () {
+                                            return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                                         }
+
+                                }
+
+                            }).error(function () {
+                                        $scope.errorMessage = "Please Try Again";
+                            });
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
+
+
+});

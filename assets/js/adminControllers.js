@@ -2590,7 +2590,7 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
             {
                     $scope.polls = response.data;
                     $scope.numberOfPages = function () {
-                        return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                        return Math.ceil(($scope.polls).length / $scope.pageSize);
                      }
 
             }
@@ -2626,7 +2626,7 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
                                 {
                                         $scope.polls = response.data;
                                         $scope.numberOfPages = function () {
-                                            return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                                            return Math.ceil(($scope.polls).length / $scope.pageSize);
                                          }
 
                                 }
@@ -2669,7 +2669,7 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
                                 {
                                         $scope.polls = response.data;
                                         $scope.numberOfPages = function () {
-                                            return Math.ceil(($scope.blogs).length / $scope.pageSize);
+                                            return Math.ceil(($scope.polls).length / $scope.pageSize);
                                          }
 
                                 }
@@ -2684,6 +2684,118 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
             });
         }
     }
+
+});
+
+/*===================================================================================================================================
+Add New Poll  Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+
+
+
+          $scope.qoptions = [];
+
+          //Add new Dynamic Row
+          $scope.addRow = function(){
+                console.log("AddNew");
+                if(!$scope.newAnswer){
+                    $scope.errorMessage = "Please Enter a valid Option";
+                }else{
+                    $scope.qoptions.push({ 'newAnswer':$scope.newAnswer });
+                    $scope.newAnswer='';
+                    //console.log($scope.qoptions);
+                }
+
+
+          };
+
+          //Remove Dynamic Row
+          $scope.removeRow = function(newAnswer){
+                var index = -1;
+                var comArr = eval( $scope.qoptions );
+                for( var i = 0; i < comArr.length; i++ ) {
+                    if( comArr[i].newAnswer === newAnswer ) {
+                        index = i;
+                        break;
+                    }
+                }
+                if( index === -1 ) {
+                    alert( "Something gone wrong" );
+                }
+                $scope.qoptions.splice( index, 1 );
+            };
+
+
+          //Add New Poll
+        $scope.addNewPoll = function () {
+
+                $scope.errorMessage = "";
+
+                var fd              = new FormData();
+                var title           = $scope.newTitle;
+                var question        = $scope.newQuestion;
+                var ansOptionType   = $scope.newAnsOptType;
+                var answerOptions   = $scope.qoptions;
+
+
+                if (!title && !question && !answerOptions && !ansOptionType) {
+                    $scope.errorMessage = "Please Enter All Details";
+                }
+                else if (!title) {
+                    $scope.errorMessage = "Please Enter a Title";
+                }
+                else if (!question) {
+                    $scope.errorMessage = "Please Enter a Question";
+                }
+                else if (!ansOptionType) {
+                    $scope.errorMessage = "Please Select an Option Type";
+                }
+                else if (answerOptions.length == 0) {
+                    $scope.errorMessage = "Please Enter Options";
+                }
+                else
+                {
+
+                    fd.append('title', title);
+                    fd.append('question', question);
+                    fd.append('ansOptionType', ansOptionType);
+                    fd.append('token', token);
+                    fd.append('userRole', userRole);
+                    for(var i=0;i<answerOptions.length;i++){
+                        fd.append('answerOptions', answerOptions[i].newAnswer);
+                    }
+
+                    $http.post($rootScope.STATIC_URL + 'poll/addpoll', fd, {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+
+                    }).success(function (response) {
+                        if (response.status == 1)
+                        {
+                            var index                   = $scope.index;
+                            $scope.newTitle             = "";
+                            $scope.newQuestion          = "";
+                            $scope.newAnsOptType        = "";
+                            $scope.qoptions             = "";
+                            location.reload();
+                        }
+                       }).error(function () {
+                                $scope.errorMessage = "Please Try Again";
+                       });
+          }
+      }
+
+
+
 
 
 });

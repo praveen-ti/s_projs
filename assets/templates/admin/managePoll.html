@@ -17,7 +17,12 @@
 ##############################################################################################################################-->
         <div class="row">
                     <div class="col-lg-12">
-                       <button class="btn btn-primary" data-toggle="modal" data-target="#newBlog">Add new Poll</button> <br/><br/>
+                       <a href="admin/poll/addNewPoll" style="text-decoration:none">
+                           <button class="btn btn-primary">
+                                Add new Poll
+                           </button>
+                       </a>
+                       <br/><br/>
                        <div class="table-responsive">
 
                             </br></br>
@@ -27,6 +32,7 @@
                                         <th class="text-center">#</a></th>
                                         <th class="text-center">Title</th>
                                         <th class="text-center">Question</th>
+                                        <th class="text-center">Options</th>
                                         <th class="text-center">Author Name</th>
                                         <th class="text-center">Author Type</th>
                                         <th class="text-center">Status</th>
@@ -46,6 +52,9 @@
                                         </td>
                                         <td class="text-center">
                                                 {{ poll.question }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ poll.answerOptions }}
                                         </td>
                                          <td class="text-center">
                                                 {{ poll.authorname }}
@@ -88,6 +97,16 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                           <span ng-show="(polls.length >= (pageSize + 1))">
+                                    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                                        Previous
+                                    </button>
+                                    {{currentPage+1}}/{{numberOfPages()}}
+                                    <button ng-disabled="currentPage >= polls.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                                        Next
+                                    </button>
+                             </span>
 
 
 

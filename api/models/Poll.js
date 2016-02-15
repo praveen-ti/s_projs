@@ -25,6 +25,10 @@ module.exports = {
             type: 'string',
         },
 
+       answerOptions: {
+            type: 'string',
+        },
+
        //userId or adminId
       authorId: {
             type: 'integer',
@@ -57,7 +61,7 @@ module.exports = {
             defaultsTo  : pollConstants.APPROVAL_STATUS_PENDING,
         },
          //Single(Radio Button) or Multiple (Check Box)
-      answerType: {
+      ansOptionType: {
             type        : 'string',
             enum        : [pollConstants.ANSWER_TYPE_RADIOBUTTON, pollConstants.ANSWER_TYPE_CHECKBOX],
             defaultsTo  : pollConstants.ANSWER_TYPE_CHECKBOX,

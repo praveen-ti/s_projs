@@ -44,6 +44,10 @@ module.exports.routes = {
     view: 'index'
   },
   
+  '/sms': {
+    view: 'index'
+  },
+  
   '/profile': {
     view: 'index'
   },

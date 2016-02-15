@@ -28,6 +28,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'user'
                     }
                 }).
+                when('/sms', {
+                    templateUrl: 'templates/sms.html',
+                    controller: 'smsCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'user'
+                    }
+                }).
                 when('/login', {
                     templateUrl: 'templates/login.html',
                     controller: 'loginCtrl',
@@ -223,12 +231,16 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
 zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationService) {
 
     $rootScope.STATIC_URL = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
+    
+    if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
+        $window.sessionStorage.isAuthenticated = 'false';
+    }
 
     $rootScope.$on("$routeChangeStart", function (event, nextRoute, currentRoute) {
 
-        if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
-            $window.sessionStorage.isAuthenticated = 'false';
-        }
+        //if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
+        //    $window.sessionStorage.isAuthenticated = 'false';
+        //}
 
         //console.log('$window.sessionStorage.isAuthenticated');
         //console.log(nextRoute.access.requiresLogin);

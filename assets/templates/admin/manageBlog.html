@@ -1,0 +1,198 @@
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="page-header">
+                            Blog List
+                        </h4>
+
+                    </div>
+                </div>
+
+<!-- #########################################################################################################################
+                             Get All Blogs - Starts
+##############################################################################################################################-->
+        <div class="row">
+                    <div class="col-lg-12">
+                       <button class="btn btn-primary" data-toggle="modal" data-target="#newBlog">Add new Blog</button> <br/><br/>
+                       <div class="table-responsive">
+                            <!-- <p>SubAdmin :- <input type="search" ng-model="searchText"/></p> -->
+                            </br></br>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr class="info">
+                                        <th class="text-center">#</a></th>
+                                        <th class="text-center">Title</th>
+                                        <th class="text-center">Author Name</th>
+                                        <th class="text-center">Author Type</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Approval Status</th>
+                                        <th class="text-center">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="blog in blogs | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                       <!-- <td class="text-center">{{ $index+1 }}</td> -->
+                                        <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
+                                        <td class="text-center">
+                                                {{ blog.title }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blog.authorname }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blog.authorType }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blog.blogStatus }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blog.approvalStatus }}
+                                        </td>
+                                        <td class="text-center">
+                                           <span>
+                                                <a href="admin/blog/{{blog.id}}">View </a> |
+                                            </span>
+
+                                           <span ng-show="blog.blogStatus == 'inactive'">
+                                                <a href="javascript:void(0)" id="active" ng-click="updateBlogStatus($event,blog.id)"> Active</a> |
+                                            </span>
+                                            <span ng-show="blog.blogStatus == 'active'">
+                                                <a href="javascript:void(0)" id="inactive"  ng-click="updateBlogStatus($event,blog.id)"> Inactive</a> |
+                                            </span>
+                                            <span>
+
+                                            <!-- <span ng-show="blog.approvalStatus == 'inactive'"> -->
+                                             <!--   <a href="javascript:void(0)" id="pending" ng-click="updateApprovalStatus($event,blog.id)"> Pending </a> | -->
+                                           <!-- </span> -->
+                                            <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'rejected')">
+                                                <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>|
+                                             </span>
+                                            <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'approved')">
+                                                <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,blog.id)"> Reject </a>
+                                            </span>
+                                            <span>
+                                                <!-- <a href="javascript:void(0)"  ng-click="deleteAdPage($event,adPage.id)"> Delete</a> -->
+                                            </span>
+
+                                       </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                              <span ng-show="(blogs.length >= (pageSize + 1))">
+                                    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                                        Previous
+                                    </button>
+                                    {{currentPage+1}}/{{numberOfPages()}}
+                                    <button ng-disabled="currentPage >= blogs.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                                        Next
+                                    </button>
+                             </span>
+
+                            <span ng-hide="blogs.length">No Blog Found</span>
+                        </div>
+
+                     </div>
+                </div>
+<!-- #########################################################################################################################
+                             Get All Blogs - Ends
+##############################################################################################################################-->
+
+
+<!-- #########################################################################################################################
+                             Add New Blog - Starts
+##############################################################################################################################-->
+       <div class="row" >
+            <div id="newBlog"  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                            <h4 class="modal-title" id="myModalLabel">Add new Blog</h4>
+                            <p class="alert alert-danger" ng-show="errorMessage">{{ errorMessage }}</p>
+                        </div>
+
+                    <div class="modal-body">
+
+                    <form ng-submit="addNewBlog()" class="form-horizontal" role="form" name="newBlogAdd" novalidate >
+
+
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">Title</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" ng-model="newTitle" name="text"/>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="col-sm-4 control-label">Description</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" type="text" ng-model="newDescription" name="text"></textarea>
+                            </div>
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                          </div>
+                   </form>
+
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+<!-- #########################################################################################################################
+                          Add New Blog - Starts
+##############################################################################################################################-->
+
+
+
+<div class="row">
+       <div id="ff" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+         <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                <h4 class="modal-title" id="myModalLabel">Edit Blog</h4>
+                <p class="text-danger">{{ errorMessage }}</p>
+              </div>
+              <div class="modal-body">
+                <form ng-submit="updateBlog()" class="form-horizontal" role="form" novalidate >
+
+                      <div class="form-group">
+                        <label class="col-sm-4 control-label">Title</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" ng-model="editBlog.title" name="text"/>
+                        </div>
+                     </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-4 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" type="text" ng-model="editBlog.description" name="text"></textarea>
+                        </div>
+                     </div>
+
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit" id="submit">Save changes</button>
+                      </div>
+
+                </form>
+
+                </div>
+              </div>
+            </div>
+         </div>
+      </div>
+     </div>
+</div>
+    </div>
+ </div>

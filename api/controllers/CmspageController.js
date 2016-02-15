@@ -47,15 +47,15 @@ addCmsPage : function(req, res) {
     },
 
    /*===================================================================================================================================
-                                                      Edit CmsPage
+    Edit CmsPage
  ====================================================================================================================================*/
 
 
     updateCmsPageDetails : function(req, res) {
 
-
+console.log("updateCmsPageDetails");
           AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
-                        //Assigning value to authorId
+
                     if(err)
                     {
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
@@ -78,7 +78,8 @@ addCmsPage : function(req, res) {
                                                                pageName                 :       req.body.pageName,
                                                                content                  :       req.body.content,
                                                               };
-                                                //return res.json(200, {status: 1, message: 'success'});
+
+console.log(values);
                                                 var criteria = {id: result.id};
                                                 Cmspage.update(criteria, values).exec(function(err, updatedCmsPage) {
                                                     if(err)

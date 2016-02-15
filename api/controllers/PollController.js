@@ -205,14 +205,15 @@ var jsonPollDetails = JSON.parse(pollDetails);
 
 
 /*===================================================================================================================================
-                                                        Get all Poll
+Get all Poll
  ====================================================================================================================================*/
 
     getPollList : function(req, res) {
 
-        var userRole = req.body.userRole;
-        var tokenService = tokenService || {};
-        var authorId = "";
+        var userRole            =   req.body.userRole;
+        var tokenService        =   tokenService || {};
+        var authorId            =   "";
+        var switchKey           =   req.body.userRole;
 
         if (userRole == 'user') {
             tokenService = UsertokenService;
@@ -222,15 +223,6 @@ var jsonPollDetails = JSON.parse(pollDetails);
         }
 
          tokenService.checkToken(req.body.token, function(err, tokenCheck) {
-
-                                    //Assigning value to authorId
-                                    if (userRole == 'user') {
-                                        authorId = tokenCheck.tokenDetails.userId;
-
-                                    } else if (userRole == 'admin') {
-                                        authorId = tokenCheck.tokenDetails.adminId;
-                                    }
-
                     if(err)
                     {
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
@@ -239,33 +231,172 @@ var jsonPollDetails = JSON.parse(pollDetails);
                     {
                         if(tokenCheck.status == 1)
                             {
-                                console.log(userRole);
-                                /*var query ="SELECT * FROM  blog WHERE"+
-                                            " authorType =  '"+userRole+"' AND"+
-                                            " authorId =  "+authorId+
-                                            " ORDER BY createdAt DESC";*/
-                                   var query ="SELECT * FROM  poll"+
-                                                " WHERE pollStatus = "+pollConstants.POLL_STATUS_ACTIVE+
-                                                " AND approvalStatus != "+pollConstants.APPROVAL_STATUS_REJECTED+
-                                                " ORDER BY createdAt DESC";
-                                   console.log(query);
-                                Poll.query(query, function(err, result) {
-                                    if(err)
+
+                                 switch (switchKey)
                                     {
-                                        return res.json(200, {status: 2, error_details: err});
-                                    }
-                                    else
-                                    {
-                                        console.log(result);
-                                        return res.json(200, {status: 1, message: "success", result: result});
-                                    }
-                                });
+                                     case 'user' :
+
+                                     break;
+
+                                     case 'admin' :
+
+                                            console.log(userRole);
+                                            /*var query ="SELECT * FROM  blog WHERE"+
+                                                        " authorType =  '"+userRole+"' AND"+
+                                                        " authorId =  "+authorId+
+                                                        " ORDER BY createdAt DESC";*/
+                                              /* var query ="SELECT * FROM  poll"+
+                                                            " WHERE pollStatus = "+pollConstants.POLL_STATUS_ACTIVE+
+                                                            " AND approvalStatus != "+pollConstants.APPROVAL_STATUS_REJECTED+
+                                                            " ORDER BY createdAt DESC";*/
+
+                                            //query = "SELECT * FROM  poll ORDER BY createdAt DESC";
+                                             query =    " SELECT pl.id,pl.authorType, pl.title, pl.question,"+
+                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus,"+
+                                                        " CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
+                                                        " FROM poll pl"+
+                                                        " INNER JOIN user usr ON pl.authorId = usr.id"+
+                                                        " WHERE pl.authorType = 'user'"+
+                                                        " UNION"+
+                                                        " SELECT pl.id,pl.authorType, pl.title, pl.question,"+
+                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus,"+
+                                                        " CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
+                                                        " FROM poll pl"+
+                                                        " INNER JOIN admin adm ON pl.authorId = adm.id"+
+                                                        " WHERE pl.authorType = 'admin'"+
+                                                        " ORDER BY id";
+
+                                            Poll.query(query, function(err, result) {
+                                                if(err)
+                                                {
+                                                    return res.json(200, {status: 2, error_details: err});
+                                                }
+                                                else
+                                                {
+                                                    console.log(result);
+                                                    return res.json(200, {status: 1, message: "success", data: result});
+                                                }
+                                            });
+
+                                             break;
+
+                               }
                             }
                             else
                             {
                                 return res.json(200, {status: 3, message: 'token expired'});
                             }
                     }
+        });
+    },
+
+
+/*===================================================================================================================================
+   Update pollStatus
+ ====================================================================================================================================*/
+    updatePollStatus: function(req, res) {
+
+         var request = req.body.request;
+
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Poll.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                        pollStatus          :    request.pollStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+
+                            Poll.update(criteria, values).exec(function (err, updatePollStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updatePollStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
+        });
+    },
+
+
+/*===================================================================================================================================
+  Update approvalStatus
+ ====================================================================================================================================*/
+
+  updateApprovalStatus: function(req, res) {
+
+         var request = req.body.request;
+
+        AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Poll.findOne({id: request.returnedData.id}).exec(function findCB(err, result) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            var values = {
+                                        approvalStatus          :    request.approvalStatus
+                            };
+                            var criteria = {
+                                              id          : result.id
+                                            };
+                            Poll.update(criteria, values).exec(function (err, updateApprovalStatus) {
+                                if (err)
+                                {
+                                    return res.json(200, {status: 2, error_details: err});
+                                }
+                                else
+                                {
+                                    return res.json(200, {status: 1, data: updateApprovalStatus});
+                                }
+
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+
+            }
         });
     },
 
@@ -325,7 +456,7 @@ var jsonPollDetails = JSON.parse(pollDetails);
     },
 
 /*===================================================================================================================================
-                                                   approvalStatus for a PollComment By admin
+ approvalStatus for a PollComment By admin
  ====================================================================================================================================*/
     approvalStatusUpdate: function(req, res) {
 

@@ -221,6 +221,38 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                 when('/admin/blog/list', {
+                     templateUrl: 'templates/admin/manageBlog.html',
+                     controller: 'manageBlogCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/blog/:blogId', {
+                     templateUrl: 'templates/admin/blogDetails.html',
+                     controller: 'blogDetailsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                 when('/admin/blog/comments/:blogId', {
+                     templateUrl: 'templates/admin/blogComments.html',
+                     controller: 'blogCommentsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/poll/list', {
+                     templateUrl: 'templates/admin/managePoll.html',
+                     controller: 'managePollCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

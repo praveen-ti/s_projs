@@ -1,0 +1,89 @@
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="page-header">
+                            Blog Comments
+                        </h4>
+
+                    </div>
+                </div>
+
+
+ <!-- #########################################################################################################################
+      Get All Blog Comments - Starts
+##############################################################################################################################-->
+        <div class="row">
+                    <div class="col-lg-12">
+                       <div class="table-responsive">
+                            <!-- <p>SubAdmin :- <input type="search" ng-model="searchText"/></p> -->
+                            </br></br>
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr class="info">
+                                        <th class="text-center">#</a></th>
+                                        <th class="text-center">User Name</th>
+                                        <th class="text-center">User Pic</th>
+                                        <th class="text-center">Comment</th>
+                                        <th class="text-center">Approval Status</th>
+                                        <th class="text-center">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="blogComment in blogComments | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                       <!-- <td class="text-center">{{ $index+1 }}</td> -->
+                                        <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
+                                        <td class="text-center">
+                                                {{ blogComment.username }}
+                                        </td>
+                                        <td class="text-center">
+                                                <img src="{{ blogComment.comment }}" />
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blogComment.comment }}
+                                        </td>
+                                        <td class="text-center">
+                                                {{ blogComment.approvalStatus }}
+                                        </td>
+                                        <td class="text-center">
+
+                                            <span ng-show="blogComment.approvalStatus == 'rejected'">
+                                                <a href="javascript:void(0)" id="approved"  ng-click="updateBlogCommentApprovalStatus($event,blogComment.id)"> Approve </a>
+                                             </span>
+                                            <span ng-show="blogComment.approvalStatus == 'approved'">
+                                                <a href="javascript:void(0)" id="rejected"  ng-click="updateBlogCommentApprovalStatus($event,blogComment.id)"> Reject </a>
+                                            </span>
+                                            <span>
+                                                <!-- <a href="javascript:void(0)"  ng-click="deleteAdPage($event,adPage.id)"> Delete</a> -->
+                                            </span>
+
+                                       </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                              <span ng-show="(blogComments.length >= (pageSize + 1))">
+                                    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                                        Previous
+                                    </button>
+                                    {{currentPage+1}}/{{numberOfPages()}}
+                                    <button ng-disabled="currentPage >= blogs.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                                        Next
+                                    </button>
+                             </span>
+
+                            <span ng-hide="blogComments.length">No Comment for this Blog Found</span>
+                        </div>
+
+                     </div>
+                </div>
+<!-- #########################################################################################################################
+  Get All Blog Comments - Ends
+##############################################################################################################################-->
+
+     </div>
+</div>

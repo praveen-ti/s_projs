@@ -22,9 +22,9 @@ module.exports = {
             },
            //To check admin or not
            authorType : {
-                type: 'string',
-                enum: [blogConstants.AUTHOR_TYPE_SUPERADMIN, blogConstants.AUTHOR_TYPE_SUBADMIN, blogConstants.AUTHOR_TYPE_USER],
-                defaultsTo: 'super_admin',
+                type            : 'string',
+                enum            : [blogConstants.AUTHOR_TYPE_SUPERADMIN, blogConstants.AUTHOR_TYPE_SUBADMIN, blogConstants.AUTHOR_TYPE_USER],
+                defaultsTo      : blogConstants.AUTHOR_TYPE_SUPERADMIN,
             },
 
            title : {
@@ -37,7 +37,7 @@ module.exports = {
             //Admin can block a blog for a particular time
             blogStatus : {
                 type            : 'string',
-                enum            : [blogConstants.BLOG_STATUS_ACTIVE,blogConstants.BLOG_STATUS_ACTIVE],
+                enum            : [blogConstants.BLOG_STATUS_ACTIVE,blogConstants.BLOG_STATUS_INACTIVE],
                 defaultsTo      :  blogConstants.BLOG_STATUS_ACTIVE,
             },
             //Admin can block a user's blog

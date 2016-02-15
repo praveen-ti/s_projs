@@ -132,7 +132,7 @@ module.exports.constants = {
 
     blog: {
 
-        AUTHOR_TYPE_SUPERADMIN     : 'super_admin',
+        AUTHOR_TYPE_SUPERADMIN     : 'admin',
         AUTHOR_TYPE_SUBADMIN       : 'sub_admin',
         AUTHOR_TYPE_USER           : 'user',
 

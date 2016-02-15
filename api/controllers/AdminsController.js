@@ -296,10 +296,9 @@ console.log(request);
 
 
     getRemainingPrivilegesList: function (req, res) {
-console.log("ENTEREDDDDDDDDDDDD  getRemainingPrivilegesList");
+
 var request = req.body.request;
-console.log(request.adminId);
-console.log(req.body.token);
+
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
@@ -318,8 +317,6 @@ console.log(req.body.token);
                         }
                         else
                         {
-                            console.log("getRemainingPrivilegesList >>>>>>>>>>>");
-                            console.log(result);
 
                                //If the subadmin Already have other Privilege
                               if(result.length!=0){
@@ -518,12 +515,13 @@ console.log(request);
                         }
                         else
                         {
-                            if(result != ""){
+                            /*if(result != ""){
                                 return res.json(200, {status: 1, message: "success", data: result});
                             }
                             else{
                                 return res.json(200, {status: 1, message: "success", data: "No Privilege Found"});
-                            }
+                            }*/
+                            return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
                 }

@@ -7,6 +7,7 @@
 
 var crypto = require('crypto');
 var fs = require('fs');
+var $ = require('jquery');
 var userConstants = sails.config.constants.user;
 var photoConstants = sails.config.constants.photo;
 var reviewConstants = sails.config.constants.review;
@@ -392,7 +393,7 @@ module.exports = {
             } else {
 
                 if (tokenCheck.status == 1) {
-                    
+
                     var query = "SELECT u.* FROM user AS u WHERE u.id = " + userId + " LIMIT 1";
                     User.query(query, function (err, user) {
                         if (err) {
@@ -1465,6 +1466,35 @@ module.exports = {
                 }
             }
         });
+    },
+    smsService: function (req, res) {
+        var to = "0091" + req.body.to;
+        var message = req.body.message;
+        
+        //var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
+        var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
+        var from = "Tech innov.";
+        //var to = "00919746226499",
+        //var body = "Example message text";
+        var reference = "Example message reference";
+        var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + message + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
+        
+        $.ajax({
+            type: "POST",
+            contentType: "application/xml",
+            data: data,
+            dataType: "xml",
+            crossDomain: true,
+            url: "https://sgw01.cm.nl/gateway.ashx"
+        }).done(function () {
+            // Successful request
+            console.log('SMS send successfully.');
+        }).fail(function () {
+            // Request failed
+            console.log('Error in sending SMS.');
+        });
+        
+        return res.json(200, {status: 1, message: "success", data: 'Message sent successfully.'});
     }
 
 };

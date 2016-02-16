@@ -1,48 +1,16 @@
-<script type="text/javascript">
-    $("#send").one('click', function () {
-        // Be aware that Javascript is run client-side so your unique poduct token can be compromised
-        // Best used on local environment only or get the product token from an input field
-
-        // jQuery 1.5 + is required, due to the Promise interface.
-
-        var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
-        var from = "Ti Technologies.";
-        var to = "00919746226499";
-        //var body = "Example message text";
-        var body = $("#message").val();
-        var reference = "Example message reference";
-        var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + body + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/xml",
-            data: data,
-            dataType: "xml",
-            crossDomain: true,
-            url: "https://sgw01.cm.nl/gateway.ashx"
-        }).done(function (response) {
-            // Successful request
-            console.log(response);
-
-        }).fail(function (err) {
-            // Request failed
-            console.log(err);
-        });
-    });
-</script>
 <div class="container">
     <h3> Send SMS</h3>
 
     <form role="form">
         <div class="form-group">
             <label for="to">To:</label>
-            <input type="text" class="form-control" id="to">
+            <input type="text" class="form-control" ng-model="to" />
         </div>
         <div class="form-group">
             <label for="message">Message:</label>
-            <textarea class="form-control" id="message"></textarea>
+            <textarea class="form-control" ng-model="message"></textarea>
         </div>
-        <button type="button" class="btn btn-default" id="send">Send</button>
+        <input type="button" class="btn btn-default" ng-click="sendSms()" value="Send"/>
     </form>
 </div>
 

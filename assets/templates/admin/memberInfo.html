@@ -27,43 +27,87 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="row"><label class="col-lg-3">Name : </label> <label class="col-lg-9">{{member.firstname  + ' '+ member.lastname}}</label></div>    
-                <div class="row"><label class="col-lg-3">Username : </label> <label class="col-lg-9">{{member.username}}</label></div>
-                <div class="row"><label class="col-lg-3">Email : </label> <label class="col-lg-9">{{member.email}}</label></div>
-                <div class="row"><label class="col-lg-3">Account status : </label> <label class="col-lg-9">{{member.status}}</label></div>
-                <div class="row"><label class="col-lg-3">Email verification status : </label> <label class="col-lg-9">{{member.emailVerificationStatus}}</label></div>
-                <div class="row"><label class="col-lg-3">Subscribed package : </label> <label class="col-lg-9">{{member.packageName}}</label></div>
-                <div class="row"><label class="col-lg-3">Gender : </label> <label class="col-lg-9">{{member.gender}}</label></div>
-                <div class="row"><label class="col-lg-3">Age : </label> <label class="col-lg-9">{{member.age}}</label></div>
-                <div class="row"><label class="col-lg-3">Date of birth : </label> <label class="col-lg-9">{{member.dob | date:'dd MMM yyyy'}}</label></div>
-                <div class="row"><label class="col-lg-3">Telephone : </label> <label class="col-lg-9">{{member.telephone}}</label></div>
-                <div class="row"><label class="col-lg-3">Zipcode : </label> <label class="col-lg-9">{{member.zipcode}}</label></div>
-                <div class="row"><label class="col-lg-3">Country : </label> <label class="col-lg-9">{{member.country}}</label></div>
-                <div class="row"><label class="col-lg-3">State : </label> <label class="col-lg-9">{{member.state}}</label></div>
-                <div class="row"><label class="col-lg-3">City : </label> <label class="col-lg-9">{{member.city}}</label></div>
-                <div class="row"><label class="col-lg-3">Latitude : </label> <label class="col-lg-9">{{member.latitude}}</label></div>
-                <div class="row"><label class="col-lg-3">Longitude : </label> <label class="col-lg-9">{{member.longitude}}</label></div>
-                <div class="row"><label class="col-lg-3">User level : </label> <label class="col-lg-9">{{member.userLevel}}</label></div>
-                <div class="row"><label class="col-lg-3">Years of experience : </label> <label class="col-lg-9">{{member.expYear}}</label></div>
-                <div class="row"><label class="col-lg-3">Body type : </label> <label class="col-lg-9">{{member.bodyType}}</label></div>
-                <div class="row"><label class="col-lg-3">Height : </label> <label class="col-lg-9">{{member.height}}</label></div>
-                <div class="row"><label class="col-lg-3">Massage frequency : </label> <label class="col-lg-9">{{member.massageFrequency}}</label></div>
-                <div class="row"><label class="col-lg-3">Drinking habit : </label> <label class="col-lg-9">{{member.drinkingHabit}}</label></div>
-                <div class="row"><label class="col-lg-3">Smoking habit : </label> <label class="col-lg-9">{{member.smokingHabit}}</label></div>
-                <div class="row"><label class="col-lg-3">Training hours : </label> <label class="col-lg-9">{{member.trainingHours}}</label></div>
-                <div class="row"><label class="col-lg-3">Languages known : </label> <label class="col-lg-9">{{member.languages}}</label></div>
-                <div class="row"><label class="col-lg-3">Therapeutic status : </label> <label class="col-lg-9">{{member.therapeuticStatus}}</label></div>
-                <div class="row"><label class="col-lg-3">Therapeutic gender : </label> <label class="col-lg-9">{{member.therapeuticGender}}</label></div>
-                <div class="row"><label class="col-lg-3">Therapeutic description : </label> <label class="col-lg-9">{{member.therapeuticDesc}}</label></div>
-                <div class="row"><label class="col-lg-3">Sensual status : </label> <label class="col-lg-9">{{member.sensualStatus}}</label></div>
-                <div class="row"><label class="col-lg-3">Sensual gender : </label> <label class="col-lg-9">{{member.sensualGender}}</label></div>
-                <div class="row"><label class="col-lg-3">Sensual description : </label> <label class="col-lg-9">{{member.sensualDesc}}</label></div>
-                <div class="row"><label class="col-lg-3">Relationship types : </label> <label class="col-lg-9">{{member.relationshipTypes}}</label></div>
-                <div class="row"><label class="col-lg-3">Prefered massage types : </label> <label class="col-lg-9">{{member.preferedMassageTypes}}</label></div>
-                <div class="row"><label class="col-lg-3">Service type : </label> <label class="col-lg-9">{{member.serviceType}}</label></div>
-                <div class="row"><label class="col-lg-3">Last logged in : </label> <label class="col-lg-9">{{member.lastLoggedin}}</label></div>                        
+                <div class="col-md-6">
+                    <div class="col-lg-12"><label class="col-md-4">Name : </label><label class="col-md-8"> {{member.firstname  + ' '+ member.lastname}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Username : </label><label class="col-md-8"> {{member.username}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Email : </label><label class="col-md-8"> {{member.email}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Account status : </label><label class="col-md-8"> {{member.status}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Email verification status : </label><label class="col-md-8"> {{member.emailVerificationStatus}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Subscribed package : </label><label class="col-md-8"> {{member.packageName}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Gender : </label><label class="col-md-8"> {{member.gender}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Age : </label><label class="col-md-8"> {{member.age}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Date of birth : </label><label class="col-md-8"> {{member.dob | date:'dd MMM yyyy'}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Telephone : </label><label class="col-md-8"> {{member.telephone}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Zipcode : </label><label class="col-md-8"> {{member.zipcode}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Country : </label><label class="col-md-8"> {{member.country}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">State : </label><label class="col-md-8"> {{member.state}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">City : </label><label class="col-md-8"> {{member.city}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Latitude : </label><label class="col-md-8"> {{member.latitude}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Longitude : </label><label class="col-md-8"> {{member.longitude}}</label></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-lg-12"><label class="col-md-4">User level : </label><label class="col-md-8"> {{member.userLevel}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Years of experience : </label><label class="col-md-8"> {{member.expYear}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Body type : </label><label class="col-md-8"> {{member.bodyType}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Height : </label><label class="col-md-8"> {{member.height}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Massage frequency : </label><label class="col-md-8"> {{member.massageFrequency}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Drinking habit : </label><label class="col-md-8"> {{member.drinkingHabit}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Smoking habit : </label><label class="col-md-8"> {{member.smokingHabit}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Training hours : </label><label class="col-md-8"> {{member.trainingHours}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Languages known : </label><label class="col-md-8"> {{member.languages}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Therapeutic status : </label><label class="col-md-8"> {{member.therapeuticStatus}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Therapeutic gender : </label><label class="col-md-8"> {{member.therapeuticGender}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Therapeutic description : </label><label class="col-md-8"> {{member.therapeuticDesc}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Sensual status : </label><label class="col-md-8"> {{member.sensualStatus}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Sensual gender : </label><label class="col-md-8"> {{member.sensualGender}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Sensual description : </label><label class="col-md-8"> {{member.sensualDesc}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Relationship types : </label><label class="col-md-8"> {{member.relationshipTypes}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Prefered massage types : </label><label class="col-md-8"> {{member.preferedMassageTypes}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Service type : </label><label class="col-md-8"> {{member.serviceType}}</label></div>
+                    <div class="col-lg-12"><label class="col-md-4">Last logged in : </label><label class="col-md-8"> {{member.lastLoggedin}}</label></div>
+                </div>
             </div>
         </div>
+
+        <!--        <div class="row">
+                    <div class="col-lg-12">
+                        <div class="row"><label class="col-lg-3">Name : </label> <label class="col-lg-9">{{member.firstname  + ' '+ member.lastname}}</label></div>    
+                        <div class="row"><label class="col-lg-3">Username : </label> <label class="col-lg-9">{{member.username}}</label></div>
+                        <div class="row"><label class="col-lg-3">Email : </label> <label class="col-lg-9">{{member.email}}</label></div>
+                        <div class="row"><label class="col-lg-3">Account status : </label> <label class="col-lg-9">{{member.status}}</label></div>
+                        <div class="row"><label class="col-lg-3">Email verification status : </label> <label class="col-lg-9">{{member.emailVerificationStatus}}</label></div>
+                        <div class="row"><label class="col-lg-3">Subscribed package : </label> <label class="col-lg-9">{{member.packageName}}</label></div>
+                        <div class="row"><label class="col-lg-3">Gender : </label> <label class="col-lg-9">{{member.gender}}</label></div>
+                        <div class="row"><label class="col-lg-3">Age : </label> <label class="col-lg-9">{{member.age}}</label></div>
+                        <div class="row"><label class="col-lg-3">Date of birth : </label> <label class="col-lg-9">{{member.dob | date:'dd MMM yyyy'}}</label></div>
+                        <div class="row"><label class="col-lg-3">Telephone : </label> <label class="col-lg-9">{{member.telephone}}</label></div>
+                        <div class="row"><label class="col-lg-3">Zipcode : </label> <label class="col-lg-9">{{member.zipcode}}</label></div>
+                        <div class="row"><label class="col-lg-3">Country : </label> <label class="col-lg-9">{{member.country}}</label></div>
+                        <div class="row"><label class="col-lg-3">State : </label> <label class="col-lg-9">{{member.state}}</label></div>
+                        <div class="row"><label class="col-lg-3">City : </label> <label class="col-lg-9">{{member.city}}</label></div>
+                        <div class="row"><label class="col-lg-3">Latitude : </label> <label class="col-lg-9">{{member.latitude}}</label></div>
+                        <div class="row"><label class="col-lg-3">Longitude : </label> <label class="col-lg-9">{{member.longitude}}</label></div>
+                        <div class="row"><label class="col-lg-3">User level : </label> <label class="col-lg-9">{{member.userLevel}}</label></div>
+                        <div class="row"><label class="col-lg-3">Years of experience : </label> <label class="col-lg-9">{{member.expYear}}</label></div>
+                        <div class="row"><label class="col-lg-3">Body type : </label> <label class="col-lg-9">{{member.bodyType}}</label></div>
+                        <div class="row"><label class="col-lg-3">Height : </label> <label class="col-lg-9">{{member.height}}</label></div>
+                        <div class="row"><label class="col-lg-3">Massage frequency : </label> <label class="col-lg-9">{{member.massageFrequency}}</label></div>
+                        <div class="row"><label class="col-lg-3">Drinking habit : </label> <label class="col-lg-9">{{member.drinkingHabit}}</label></div>
+                        <div class="row"><label class="col-lg-3">Smoking habit : </label> <label class="col-lg-9">{{member.smokingHabit}}</label></div>
+                        <div class="row"><label class="col-lg-3">Training hours : </label> <label class="col-lg-9">{{member.trainingHours}}</label></div>
+                        <div class="row"><label class="col-lg-3">Languages known : </label> <label class="col-lg-9">{{member.languages}}</label></div>
+                        <div class="row"><label class="col-lg-3">Therapeutic status : </label> <label class="col-lg-9">{{member.therapeuticStatus}}</label></div>
+                        <div class="row"><label class="col-lg-3">Therapeutic gender : </label> <label class="col-lg-9">{{member.therapeuticGender}}</label></div>
+                        <div class="row"><label class="col-lg-3">Therapeutic description : </label> <label class="col-lg-9">{{member.therapeuticDesc}}</label></div>
+                        <div class="row"><label class="col-lg-3">Sensual status : </label> <label class="col-lg-9">{{member.sensualStatus}}</label></div>
+                        <div class="row"><label class="col-lg-3">Sensual gender : </label> <label class="col-lg-9">{{member.sensualGender}}</label></div>
+                        <div class="row"><label class="col-lg-3">Sensual description : </label> <label class="col-lg-9">{{member.sensualDesc}}</label></div>
+                        <div class="row"><label class="col-lg-3">Relationship types : </label> <label class="col-lg-9">{{member.relationshipTypes}}</label></div>
+                        <div class="row"><label class="col-lg-3">Prefered massage types : </label> <label class="col-lg-9">{{member.preferedMassageTypes}}</label></div>
+                        <div class="row"><label class="col-lg-3">Service type : </label> <label class="col-lg-9">{{member.serviceType}}</label></div>
+                        <div class="row"><label class="col-lg-3">Last logged in : </label> <label class="col-lg-9">{{member.lastLoggedin}}</label></div>                        
+                    </div>
+                </div>-->
 
     </div>
 </div>   

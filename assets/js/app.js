@@ -253,6 +253,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/poll/addNewPoll', {
+                     templateUrl: 'templates/admin/addNewPoll.html',
+                     controller: 'addNewPollCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

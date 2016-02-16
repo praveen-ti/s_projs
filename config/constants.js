@@ -147,15 +147,15 @@ module.exports.constants = {
 
     poll: {
 
-        AUTHOR_TYPE_SUPERADMIN     : 'super_admin',
+        AUTHOR_TYPE_SUPERADMIN     : 'admin',
         AUTHOR_TYPE_SUBADMIN       : 'sub_admin',
         AUTHOR_TYPE_USER           : 'user',
 
         POLL_STATUS_ACTIVE         : 'active',
         POLL_STATUS_INACTIVE       : 'inactive',
 
-        COMMENT_STATUS_SHOW        : 'active',
-        COMMENT_STATUS_HIDE        : 'inactive',
+        COMMENT_STATUS_SHOW        : 'show',
+        COMMENT_STATUS_HIDE        : 'hide',
 
         APPROVAL_STATUS_PENDING    : 'pending',
         APPROVAL_STATUS_APPROVED   : 'approved',

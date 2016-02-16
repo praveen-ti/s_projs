@@ -37,13 +37,14 @@ module.exports = {
                                     //Assigning value to authorId
                                     if (userRole == 'user') {
                                         authorId        = tokenCheck.tokenDetails.userId;
-                                        approvalStatus  = "pending";
-                                        commentStatus   = req.body.commentStatus;
+                                        //approvalStatus  = "pending";
+                                        //commentStatus   = req.body.commentStatus;
 
                                     } else if (userRole == 'admin') {
                                         authorId        = tokenCheck.tokenDetails.adminId;
-                                        approvalStatus  = "accept";
-                                        commentStatus   = "show";
+                                        approvalStatus  = pollConstants.APPROVAL_STATUS_APPROVED;
+                                        commentStatus   = pollConstants.COMMENT_STATUS_SHOW;
+                                        pollStatus      = pollConstants.POLL_STATUS_ACTIVE;
                                     }
                     if(err)
                     {
@@ -53,20 +54,15 @@ module.exports = {
                     {
                         if(tokenCheck.status == 1)
                             {
-var pollDetails = '{"pollDetails" : {"title": "'+req.body.title+
-                '", "question": "'+req.body.question+
-                '", "authorId": "'+authorId+
-                '", "userRole": "'+userRole+
-                '", "commentStatus": "'+req.body.commentStatus+
-                '", "approvalStatus": "'+approvalStatus+'"}}';
-
-var jsonPollDetails = JSON.parse(pollDetails);
 
                                  var values = {
                                                 title                :       req.body.title,
                                                 question             :       req.body.question,
+                                                answerOptions        :       req.body.answerOptions,
+                                                ansOptionType        :       req.body.ansOptionType,
                                                 authorId             :       authorId,
                                                 authorType           :       userRole,
+                                                pollStatus           :       pollStatus,
                                                 commentStatus        :       commentStatus,
                                                 approvalStatus       :       approvalStatus,
                                              };
@@ -77,9 +73,8 @@ var jsonPollDetails = JSON.parse(pollDetails);
                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                                         } else
                                         {
-                                            console.log("Poll=================result");
                                             console.log(result);
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+                                            return res.json(200, {status: 1, message: 'success', data: result});
                                         }
                                     });
 
@@ -251,21 +246,21 @@ Get all Poll
                                                             " ORDER BY createdAt DESC";*/
 
                                             //query = "SELECT * FROM  poll ORDER BY createdAt DESC";
-                                             query =    " SELECT pl.id,pl.authorType, pl.title, pl.question,"+
-                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus,"+
+                                             query =    " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
+                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
                                                         " CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN user usr ON pl.authorId = usr.id"+
                                                         " WHERE pl.authorType = 'user'"+
                                                         " UNION"+
-                                                        " SELECT pl.id,pl.authorType, pl.title, pl.question,"+
-                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus,"+
+                                                        " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
+                                                        " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
                                                         " CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN admin adm ON pl.authorId = adm.id"+
                                                         " WHERE pl.authorType = 'admin'"+
                                                         " ORDER BY id";
-
+console.log(query);
                                             Poll.query(query, function(err, result) {
                                                 if(err)
                                                 {
@@ -553,7 +548,7 @@ var jsonPollDetails = JSON.parse(pollDetails);
 /*===================================================================================================================================
                                                    Get all poll Details
  ====================================================================================================================================*/
-getPollDeatilsList : function(req, res) {
+getPollDetailsList : function(req, res) {
 
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};

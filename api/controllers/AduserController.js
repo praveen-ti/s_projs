@@ -407,6 +407,8 @@ console.log(result.userId);
                                                 " INNER JOIN adpage apg ON ausr.adPageId = apg.id"+
                                                 " INNER JOIN adposition apo ON ausr.adPositionId = apo.id"+
                                                 " ORDER BY ausr.createdAt DESC";
+
+
                                        Aduser.query(query, function(err, adDetails) {
                                                         if(err)
                                                         {

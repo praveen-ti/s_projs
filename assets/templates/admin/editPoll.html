@@ -2,44 +2,45 @@
 
     <div class="container-fluid">
 
-                <!-- Page Heading -->
+
                 <div class="row">
                     <div class="col-lg-12">
                         <h4 class="page-header">
-                            Add New Poll
+                            Edit Poll
                         </h4>
 
                     </div>
                 </div>
-
+                {{ editPollDetails }}
+                {{ respAnsOptions }}
 <!-- #########################################################################################################################
-                             Add New Poll - Starts
+                            Edit New Poll - Starts
 ##############################################################################################################################-->
         <div class="row" >
 
                              <button type="button" ng-click="goBack()" class="btn btn-primary" style="float:right;">Back</button>
                          <br/><br/>
                              <p class="alert alert-danger" ng-show="errorMessage">{{ errorMessage }}</p>
-                            <form ng-submit="addNewPoll()" class="form-horizontal" role="form" name="newPollAdd" method="post" novalidate>
+                            <form ng-submit="updatePollDetails()" class="form-horizontal" role="form" name="newPollAdd" method="post" novalidate>
 
                                   <div class="form-group">
                                     <label class="col-sm-2 control-label">Title</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control" type="text" ng-model="newTitle" name="newTitle"/>
+                                        <input class="form-control" type="text" ng-model="editPollDetails.title" name="newTitle"/>
                                     </div>
                                   </div>
 
                                   <div class="form-group">
                                     <label class="col-sm-2 control-label">Question</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control" type="text" ng-model="newQuestion" name="newQuestion"/>
+                                        <input class="form-control" type="text" ng-model="editPollDetails.question" name="newQuestion"/>
                                     </div>
                                   </div>
 
                                   <div class="form-group">
                                     <label class="col-sm-4 control-label">Answer Option Type</label>
                                     <div class="col-sm-8">
-                                        <select ng-model="newAnsOptType" ng-dropdown required ng-change="changeAnsOptType()">
+                                        <select ng-model="editPollDetails.ansOptionType" ng-dropdown required ng-change="changeAnsOptType()">
                                           <option ng-option style="display:none" value="">Select</option>
                                           <option ng-option value="radiobutton">RadioButton</option>
                                           <option ng-option value="checkbox">CheckBox</option>
@@ -64,20 +65,26 @@
 
                                   <!-- <div id="appendDropDown"> -->
                                           <!-- <div class="form-group" ng-show="addDropdownClick"> -->
-                                          <div class="form-group">
-                                            <label class="col-sm-2 control-label">Options</label>
-                                            <div class="col-sm-6">
-                                                <input class="form-control" type="text" ng-model="newAnswer" name="newAnswer"/>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button type="button" class="btn btn-primary" ng-click="addRow()">+</button>
-                                            </div>
-                                          </div>
+                                          <label class="col-sm-12 control-label" style="text-align:left">Options</label>
+                                         <div ng-repeat="respAnsOption in respAnsOptions">
+                                              <div class="form-group">
+                                                <label class="col-sm-2 control-label"></label>
+                                                <div class="col-sm-6">
+                                                    {{$index}}
+                                                    <input class="form-control" type="text" ng-model="respAnsOption" name="newAnswer"/>
+                                                </div>
+                                                {{ respAnsOption }}
+                                                <!-- <div class="col-sm-2">
+                                                    <button type="button" class="btn btn-primary" ng-click="addRow()">+</button>
+                                                </div> -->
+                                              </div>
+                                         </div>
+                                         {{ respAnsOption }}
                                 <!-- </div> -->
 
 
                               <!-- Displaying the Selected part Starts-->
-                                <div ng-repeat="qoption in qoptions">
+                              <!--  <div ng-repeat="qoption in qoptions">
                                          <div class="form-group">
                                                  <label class="col-sm-2 control-label"></label>
                                                  <div class="col-sm-4"> {{qoption.newAnswer}} </div>
@@ -85,8 +92,17 @@
                                                      <button class="btn btn-primary" ng-click="removeRow(qoption.newAnswer)"><i class="fa fa-trash"/></button>
                                                  </div>
                                          </div>
-                                </div>
+                                </div> -->
                                 <!-- Displaying the Selected part Ends-->
+                                <!--
+                                <div ng-repeat="respAnsOption in respAnsOptions">
+                                         <div class="form-group">
+                                                 <label class="col-sm-2 control-label"></label>
+                                                 <div class="col-sm-4"> {{respAnsOption}} </div>
+
+                                         </div>
+                               </div>
+                               -->
 
 
                                 <div class="form-group">
@@ -98,12 +114,10 @@
                            </form>
        </div>
 <!-- #########################################################################################################################
-                             Add New Poll - Starts
+                             Edit New Poll - Starts
 ##############################################################################################################################-->
 
+    </div>
+</div>
 
 
-
-
-       </div>
-  </div>

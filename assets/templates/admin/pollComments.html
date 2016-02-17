@@ -2,19 +2,18 @@
 
     <div class="container-fluid">
 
-                <!-- Page Heading -->
+
                 <div class="row">
                     <div class="col-lg-12">
                         <h4 class="page-header">
-                            Blog Comments
+                            Poll Comments
                         </h4>
 
                     </div>
                 </div>
 
-
- <!-- #########################################################################################################################
-      Get All Blog Comments - Starts
+<!-- #########################################################################################################################
+      Get All Poll Comments - Starts
 ##############################################################################################################################-->
         <div class="row">
                     <div class="col-lg-12">
@@ -36,28 +35,28 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr ng-repeat="blogComment in blogComments | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                    <tr ng-repeat="pollComment in pollComments | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
                                         <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
                                         <td class="text-center">
-                                                {{ blogComment.username }}
+                                                {{ pollComment.username }}
                                         </td>
                                         <td class="text-center">
-                                                <img src="{{ blogComment.comment }}" />
+                                                <img src="{{ pollComment.pollComment }}" />
                                         </td>
                                         <td class="text-center">
-                                                {{ blogComment.comment }}
+                                                {{ pollComment.pollComment }}
                                         </td>
                                         <td class="text-center">
-                                                {{ blogComment.approvalStatus }}
+                                                {{ pollComment.approvalStatus }}
                                         </td>
                                         <td class="text-center">
 
-                                            <span ng-show="blogComment.approvalStatus == 'rejected'">
-                                                <a href="javascript:void(0)" id="approved"  ng-click="updateBlogCommentApprovalStatus($event,blogComment.id)"> Approve </a>
+                                            <span ng-show="pollComment.approvalStatus == 'rejected'">
+                                                <a href="javascript:void(0)" id="approved"  ng-click="updatePollCommentApprovalStatus($event,pollComment.id)"> Approve </a>
                                              </span>
-                                            <span ng-show="blogComment.approvalStatus == 'approved'">
-                                                <a href="javascript:void(0)" id="rejected"  ng-click="updateBlogCommentApprovalStatus($event,blogComment.id)"> Reject </a>
+                                            <span ng-show="pollComment.approvalStatus == 'approved'">
+                                                <a href="javascript:void(0)" id="rejected"  ng-click="updatePollCommentApprovalStatus($event,pollComment.id)"> Reject </a>
                                             </span>
                                             <span>
                                                 <!-- <a href="javascript:void(0)"  ng-click="deleteAdPage($event,adPage.id)"> Delete</a> -->
@@ -68,24 +67,24 @@
                                 </tbody>
                             </table>
 
-                              <span ng-show="(blogComments.length >= (pageSize + 1))">
+                              <span ng-show="(pollComments.length >= (pageSize + 1))">
                                     <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
                                         Previous
                                     </button>
                                     {{currentPage+1}}/{{numberOfPages()}}
-                                    <button ng-disabled="currentPage >= blogs.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                                    <button ng-disabled="currentPage >= polls.length/pageSize - 1" ng-click="currentPage=currentPage+1">
                                         Next
                                     </button>
                              </span>
 
-                            <span ng-hide="blogComments.length">No Comment for this Blog Found</span>
+                            <span ng-hide="pollComments.length">No Comment for this Blog Found</span>
                         </div>
 
                      </div>
                 </div>
 <!-- #########################################################################################################################
-  Get All Blog Comments - Ends
+  Get All Poll Comments - Ends
 ##############################################################################################################################-->
 
-     </div>
-</div>
+    </div>
+ </div>

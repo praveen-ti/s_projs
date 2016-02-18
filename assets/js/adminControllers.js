@@ -2787,6 +2787,9 @@ $scope.goBack = function($event) {
         else if (answerOptions.length == 0) {
             $scope.errorMessage = "Please Enter Options";
         }
+        else if (answerOptions.length < 2) {
+            $scope.errorMessage = "Please Enter Minimum 2 options";
+        }
         else
         {
 
@@ -3036,7 +3039,7 @@ $scope.goBack = function($event) {
                 $scope.successMessage = "Updated Successfully";
                 $timeout(function() {
                     $scope.successMessage = false;
-                }, 2000);
+                }, 3000);
 
                 //index                            = $scope.index + $scope.extra;
                 //$scope.blogDetails.title         = title;

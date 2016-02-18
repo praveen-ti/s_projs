@@ -31,10 +31,13 @@
                                             <label class="col-sm-4">{{privilege.name}}</label>
                                     </div>
                              </div>
-                              <label class="col-sm-2 control-label"></label>
-                              <div class="modal-footer col-sm-2" style="border-top: 0px solid #e5e5e5;">
-                                    <button type="submit" class="btn btn-primary" ng-click="addNewSubAdminPrivileges()">Save changes</button>
-                              </div>
+
+                             <div ng-hide="privileges.length">
+                                  <label class="col-sm-2 control-label"></label>
+                                  <div class="modal-footer col-sm-2" style="border-top: 0px solid #e5e5e5;">
+                                        <button type="submit" class="btn btn-primary" ng-click="addNewSubAdminPrivileges()">Save changes</button>
+                                  </div>
+                             </div>
                             <span ng-hide="privileges.length">No Privileges Found.</span>
 
 

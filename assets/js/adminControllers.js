@@ -1608,7 +1608,7 @@ adminControllers.controller('manageCmsPageCtrl', function ($scope, $routeParams,
  CMS Page Details Controller   -----
  ====================================================================================================================================*/
 
-adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
 
     console.log("cmsPageDetailsCtrl");
     $rootScope.adminNavigation = 1;
@@ -1672,6 +1672,9 @@ adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams
                     }).success(function (response) {
 
                 $scope.successMessage = "Successfully Updated";
+                $timeout(function() {
+                    $scope.successMessage = false;
+                }, 3000);
 
 
             }).error(function () {

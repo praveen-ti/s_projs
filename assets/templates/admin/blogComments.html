@@ -19,7 +19,7 @@
         <div class="row">
                     <div class="col-lg-12">
                        <div class="table-responsive">
-                            <!-- <p>SubAdmin :- <input type="search" ng-model="searchText"/></p> -->
+                             <p>Search :- <input type="search" ng-model="searchText"/></p>
 
                             <button type="button" ng-click="goBack()" class="btn btn-primary" style="float:right;">Back</button>
                             </br></br>
@@ -36,9 +36,10 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr ng-repeat="blogComment in blogComments | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                    <tr ng-repeat="blogComment in blogComments | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
-                                        <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
+                                       <!--  <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td> -->
+                                       <td class="text-center">{{ (($index + 1) + (currentPage * pageSize))}}</td>
                                         <td class="text-center">
                                                 {{ blogComment.name }}
                                         </td>

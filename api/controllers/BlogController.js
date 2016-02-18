@@ -616,7 +616,7 @@ getBlogcommentList : function(req, res) {
                         if(tokenCheck.status == 1)
                             {
 
-                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) username,"+
+                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) name, usr.username,"+
                                            " usr.profilePic,blgcmt.id, blgcmt.comment, blgcmt.approvalStatus"+
                                            " FROM blog_comment blgcmt"+
                                            " INNER JOIN user usr ON blgcmt.userId = usr.id"+

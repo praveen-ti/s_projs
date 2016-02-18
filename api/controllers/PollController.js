@@ -724,7 +724,7 @@ getPollcommentList : function(req, res) {
                         if(tokenCheck.status == 1)
                             {
 console.log("kkkkkkkkkkk");
-                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) username,"+
+                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) name, usr.username,"+
                                            " usr.profilePic,pldtl.id, pldtl.pollComment, pldtl.approvalStatus"+
                                            " FROM poll_details pldtl"+
                                            " INNER JOIN user usr ON pldtl.userId = usr.id"+

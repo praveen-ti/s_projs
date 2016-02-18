@@ -905,13 +905,14 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
  ====================================================================================================================================*/
 
 
-adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter) {
+adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
 
 $scope.goBack = function($event) {
     $window.history.back();
 }
     $rootScope.adminNavigation = 1;
     $scope.errorMessage = "";
+    $scope.successMessage = "";
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     var adminId = $routeParams.adminId;
@@ -923,7 +924,7 @@ $scope.goBack = function($event) {
 
 
 
-    //get Privileges of a single user
+  /*  //get Privileges of a single user
     $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
         if (response.status == 1)
         {
@@ -938,7 +939,49 @@ $scope.goBack = function($event) {
     }).error(function () {
         $scope.errorMessage = "Please Try Again";
     });
+*/
+    $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {request: request, token: token}).success(function (response) {
+            if (response.status == 1)
+            {
+                console.log("All Privileges");
+                console.log(response);
+                $scope.privileges               = response.data1;
+                $scope.selPrivileges            = response.data2;
 
+                var a_array = [];
+
+                var a_array = [];
+                for(var j=0;j<response.data2.length;j++){
+
+                    a_array.push(response.data2[j].privilegeId);
+                    console.log(response.data2[j]);
+                }
+                var a_arrayStr   = a_array.toString().split(",");
+                console.log(a_arrayStr);
+
+
+
+                 //assigning checked true
+                for(var i=0;i<response.data1.length;i++){
+                    console.log("i array");
+                    console.log(response.data1[i].id);
+                       for(var k=0;k < a_arrayStr.length;k++){
+
+                              if(response.data1[i].id == a_arrayStr[k]){
+                                    //console.log("k array");
+                                    //console.log(a_arrayStr[k]);
+                                    $scope.privileges[i].checked    = true;
+                              }
+                        }
+
+                }
+
+
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+       });
 
 
 // Get All Privileges
@@ -962,7 +1005,7 @@ $scope.goBack = function($event) {
         });
     }
 
-    /* ****************************************************Need To Complete *************/
+
 // Get All Remaining Privileges
     $scope.getRemainingPrivileges = function ()
     {
@@ -992,7 +1035,7 @@ $scope.goBack = function($event) {
 
 
     $scope.selectedSAPrivilege = function () {
-        $scope.checkedSAPrivilege = $filter('filter')($scope.subAdminRemainingPrivileges, {checked: true});
+        $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
 
     }
 
@@ -1009,6 +1052,7 @@ $scope.goBack = function($event) {
         console.log(chkPrivilegeArray);
 
         request = {chkPrivilegeArray: chkPrivilegeArray, adminId: adminId};
+console.log(request);
         $http.post($rootScope.STATIC_URL + 'admins/setSubadminPrivilege', {request: request, token: token})
                 .success(function (response) {
                     if (response.status == 1)
@@ -1016,6 +1060,7 @@ $scope.goBack = function($event) {
 
 
                         request = {adminId: adminId};
+/*
                         //get Privileges of a single user
                         $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
                             if (response.status == 1)
@@ -1028,11 +1073,14 @@ $scope.goBack = function($event) {
                         }).error(function () {
                             $scope.errorMessage = "Please Try Again";
                         });
+*/
                         var index = $scope.index;
 
 
-                        //console.log($scope.subAdmins.username);
-                        $('#newSubAdminPrivilege').modal('hide');
+                        $scope.successMessage = "Updated Successfully";
+                        $timeout(function() {
+                            $scope.successMessage = false;
+                        }, 3000);
 
                     }
                 })

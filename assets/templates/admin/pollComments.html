@@ -27,23 +27,22 @@
                                     <tr class="info">
                                         <th class="text-center">#</a></th>
                                         <th class="text-center">User Name</th>
-                                        <th class="text-center">User Pic</th>
+                                       <!-- <th class="text-center">User Pic</th> -->
                                         <th class="text-center">Comment</th>
                                         <th class="text-center">Approval Status</th>
                                         <th class="text-center">&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     <tr ng-repeat="pollComment in pollComments | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
                                         <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td>
                                         <td class="text-center">
                                                 {{ pollComment.name }}
                                         </td>
-                                        <td class="text-center">
+                                       <!-- <td class="text-center">
                                                 <img src="assets/images/pics/{{pollComment.username}}/{{ pollComment.profilePic }}" />
-                                        </td>
+                                        </td> -->
                                         <td class="text-center">
                                                 {{ pollComment.pollComment }}
                                         </td>

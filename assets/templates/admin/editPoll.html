@@ -11,8 +11,6 @@
 
                     </div>
                 </div>
-                {{ editPollDetails }}
-                {{ respAnsOptions }}
 <!-- #########################################################################################################################
                             Edit New Poll - Starts
 ##############################################################################################################################-->
@@ -38,9 +36,9 @@
                                   </div>
 
                                   <div class="form-group">
-                                    <label class="col-sm-4 control-label">Answer Option Type</label>
-                                    <div class="col-sm-8">
-                                        <select ng-model="editPollDetails.ansOptionType" ng-dropdown required ng-change="changeAnsOptType()">
+                                    <label class="col-sm-2 control-label">Answer Option Type</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="editPollDetails.ansOptionType" ng-dropdown required ng-change="changeAnsOptType()">
                                           <option ng-option style="display:none" value="">Select</option>
                                           <option ng-option value="radiobutton">RadioButton</option>
                                           <option ng-option value="checkbox">CheckBox</option>
@@ -65,21 +63,31 @@
 
                                   <!-- <div id="appendDropDown"> -->
                                           <!-- <div class="form-group" ng-show="addDropdownClick"> -->
-                                          <label class="col-sm-12 control-label" style="text-align:left">Options</label>
-                                         <div ng-repeat="respAnsOption in respAnsOptions">
+
+                                          <div class="form-group">
+                                            <label class="col-sm-2 control-label">Options</label>
+                                            <div class="col-sm-6">
+
+
+                                            </div>
+                                          </div>
+
+
+                                         <div ng-repeat="respAnsOption in respAnsOptions track by $index">
                                               <div class="form-group">
                                                 <label class="col-sm-2 control-label"></label>
                                                 <div class="col-sm-6">
-                                                    {{$index}}
-                                                    <input class="form-control" type="text" ng-model="respAnsOption" name="newAnswer"/>
+
+                                                    <input class="form-control" type="text" ng-model="respAnsOptions[$index]" name="newAnswer" />
+
                                                 </div>
-                                                {{ respAnsOption }}
+
                                                 <!-- <div class="col-sm-2">
                                                     <button type="button" class="btn btn-primary" ng-click="addRow()">+</button>
                                                 </div> -->
                                               </div>
                                          </div>
-                                         {{ respAnsOption }}
+
                                 <!-- </div> -->
 
 

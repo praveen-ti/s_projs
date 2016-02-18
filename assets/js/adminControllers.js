@@ -907,6 +907,9 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
 
 adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter) {
 
+$scope.goBack = function($event) {
+    $window.history.back();
+}
     $rootScope.adminNavigation = 1;
     $scope.errorMessage = "";
     $scope.currentPage = 0;
@@ -2946,7 +2949,6 @@ Edit Poll Controller   -----
  ====================================================================================================================================*/
 adminControllers.controller('editPollsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
-console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>EEEEEEEEEEEEEEEEdDDDDDDDDD");
 $scope.goBack = function($event) {
     $window.history.back();
 }
@@ -2971,15 +2973,12 @@ $scope.goBack = function($event) {
             {
                     $scope.editPollDetails = response.data;
                     var resp = response.data;
-                    console.log("resp >>>>>>>>>");
-                    console.log(resp);
-                    console.log(resp.answerOptions);
                     var respAnsOptions = resp.answerOptions.split(',');
-                    console.log("respAnsOptions >>>>>>");
                     console.log(respAnsOptions);
 
+
                     $scope.respAnsOptions = respAnsOptions;
-                   //$scope.editPollDetails.answerOptions = respAnsOptions;
+
             }
 
         }).error(function () {
@@ -2996,27 +2995,8 @@ $scope.goBack = function($event) {
         var title               = $scope.editPollDetails.title;
         var question            = $scope.editPollDetails.question;
         var ansOptionType       = $scope.editPollDetails.ansOptionType;
-        var respAnsOptions      = $scope.respAnsOptions;
-        //respAnsOptions        = respAnsOptions.toString();
-        //$scope.editPollDetails.answerOptions  = respAnsOptions;
-        var answerOptions       = $scope.editPollDetails.answerOptions;
-        //var index           = $scope.index;
-console.log("updatePollDetails    [[[[[[[[[[[[[   ");
+        var answerOptions      = $scope.respAnsOptions;
 
-console.log("respAnsOptions   ");
-console.log(title);
-console.log(question);
-console.log("$scope.respAnsOptions    ==========");
-console.log($scope.respAnsOptions);
-//console.log(respAnsOptions.toString());
-console.log($scope.editPollDetails.answerOptions);
-console.log("answerOptions==========");
-console.log(answerOptions);
-
-
-console.log("New name");
-console.log($scope.nametest);
-//console.log($scope.respAnsOption);
 
         if (!title)
         {
@@ -3040,12 +3020,12 @@ console.log($scope.nametest);
             fd.append('id', id);
             fd.append('token', token);
 
-            $http.post($rootScope.STATIC_URL + 'polldhddf/updatePollDetails', fd,
+            $http.post($rootScope.STATIC_URL + 'poll/updatePollDetails', fd,
                     {
                         transformRequest: angular.identity,
                         headers: {'Content-Type': undefined}
                     }).success(function (response) {
-
+                console.log(response);
                 console.log("Update response  ============   updatePollDetails");
                 //index                            = $scope.index + $scope.extra;
                 //$scope.blogDetails.title         = title;

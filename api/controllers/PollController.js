@@ -292,18 +292,18 @@ Get all Poll
                                             //query = "SELECT * FROM  poll ORDER BY createdAt DESC";
                                              query =    " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
                                                         " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
-                                                        " CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
+                                                        " pl.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN user usr ON pl.authorId = usr.id"+
                                                         " WHERE pl.authorType = 'user'"+
                                                         " UNION"+
                                                         " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
                                                         " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
-                                                        " CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
+                                                        " pl.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN admin adm ON pl.authorId = adm.id"+
                                                         " WHERE pl.authorType = 'admin'"+
-                                                        " ORDER BY id";
+                                                        " ORDER BY createdAt DESC";
 console.log(query);
                                             Poll.query(query, function(err, result) {
                                                 if(err)

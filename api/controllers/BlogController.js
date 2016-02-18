@@ -310,18 +310,18 @@ console.log("Entered Add Blog -----------------------------");
                                 //Query to get name of author from user table or admin table
                                 query =    " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
+                                            " blg.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
                                             " FROM blog blg"+
                                             " INNER JOIN user usr ON blg.authorId = usr.id"+
                                             " WHERE blg.authorType = 'user'"+
                                             " UNION"+
                                             " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
+                                            " blg.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
                                             " FROM blog blg"+
                                             " INNER JOIN admin adm ON blg.authorId = adm.id"+
                                             " WHERE blg.authorType = 'admin'"+
-                                            " ORDER BY id";
+                                            " ORDER BY createdAt DESC";
 
 
                                                // var query ="SELECT * FROM  blog ORDER BY createdAt DESC";

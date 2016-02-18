@@ -2955,7 +2955,8 @@ $scope.goBack = function($event) {
         $rootScope.adminNavigation = 1;
         $scope.currentPage = 0;
         $scope.pageSize = 10;
-        $scope.errorMessage = "";
+        $scope.errorMessage     = "";
+        $scope.successMessage   = "";
         var request = "";
         var token = $window.sessionStorage.token;
         var userRole = "admin";
@@ -3025,8 +3026,10 @@ $scope.goBack = function($event) {
                         transformRequest: angular.identity,
                         headers: {'Content-Type': undefined}
                     }).success(function (response) {
-                console.log(response);
-                console.log("Update response  ============   updatePollDetails");
+
+                $scope.successMessage = "Updated Successfully";
+
+
                 //index                            = $scope.index + $scope.extra;
                 //$scope.blogDetails.title         = title;
                 //$scope.blogDetails.description   = description;

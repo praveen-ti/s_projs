@@ -20,6 +20,7 @@
                              <button type="button" ng-click="goBack()" class="btn btn-primary" style="float:right;">Back</button>
                          <br/><br/>
                              <p class="alert alert-danger" ng-show="errorMessage">{{ errorMessage }}</p>
+                             <p class="alert alert-success" ng-show="successMessage">{{ successMessage }}</p>
                             <form ng-submit="addNewPoll()" class="form-horizontal" role="form" name="newPollAdd" method="post" novalidate>
 
                                   <div class="form-group">

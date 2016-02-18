@@ -2711,7 +2711,7 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
 /*===================================================================================================================================
  Add New Poll  Controller   -----
  ====================================================================================================================================*/
-adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
 
 
 $scope.goBack = function($event) {
@@ -2810,8 +2810,14 @@ $scope.goBack = function($event) {
                     $scope.newTitle = "";
                     $scope.newQuestion = "";
                     $scope.newAnsOptType = "";
-                    $scope.qoptions = "";
-                    location.reload();
+                    //$scope.qoptions = "";
+                    $scope.qoptions = [];
+                    $scope.successMessage = "Successfully Added a New Poll";
+                    $timeout(function() {
+                        $scope.successMessage = false;
+                    }, 3000);
+
+                   // location.reload();
                 }
             }).error(function () {
                 $scope.errorMessage = "Please Try Again";
@@ -2947,7 +2953,7 @@ console.log(pollCommentId);
 /*===================================================================================================================================
 Edit Poll Controller   -----
  ====================================================================================================================================*/
-adminControllers.controller('editPollsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('editPollsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
 
 $scope.goBack = function($event) {
     $window.history.back();
@@ -3028,7 +3034,9 @@ $scope.goBack = function($event) {
                     }).success(function (response) {
 
                 $scope.successMessage = "Updated Successfully";
-
+                $timeout(function() {
+                    $scope.successMessage = false;
+                }, 2000);
 
                 //index                            = $scope.index + $scope.extra;
                 //$scope.blogDetails.title         = title;

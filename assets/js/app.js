@@ -1,6 +1,6 @@
 'use strict';
 //var fitHudl = angular.module('fitHudl', ['ngRoute','textAngular']);
-var zentiera = angular.module('zentiera', ['userControllers', 'adminControllers', 'appServices']);
+var zentiera = angular.module('zentiera', ['ngRoute', 'userControllers', 'adminControllers', 'appServices', 'textAngular']);
 
 
 zentiera.config(function ($httpProvider) {

@@ -1,7 +1,7 @@
 'use strict';
 /* adminControllers */
 
-var adminControllers = angular.module('adminControllers', ['appServices']);
+var adminControllers = angular.module('adminControllers', ['appServices','textAngular']);
 
 
 adminControllers.controller('RepeatCtrl', function RepeatController($scope) {
@@ -3013,6 +3013,9 @@ console.log($scope.editPollDetails.answerOptions);
 console.log("answerOptions==========");
 console.log(answerOptions);
 
+
+console.log("New name");
+console.log($scope.nametest);
 //console.log($scope.respAnsOption);
 
         if (!title)

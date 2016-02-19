@@ -724,13 +724,82 @@ console.log(request);
                         if (err) {
                             return res.json(200, {status: 2, message: 'some error occured', error: details});
                         } else {
-                            //return res.view('login_home');
-                            //res.redirect('login_home');
-                            // res.view('login_home', {status: 1, message: 'succes', details: details});
-                            //req.session.authenticated = true;
-                            //req.session.token = details.token.token;
 
-                            return res.json(200, {status: 1, message: 'succes', data: details});
+                        Admin.findOne({id : details.token.adminId}).exec(function (err, adminType) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: err});
+
+                                } else {
+                                    var switchKey = adminType.adminType;
+                                             switch (switchKey)
+                                            {
+
+                                                   case 'super_admin':
+                                                           return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: "All privileges"});
+                                                   break;
+                                                   case 'sub_admin':
+                                                       Admin_privilege_log.findOne({adminId : details.token.adminId}).exec(function (err, privilegelog) {
+                                                        if (err) {
+                                                            return res.json(200, {status: 2, message: 'some error occured', error: err});
+
+                                                        } else {
+
+
+
+                                                 /*var query =  " SELECT ap.id, ap.name, apl.id, apl.adminId, apl.privilegeId, ad.adminType"+
+                                                              " FROM"+
+                                                              " admin_privilege ap"+
+                                                              " INNER JOIN"+
+                                                              " admin_privilege_log apl"+
+                                                              " ON"+
+                                                              " ap.id IN (apl.privilegeId)"+
+                                                              " INNER JOIN"+
+                                                              " admin ad"+
+                                                              " ON"+
+                                                              " apl.adminId = ad.id"+
+                                                              " WHERE apl.adminId = "+details.token.adminId;
+                                                    */
+
+                                                                  var query =  "SELECT name"+
+                                                                               " FROM"+
+                                                                               " admin_privilege"+
+                                                                               " WHERE"+
+                                                                               " id IN ("+privilegelog.privilegeId+")";
+
+                                                                            Admin.query(query, function (err, privilege) {
+                                                                                if (err)
+                                                                                {
+                                                                                    return res.json(200, {status: 2, error_details: err});
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    privileArray = [];
+                                                                                    var ctr = 0;
+                                                                                    privilege.forEach(function(factor, index){
+                                                                                            ctr ++;
+                                                                                            console.log(factor);
+                                                                                            console.log(ctr);
+                                                                                            privileArray.push(factor.name);
+                                                                                    });
+
+                                                                                    console.log(privileArray);
+                                                                                    console.log(adminType);
+                                                                                    return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: privileArray});
+                                                                                }
+                                                                            });
+                                                                }
+                                                            });
+
+                                                   break;
+                                             }
+
+                                    }
+                            });
+
+
+
+
+
                         }
                     });
 

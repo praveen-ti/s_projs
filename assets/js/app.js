@@ -205,9 +205,25 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/manageAdvertisement/page/:adPageId/adInPage', {
+                     templateUrl: 'templates/admin/adInPage.html',
+                     controller: 'adInPageCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 when('/admin/manageAdvertisement/position', {
                      templateUrl: 'templates/admin/manageAdPosition.html',
                      controller: 'manageAdPositionCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/manageAdvertisement/position/:adPositionId/adInPosition', {
+                     templateUrl: 'templates/admin/adInPosition.html',
+                     controller: 'adInPositionCtrl',
                      access: {
                         requiresLogin: true,
                         role: 'admin'
@@ -335,6 +351,11 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
             } else {
                 console.log('Logged - Yes, Role - Admin');
+                console.log('Logged - Yes, Role - Adminuuuuuuuuuuuuu');
+                console.log($window.sessionStorage.adminType);
+                $rootScope.adminType = $window.sessionStorage.adminType;
+                $rootScope.privileges = $window.sessionStorage.privileges;
+                console.log($window.sessionStorage.privileges);
                 $rootScope.adminNavigation = 1;
             }
             console.log('Logged - Yes');

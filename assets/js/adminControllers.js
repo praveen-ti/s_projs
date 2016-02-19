@@ -48,10 +48,18 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
         } else if (username && password) {
 
             $http.post($rootScope.STATIC_URL + 'admins/adminLogin', params).success(function (response) {
-
+                console.log(response);
                 if (response.status === 1) {
+                    //var a = response.data2
                     $window.sessionStorage.isAuthenticated = 'true';
                     $window.sessionStorage.token = response.data.token.token;
+                    $window.sessionStorage.adminType = response.adminType;
+                    console.log("      response.privileges");
+                    console.log(response.privileges);
+                    //$window.sessionStorage.adminPrivileges = response.privileges;
+                    $window.sessionStorage.setItem("privileges", JSON.stringify(response.privileges));
+
+
                     $location.path('/admin/dashboard');
                 } else {
                     $scope.errorMessage = "Invalid login credentials.";
@@ -1934,6 +1942,131 @@ adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, 
 
 
 /*===================================================================================================================================
+ Ad in Page Controller   -----
+ ====================================================================================================================================*/
+    adminControllers.controller('adInPageCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+                $rootScope.adminNavigation = 1;
+                $scope.currentPage = 0;
+                $scope.pageSize = 10;
+                $scope.errorMessage = "";
+                var request = "";
+                var token = $window.sessionStorage.token;
+                var userRole = "admin";
+                var adPageId = $routeParams.adPageId;
+                console.log("Ad IN Page Controller------>>>>>>>");
+                request = {adPageId: adPageId};
+
+                //get all ads in this page
+                $http.post($rootScope.STATIC_URL + 'adpage/getAdInPage', {request: request, token: token, userRole: userRole}).success(function (response) {
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        $scope.adInPages = response.data;
+                        $scope.numberOfPages = function () {
+                            return Math.ceil(($scope.adInPages).length / $scope.pageSize);
+                        }
+                    }
+
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+
+
+                // Update Status
+                $scope.updateAdUserStatus = function ($event, adUserId) {
+
+                    var adUserStatus = $event.currentTarget.id;
+                    request = {adUserId: adUserId}
+
+                    if (!confirm('Are you sure to change status to ' + adUserStatus + '?'))
+                    {
+                        $event.preventDefault();
+                    }
+                    else
+                    {
+                        var returnedData = $.grep($scope.adInPages, function (element, index) {
+                            return element.id == adUserId;
+                        });
+
+                        request = {token: token, adUserStatus: adUserStatus, returnedData: returnedData[0]};
+                        $http.post($rootScope.STATIC_URL + 'aduser/updateAdUserStatus', {request: request}).success(function (response) {
+                            if (response.status == 1)
+                            {
+                                request = {adPageId: adPageId};
+                                    //get all ads in this page
+                                    $http.post($rootScope.STATIC_URL + 'adpage/getAdInPage', {request: request, token: token, userRole: userRole}).success(function (response) {
+
+                                        console.log(response);
+                                        if (response.status == 1)
+                                        {
+                                            $scope.adInPages = response.data;
+                                             $scope.numberOfPages = function () {
+                                                    return Math.ceil(($scope.adInPages).length / $scope.pageSize);
+                                              }
+
+                                        }
+
+                                    }).error(function () {
+                                        $scope.errorMessage = "Please Try Again";
+                                    });
+                            }
+
+                        }).error(function () {
+                            $scope.errorMessage = "Please Try Again";
+                        });
+                    }
+                }
+
+            // Update BannerType
+                $scope.updateAdBannerType = function ($event, adUserId) {
+
+                    var adBannerType = $event.currentTarget.id;
+
+                    if (!confirm('Do you want to mark it as a '+adBannerType+' Ad?'))
+                    {
+                        $event.preventDefault();
+                    }
+                    else
+                    {
+                        var returnedData = $.grep($scope.adInPages, function (element, index) {
+                            return element.id == adUserId;
+                        });
+
+                        request = {token: token, adBannerType: adBannerType, returnedData: returnedData[0]};
+                        $http.post($rootScope.STATIC_URL + 'aduser/updateAdBannerType', {request: request}).success(function (response) {
+                            console.log("updateAdBannerType     response ");
+                            console.log(response);
+                            if (response.status == 1)
+                            {
+                                   request = {adPageId: adPageId};
+                                    //get all ads in this page
+                                    $http.post($rootScope.STATIC_URL + 'adpage/getAdInPage', {request: request, token: token, userRole: userRole}).success(function (response) {
+
+                                        console.log(response);
+                                        if (response.status == 1)
+                                        {
+                                            $scope.adInPages = response.data;
+                                            $scope.numberOfPages = function () {
+                                                return Math.ceil(($scope.adInPages).length / $scope.pageSize);
+                                            }
+
+                                        }
+
+                                    }).error(function () {
+                                        $scope.errorMessage = "Please Try Again";
+                                    });
+                            }
+
+                        }).error(function () {
+                            $scope.errorMessage = "Please Try Again";
+                        });
+                    }
+                }
+
+    });
+/*===================================================================================================================================
  Manage Ad Position Controller   -----
  ====================================================================================================================================*/
 adminControllers.controller('manageAdPositionCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
@@ -1945,6 +2078,7 @@ adminControllers.controller('manageAdPositionCtrl', function ($scope, $routePara
     var request = "";
     var token = $window.sessionStorage.token;
     var userRole = "admin";
+
 
     //To get full active AD Position list
     $http.post($rootScope.STATIC_URL + 'adposition/getAdPositionList', {token: token}).success(function (response) {
@@ -2110,6 +2244,127 @@ adminControllers.controller('manageAdPositionCtrl', function ($scope, $routePara
 
 });
 
+/*===================================================================================================================================
+ Ad in Position Controller   -----
+ ====================================================================================================================================*/
+    adminControllers.controller('adInPositionCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+                $rootScope.adminNavigation = 1;
+                $scope.currentPage = 0;
+                $scope.pageSize = 10;
+                $scope.errorMessage = "";
+                var request = "";
+                var token = $window.sessionStorage.token;
+                var userRole = "admin";
+                var adPositionId = $routeParams.adPositionId;
+                console.log("Ad IN Page Controller------>>>>>>>");
+                request = {adPositionId: adPositionId};
+
+                //get all ads in this position
+                $http.post($rootScope.STATIC_URL + 'adposition/getAdInPosition', {request: request, token: token, userRole: userRole}).success(function (response) {
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        $scope.adInPositions = response.data;
+                        $scope.numberOfPages = function () {
+                            return Math.ceil(($scope.adInPositions).length / $scope.pageSize);
+                        }
+                    }
+
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+
+
+              // Update Status
+                $scope.updateAdUserStatus = function ($event, adUserId) {
+
+                    var adUserStatus = $event.currentTarget.id;
+                    request = {adUserId: adUserId}
+
+                    if (!confirm('Are you sure to change status to ' + adUserStatus + '?'))
+                    {
+                        $event.preventDefault();
+                    }
+                    else
+                    {
+                        var returnedData = $.grep($scope.adInPositions, function (element, index) {
+                            return element.id == adUserId;
+                        });
+
+                        request = {token: token, adUserStatus: adUserStatus, returnedData: returnedData[0]};
+                        $http.post($rootScope.STATIC_URL + 'aduser/updateAdUserStatus', {request: request}).success(function (response) {
+                            if (response.status == 1)
+                            {
+                                request = {adPositionId: adPositionId};
+                                     //get all ads in this position
+                                        $http.post($rootScope.STATIC_URL + 'adposition/getAdInPosition', {request: request, token: token, userRole: userRole}).success(function (response) {
+                                            console.log(response);
+                                            if (response.status == 1)
+                                            {
+                                                $scope.adInPositions = response.data;
+                                                $scope.numberOfPages = function () {
+                                                    return Math.ceil(($scope.adInPositions).length / $scope.pageSize);
+                                                }
+                                            }
+
+                                        }).error(function () {
+                                            $scope.errorMessage = "Please Try Again";
+                                        });
+                            }
+
+                        }).error(function () {
+                            $scope.errorMessage = "Please Try Again";
+                        });
+                    }
+                }
+
+            // Update BannerType
+                $scope.updateAdBannerType = function ($event, adUserId) {
+
+                    var adBannerType = $event.currentTarget.id;
+
+                    if (!confirm('Do you want to mark it as a '+adBannerType+' Ad?'))
+                    {
+                        $event.preventDefault();
+                    }
+                    else
+                    {
+                        var returnedData = $.grep($scope.adInPositions, function (element, index) {
+                            return element.id == adUserId;
+                        });
+
+                        request = {token: token, adBannerType: adBannerType, returnedData: returnedData[0]};
+                        $http.post($rootScope.STATIC_URL + 'aduser/updateAdBannerType', {request: request}).success(function (response) {
+                            console.log("updateAdBannerType     response ");
+                            console.log(response);
+                            if (response.status == 1)
+                            {
+                                   request = {adPositionId: adPositionId};
+                                     //get all ads in this position
+                                        $http.post($rootScope.STATIC_URL + 'adposition/getAdInPosition', {request: request, token: token, userRole: userRole}).success(function (response) {
+                                            console.log(response);
+                                            if (response.status == 1)
+                                            {
+                                                $scope.adInPositions = response.data;
+                                                $scope.numberOfPages = function () {
+                                                    return Math.ceil(($scope.adInPositions).length / $scope.pageSize);
+                                                }
+                                            }
+
+                                        }).error(function () {
+                                            $scope.errorMessage = "Please Try Again";
+                                        });
+                            }
+
+                        }).error(function () {
+                            $scope.errorMessage = "Please Try Again";
+                        });
+                    }
+                }
+
+    });
 
 /*===================================================================================================================================
  Manage Ad User Controller   -----
@@ -2595,8 +2850,7 @@ $scope.goBack = function($event) {
 // Update ApprovalStatus
     $scope.updateBlogCommentApprovalStatus = function ($event, blogCommentId) {
 
-        console.log("request   Entered ");
-        console.log(blogCommentId);
+
         var approvalStatus = $event.currentTarget.id;
 
         if (!confirm('Are you sure to ' + approvalStatus + ' this blog?'))
@@ -2615,8 +2869,7 @@ $scope.goBack = function($event) {
                     request = {blogId: blogId};
                     //get Comment List
                     $http.post($rootScope.STATIC_URL + 'blog/getBlogcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
-                        console.log(response);
-                        console.log("response }}}}}}}}");
+
                         if (response.status == 1)
                         {
                             $scope.blogComments = response.data;
@@ -2939,7 +3192,6 @@ $scope.goBack = function($event) {
 
         //get Comment List
         $http.post($rootScope.STATIC_URL + 'poll/getPollcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
-            console.log(response);
             if (response.status == 1)
             {
                     $scope.pollComments = response.data;
@@ -2957,8 +3209,6 @@ $scope.goBack = function($event) {
 // Update ApprovalStatus
     $scope.updatePollCommentApprovalStatus = function ($event, pollCommentId) {
 
-console.log("request   Entered ");
-console.log(pollCommentId);
         var approvalStatus = $event.currentTarget.id;
 
         if (!confirm('Are you sure to ' + approvalStatus + ' this poll?'))

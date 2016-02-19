@@ -292,6 +292,67 @@ console.log(userRole);
         });
     },
 
+/*===================================================================================================================================
+Get Ads in this Position
+ ====================================================================================================================================*/
+     getAdInPosition : function(req, res) {
+
+var request = req.body.request;
+console.log("Ad In Position");
+console.log(request);
+        AdmintokenService.checkToken(req.body.token, function(err, tokenCheck) {
+
+                    if(err)
+                    {
+                         return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    }
+                    else
+                    {
+                        if(tokenCheck.status == 1)
+                            {
+                                    var switchKey = req.body.userRole;
+                                    switch (switchKey){
+
+                                                 case 'user':
+
+                                                 break;
+
+                                                 case 'admin':
+
+                                                    var query = "SELECT"+
+                                                                " ausr.id, ausr.banner, ausr.bannerType, ausr.status,ausr.totalCost,"+
+                                                                " MONTHNAME( ausr.adEndDate ) adExpMonth,"+
+                                                                " DAY( ausr.adEndDate ) adExpDay,"+
+                                                                " YEAR( ausr.adEndDate ) adExpYear"+
+                                                                " FROM aduser ausr"+
+                                                                " WHERE"+
+                                                                " ausr.adPositionId = "+request.adPositionId+
+                                                                " ORDER BY ausr.createdAt DESC";
+
+                                                        Aduser.query(query, function(err, result) {
+                                                            if(err)
+                                                            {
+                                                                return res.json(200, {status: 2, error_details: err});
+                                                            }
+                                                            else
+                                                            {
+
+                                                                return res.json(200, {status: 1, message: "success", data: result});
+                                                            }
+                                                        });
+
+                                                 break;
+
+                                    }
+
+                            }
+                        else
+                            {
+                                return res.json(200, {status: 3, message: 'token expired'});
+                            }
+                    }
+        });
+    },
 
 
 

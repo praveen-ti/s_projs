@@ -7,7 +7,6 @@
 
 var crypto = require('crypto');
 var fs = require('fs');
-var $ = require('jquery');
 var userConstants = sails.config.constants.user;
 var photoConstants = sails.config.constants.photo;
 var reviewConstants = sails.config.constants.review;
@@ -1470,31 +1469,43 @@ module.exports = {
     smsService: function (req, res) {
         var to = "0091" + req.body.to;
         var message = req.body.message;
-        
-        //var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
-        var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
-        var from = "Tech innov.";
-        //var to = "00919746226499",
-        //var body = "Example message text";
-        var reference = "Example message reference";
-        var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + message + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
-        
-        $.ajax({
-            type: "POST",
-            contentType: "application/xml",
-            data: data,
-            dataType: "xml",
-            crossDomain: true,
-            url: "https://sgw01.cm.nl/gateway.ashx"
-        }).done(function () {
-            // Successful request
-            console.log('SMS send successfully.');
-        }).fail(function () {
-            // Request failed
-            console.log('Error in sending SMS.');
+
+
+        UserService.sendSms(to, message, function (err, checkStatus) {
+            console.log('checkStatus');
+            console.log(checkStatus);
+            if (checkStatus.status === 1) {
+                return res.json(200, {status: 1, message: 'SMS send successfully.'});
+            } else {
+                return res.json(200, {status: 2, message: 'Error in sending SMS.'});
+            }
+            //return res.json(200, {status: 1, message: 'SMS send successfully.'});
         });
-        
-        return res.json(200, {status: 1, message: "success", data: 'Message sent successfully.'});
+
+
+//        var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
+//        var from = "Tech innov.";
+//        var to = "00919746226499";
+//        var body = "Example message text";
+//        var reference = "Example message reference";
+//        var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + message + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
+//
+//        $.ajax({
+//            type: "POST",
+//            contentType: "application/xml",
+//            data: data,
+//            dataType: "xml",
+//            crossDomain: true,
+//            url: "https://sgw01.cm.nl/gateway.ashx"
+//        }).done(function () {
+//            // Successful request
+//            console.log('SMS send successfully.');
+//        }).fail(function () {
+//            // Request failed
+//            console.log('Error in sending SMS.');
+//        });
+//
+        //return res.json(200, {status: 1, message: "success", data: 'Message sent successfully.'});
     }
 
 };

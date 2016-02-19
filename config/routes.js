@@ -48,6 +48,10 @@ module.exports.routes = {
     view: 'index'
   },
   
+  '/testing': {
+    view: 'index'
+  },
+  
   '/profile': {
     view: 'index'
   },

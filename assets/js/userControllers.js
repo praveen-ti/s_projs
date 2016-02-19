@@ -33,11 +33,18 @@ userControllers.controller('smsCtrl', function ($scope, $routeParams, $rootScope
 
         }).error(function (err) {
 
-            console.log("Error" + err);
+            console.log("Error");
+            console.log(JSON.stringify(err));
 
         });
 
     }
+
+});
+
+userControllers.controller('testtCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+    $scope.requiresLogin = false;
 
 });
 

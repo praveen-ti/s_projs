@@ -28,6 +28,7 @@
     "sails": "~0.11.3",
     "sails-disk": "~0.10.0",
     "sails-mysql": "^0.11.4",
+    "twilio": "^3.3.0-edge",
     "underscore": "^1.8.3"
   },
   "scripts": {

@@ -36,6 +36,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'user'
                     }
                 }).
+                when('/testing', {
+                    templateUrl: 'templates/test.html',
+                    controller: 'testtCtrl',
+                    access: {
+                        requiresLogin: false,
+                        role: 'user'
+                    }
+                }).
                 when('/login', {
                     templateUrl: 'templates/login.html',
                     controller: 'loginCtrl',

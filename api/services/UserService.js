@@ -145,10 +145,77 @@ module.exports = {
 
         });
 
+    },
+    sendSms: function (to, message, callback) {
+
+        var $ = require('jquery');
+        var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
+        var from = "Zentiera";
+        var reference = "Zentiera MSG";
+        var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><DCS><![CDATA[" + 8 + "]]></DCS><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + message + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
+        
+        var url = "https://sgw01.cm.nl/gateway.ashx?producttoken=" + productToken + "&body=" + message + "&to=" + to + "&from=" + from + "&reference= " + reference;
+        
+        
+        $.ajax({
+            method: "GET",
+            crossDomain: true,
+            url: url
+        }).done(function () {
+            console.log('success');
+            callback(false, {status: 1, message: 'SMS sent successfully.'});
+        }).fail(function () {
+            console.log('error');
+            callback(false, {status: 2, message: 'Error in sending SMS.'});
+        });
+        
+        callback(false, {status: 1, message: 'SMS sent successfully.'});
+        
+//        $.ajax({
+//            method: "POST",
+//            contentType: "application/xml",
+//            data: data,
+//            dataType: "xml",
+//            crossDomain: true,
+//            url: "https://sgw01.cm.nl/gateway.ashx"
+//        }).done(function () {
+//            console.log('success');
+//            callback(false, {status: 1, message: 'SMS sent successfully.'});
+//        }).fail(function () {
+//            console.log('error');
+//            callback(false, {status: 2, message: 'Error in sending SMS.'});
+//        });
+    },
+    sendSmsTwilio: function (to, text, callback) {
+
+        // Twilio Credentials 
+        var accountSid = 'ACa1aa7bba5eaa192ee655d00313b4346f';
+        var authToken = '0afcc69ec574a68f2cf6c4dfb152d043';
+
+        //require the Twilio module and create a REST client 
+        var client = require('twilio')(accountSid, authToken);
+
+        client.messages.create({
+            to: "+919746226499",
+            from: "+919746226499",
+            body: "Hello Nithin",
+        }, function (err, message) {
+            console.log('message.sid');
+            console.log(message.sid);
+
+            if (!err) {
+
+                // http://www.twilio.com/docs/api/rest/sending-sms#example-1
+
+                console.log(message.from); // outputs "+14506667788"
+                console.log(message.body); // outputs "word to your mother."
+                callback(false, {status: 1, message: 'SMS sent successfully.'});
+            } else {
+                callback(false, {status: 2, message: 'Error in sending SMS.'});
+            }
+
+        });
+
     }
-
-
-
-
 };
 

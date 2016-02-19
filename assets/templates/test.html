@@ -1,51 +1,50 @@
 <script>
-    $(document).ready(function () {
-        $("#smsBtn").click(function () {
-            var no = $('#to').val();
-            var message = $('#message').val();
-
-            var productToken = "93b46b87-d190-4fd3-bd70-7470e4690d2b";
-            var from = "Tech innov.";
-            var to = "0091" + no;
-            var body = message;
-            var reference = "Example message reference";
-            var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + body + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
-
-            $.ajax({
-                type: "POST",
-                contentType: "application/xml",
-                data: data,
-                dataType: "xml",
-                crossDomain: true,
-                url: "https://sgw01.cm.nl/gateway.ashx",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Access-Control-Allow-Origin', 'true');
-                },
-            }).done(function () {
-                // Successful request
-                console.log('Success.');
-            }).fail(function () {
-                // Request failed
-                console.log('Failed.');
-            });
-
-            console.log(message);
-        });
-    });
+//    var x = document.getElementById("demo");
+//
+//    function getLocation() {
+//        x.innerHTML = "";
+//        if (navigator.geolocation) {
+//            navigator.geolocation.getCurrentPosition(showPosition, showError);
+//        } else {
+//            x.innerHTML = "Geolocation is not supported by this browser.";
+//        }
+//    }
+//
+//    function showPosition(position) {
+//        x.innerHTML = "Latitude: " + position.coords.latitude +
+//                "<br>Longitude: " + position.coords.longitude +
+//                "<br>Accuracy: " + position.coords.accuracy +
+//                "<br>Altitude: " + position.coords.altitude +
+//                "<br>AltitudeAccuracy: " + position.coords.altitudeAccuracy +
+//                "<br>Heading: " + position.coords.heading +
+//                "<br>Speed: " + position.coords.speed +
+//                "<br>Timestamp: " + position.coords.timestamp;
+//    }
+//
+//    function showError(error) {
+//        switch (error.code) {
+//            case error.PERMISSION_DENIED:
+//                x.innerHTML = "User denied the request for Geolocation."
+//                break;
+//            case error.POSITION_UNAVAILABLE:
+//                x.innerHTML = "Location information is unavailable."
+//                break;
+//            case error.TIMEOUT:
+//                x.innerHTML = "The request to get user location timed out."
+//                break;
+//            case error.UNKNOWN_ERROR:
+//                x.innerHTML = "An unknown error occurred."
+//                break;
+//        }
+//    }
 </script>
 <div class="container">
-    <h3> Send SMS</h3>
+    <h3> Geolocation</h3>
 
-    <form role="form">
-        <div class="form-group">
-            <label for="to">To:</label>
-            <input type="text" class="form-control" id="to" name="to" />
-        </div>
-        <div class="form-group">
-            <label for="message">Message:</label>
-            <textarea class="form-control" id="message" name="message"></textarea>
-        </div>
-        <input type="button" class="btn btn-default" id="smsBtn" value="Send"/>
-    </form>
+
+    <input type="button" class="btn btn-default" ng-click="getLocation()" value="Enable GPS"/>
+    <br/>
+    <p id="demo">{{htmlContent}}</p>
+
 </div>
 

@@ -14,7 +14,7 @@ userControllers.controller('smsCtrl', function ($scope, $routeParams, $rootScope
     $scope.requiresLogin = false;
 
     $scope.sendSms = function () {
-        
+
         var to = $scope.to;
         var message = $scope.message;
 
@@ -45,6 +45,53 @@ userControllers.controller('smsCtrl', function ($scope, $routeParams, $rootScope
 userControllers.controller('testtCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
     $scope.requiresLogin = false;
+
+    $scope.getLocation = function () {
+        $scope.htmlContent = "";
+        if ($window.navigator.geolocation) {
+            $window.navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            $scope.htmlContent = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    var showPosition = function (position) {
+
+        $scope.$apply(function () {
+
+            $scope.htmlContent = "Latitude: " + position.coords.latitude +
+                    ", Longitude: " + position.coords.longitude +
+                    ", Accuracy: " + position.coords.accuracy +
+                    ", Altitude: " + position.coords.altitude +
+                    ", AltitudeAccuracy: " + position.coords.altitudeAccuracy +
+                    ", Heading: " + position.coords.heading +
+                    ", Speed: " + position.coords.speed +
+                    ", Timestamp: " + position.coords.timestamp;
+        });
+    }
+
+    var showError = function (error) {
+        var errorMsg = "";
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                errorMsg = "User denied the request for Geolocation."
+                break;
+            case error.POSITION_UNAVAILABLE:
+                errorMsg = "Location information is unavailable."
+                break;
+            case error.TIMEOUT:
+                errorMsg = "The request to get user location timed out."
+                break;
+            case error.UNKNOWN_ERROR:
+                errorMsg = "An unknown error occurred."
+                break;
+        }
+        $scope.$apply(function () {
+            $scope.htmlContent = errorMsg;
+        });
+    }
+
+
 
 });
 

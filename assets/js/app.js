@@ -1,6 +1,6 @@
 'use strict';
-
-var zentiera = angular.module('zentiera', ['userControllers', 'adminControllers', 'appServices']);
+//var fitHudl = angular.module('fitHudl', ['ngRoute','textAngular']);
+var zentiera = angular.module('zentiera', ['ngRoute', 'userControllers', 'adminControllers', 'appServices', 'textAngular']);
 
 
 zentiera.config(function ($httpProvider) {
@@ -269,6 +269,30 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                 when('/admin/poll/:pollId', {
+                     templateUrl: 'templates/admin/pollDetails.html',
+                     controller: 'pollDetailsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                when('/admin/poll/editPoll/:pollId', {
+                     templateUrl: 'templates/admin/editPoll.html',
+                     controller: 'editPollsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
+                 when('/admin/poll/comments/:pollId', {
+                     templateUrl: 'templates/admin/pollComments.html',
+                     controller: 'pollCommentsCtrl',
+                     access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });
@@ -279,7 +303,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
 zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationService) {
 
     $rootScope.STATIC_URL = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
-    
+
     if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
         $window.sessionStorage.isAuthenticated = 'false';
     }

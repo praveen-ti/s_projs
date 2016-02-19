@@ -13,7 +13,8 @@ module.exports = {
 
     getPrivilegesList: function (req, res) {
 
-        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+        /*AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
             if (err)
             {
@@ -35,6 +36,51 @@ module.exports = {
                             return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },*/
+var request = req.body.request;
+    AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT * FROM admin_privilege ORDER BY createdAt DESC";
+                    Admin_privilege.query(query, function (err, privileges) {
+                        if (err)
+                        {
+                            return res.json(200, {status: 2, error_details: err});
+                        }
+                        else
+                        {
+                            console.log("privileges =================");
+                            console.log(privileges);
+                            Admin_privilege_log.findOne({adminId : request.adminId}).exec(function (err, result) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: err});
+
+                                } else {
+                                    console.log("Selected privileges =================");
+                                    console.log(result);
+                                    var result_array =  [result];
+                                    return res.json(200, {status: 1, message: 'success', data1 : privileges, data2 : result_array});
+                                }
+                            });
+                        }
+                    });
+
+
+
                 }
                 else
                 {

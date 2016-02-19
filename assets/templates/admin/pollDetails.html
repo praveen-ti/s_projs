@@ -1,0 +1,73 @@
+<div id="page-wrapper">
+
+    <div class="container-fluid">
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="page-header">
+                            POLL DETAILS
+                        </h4>
+
+                    </div>
+                </div>
+
+
+
+      <!-- #########################################################################################################################
+                             Get Blog Details - Starts
+##############################################################################################################################-->
+        <div class="row">
+            <div class="col-lg-12">
+                <button type="button" ng-click="goBack()" class="btn btn-primary" style="float:right;">Back</button>
+                <br/><br/>
+                <span>
+           <a href="/admin/poll/editPoll/{{pollDetails.id}}" class="span4 proj-div"  name="editBlog">Edit </a> |
+                    <!-- <a href="" class="span4 proj-div"  name="editBlog"> Edit </a> | -->
+                </span>
+                <span>
+                    <a href="admin/poll/comments/{{pollDetails.id}}" class="span4 proj-div"> Comments </a>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+
+                   <div class="row">
+                       <label class="col-lg-3"> Author Type</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.authorType}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3"> Author</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.username}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Status</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.pollStatus}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Approval Status</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.approvalStatus}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3"> Title</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.title}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Question</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.question}}</label></label>
+                   </div>
+                   <div class="row">
+                       <label class="col-lg-3">Options</label>
+                       <label class="col-lg-9 ng-binding">{{pollDetails.answerOptions}}</label></label>
+                   </div>
+
+            </div>
+        </div>
+<!-- #########################################################################################################################
+                             Get Blog Details - Ends
+##############################################################################################################################-->
+
+
+      </div>
+  </div>

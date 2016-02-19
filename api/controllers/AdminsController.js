@@ -389,7 +389,7 @@ var request = req.body.request;
     /*===================================================================================================================================
      Set subadmin privileges
      ====================================================================================================================================*/
-    setSubadminPrivilege: function (req, res) {
+  /*  setSubadminPrivilege: function (req, res) {
 var request = req.body.request;
 var chkPrivilegeArray =  request.chkPrivilegeArray;
 
@@ -440,6 +440,91 @@ console.log(query);
             }
         });
     },
+
+   */
+
+setSubadminPrivilege: function (req, res) {
+
+            var request = req.body.request;
+            var chkPrivilegeArray =  request.chkPrivilegeArray;
+            var chkPrivilegeIdArray = [];
+            chkPrivilegeArray.forEach(function(factor, index){
+
+                    console.log(factor);
+                    console.log(index);
+                    chkPrivilegeIdArray.push(factor.id);
+
+            });
+            chkPrivilegeIdArray = chkPrivilegeIdArray.toString();
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin_privilege_log.findOne({adminId : request.adminId}).exec(function (err, result) {
+                            if (err) {
+                                return res.json(200, {status: 2, message: 'some error occured', error: err});
+
+                            } else {
+
+                                   if(typeof result == "undefined"){
+                                             var values = {
+                                                    adminId             :  request.adminId,
+                                                    privilegeId         : chkPrivilegeIdArray,
+                                                };
+
+                                            Admin_privilege_log.create(values).exec(function (err, addprivilege) {
+                                                  if (err)
+                                                    {
+                                                        console.log(err);
+                                                        return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                    } else
+                                                    {
+                                                        console.log(addprivilege);
+                                                        return res.json(200, {status: 1, message: 'success', data: addprivilege});
+                                                    }
+                                             });
+                                    }else{
+
+                                              var values = {
+                                                     privilegeId         : chkPrivilegeIdArray,
+                                                };
+                                                var criteria = {
+                                                                  id          : result.id
+                                                                };
+                                                Admin_privilege_log.update(criteria, values).exec(function (err, updatePrivilege) {
+                                                    if (err)
+                                                    {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    }
+                                                    else
+                                                    {
+                                                        return res.json(200, {status: 1, data: updatePrivilege});
+                                                    }
+
+                                                });
+                                    }
+
+
+                            }
+                        });
+
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+
+
     /*===================================================================================================================================
      Delete a subadmin privilege
      ====================================================================================================================================*/
@@ -484,9 +569,9 @@ console.log(request);
 
     getSubadminPrivileges: function (req, res) {
 
-var request = req.body.request;
-console.log("===== getSubadminPrivileges ====");
-console.log(request);
+       /* var request = req.body.request;
+        console.log("===== getSubadminPrivileges ====");
+        console.log(request);
 
         AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
 
@@ -515,12 +600,7 @@ console.log(request);
                         }
                         else
                         {
-                            /*if(result != ""){
-                                return res.json(200, {status: 1, message: "success", data: result});
-                            }
-                            else{
-                                return res.json(200, {status: 1, message: "success", data: "No Privilege Found"});
-                            }*/
+
                             return res.json(200, {status: 1, message: "success", data: result});
                         }
                     });
@@ -532,6 +612,40 @@ console.log(request);
             }
         });
     },
+
+     */
+        var request = req.body.request;
+        console.log("===== getSubadminPrivileges ====");
+        console.log(request);
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err)
+            {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            }
+            else
+            {
+                if (tokenCheck.status == 1)
+                {
+                    Admin_privilege_log.findOne({adminId : request.adminId}).exec(function (err, result) {
+                            if (err) {
+                                return res.json(200, {status: 2, message: 'some error occured', error: err});
+
+                            } else {
+                                console.log(result);
+                                return res.json(200, {status: 1, message: 'success', data : result});
+                            }
+                    });
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+
     /*===================================================================================================================================
      List subadmin's Privilege List[for superadmin only]
      ====================================================================================================================================*/

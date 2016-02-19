@@ -1,7 +1,7 @@
 'use strict';
 /* adminControllers */
 
-var adminControllers = angular.module('adminControllers', ['appServices']);
+var adminControllers = angular.module('adminControllers', ['appServices','textAngular']);
 
 
 adminControllers.controller('RepeatCtrl', function RepeatController($scope) {
@@ -881,7 +881,7 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
      //Privileges of SubAdmin
      $scope.subAdminPrivileges = function(adminId)
      {
-     
+
      request           = {adminId : adminId};
      //get Privileges of a single user
      $http.post($rootScope.STATIC_URL+'admins/getSubadminPrivileges',{request:request, token:token}).success(function(response) {
@@ -890,11 +890,11 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
      console.log(response);
      $scope.editSubAdminDetails = response.data;
      }
-     
+
      }).error(function(){
      $scope.errorMessage = "Please Try Again";
      });
-     
+
      }
      */
 
@@ -905,10 +905,14 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
  ====================================================================================================================================*/
 
 
-adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter) {
+adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
 
+$scope.goBack = function($event) {
+    $window.history.back();
+}
     $rootScope.adminNavigation = 1;
     $scope.errorMessage = "";
+    $scope.successMessage = "";
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     var adminId = $routeParams.adminId;
@@ -920,7 +924,7 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
 
 
 
-    //get Privileges of a single user
+  /*  //get Privileges of a single user
     $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
         if (response.status == 1)
         {
@@ -935,7 +939,49 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
     }).error(function () {
         $scope.errorMessage = "Please Try Again";
     });
+*/
+    $http.post($rootScope.STATIC_URL + 'adminprivileges/getPrivilegesList', {request: request, token: token}).success(function (response) {
+            if (response.status == 1)
+            {
+                console.log("All Privileges");
+                console.log(response);
+                $scope.privileges               = response.data1;
+                $scope.selPrivileges            = response.data2;
 
+                var a_array = [];
+
+                var a_array = [];
+                for(var j=0;j<response.data2.length;j++){
+
+                    a_array.push(response.data2[j].privilegeId);
+                    console.log(response.data2[j]);
+                }
+                var a_arrayStr   = a_array.toString().split(",");
+                console.log(a_arrayStr);
+
+
+
+                 //assigning checked true
+                for(var i=0;i<response.data1.length;i++){
+                    console.log("i array");
+                    console.log(response.data1[i].id);
+                       for(var k=0;k < a_arrayStr.length;k++){
+
+                              if(response.data1[i].id == a_arrayStr[k]){
+                                    //console.log("k array");
+                                    //console.log(a_arrayStr[k]);
+                                    $scope.privileges[i].checked    = true;
+                              }
+                        }
+
+                }
+
+
+            }
+
+        }).error(function () {
+            $scope.errorMessage = "Please Try Again";
+       });
 
 
 // Get All Privileges
@@ -959,7 +1005,7 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
         });
     }
 
-    /* ****************************************************Need To Complete *************/
+
 // Get All Remaining Privileges
     $scope.getRemainingPrivileges = function ()
     {
@@ -989,7 +1035,7 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
 
 
     $scope.selectedSAPrivilege = function () {
-        $scope.checkedSAPrivilege = $filter('filter')($scope.subAdminRemainingPrivileges, {checked: true});
+        $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
 
     }
 
@@ -1006,6 +1052,7 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
         console.log(chkPrivilegeArray);
 
         request = {chkPrivilegeArray: chkPrivilegeArray, adminId: adminId};
+console.log(request);
         $http.post($rootScope.STATIC_URL + 'admins/setSubadminPrivilege', {request: request, token: token})
                 .success(function (response) {
                     if (response.status == 1)
@@ -1013,6 +1060,7 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
 
 
                         request = {adminId: adminId};
+/*
                         //get Privileges of a single user
                         $http.post($rootScope.STATIC_URL + 'admins/getSubadminPrivileges', {request: request, token: token}).success(function (response) {
                             if (response.status == 1)
@@ -1025,11 +1073,14 @@ adminControllers.controller('subAdminDetailsCtrl', function ($scope, $routeParam
                         }).error(function () {
                             $scope.errorMessage = "Please Try Again";
                         });
+*/
                         var index = $scope.index;
 
 
-                        //console.log($scope.subAdmins.username);
-                        $('#newSubAdminPrivilege').modal('hide');
+                        $scope.successMessage = "Updated Successfully";
+                        $timeout(function() {
+                            $scope.successMessage = false;
+                        }, 3000);
 
                     }
                 })
@@ -1557,7 +1608,7 @@ adminControllers.controller('manageCmsPageCtrl', function ($scope, $routeParams,
  CMS Page Details Controller   -----
  ====================================================================================================================================*/
 
-adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
 
     console.log("cmsPageDetailsCtrl");
     $rootScope.adminNavigation = 1;
@@ -1621,6 +1672,9 @@ adminControllers.controller('cmsPageDetailsCtrl', function ($scope, $routeParams
                     }).success(function (response) {
 
                 $scope.successMessage = "Successfully Updated";
+                $timeout(function() {
+                    $scope.successMessage = false;
+                }, 3000);
 
 
             }).error(function () {
@@ -1667,12 +1721,12 @@ adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, 
     /*
      //Add New Ad Page
      $scope.addNewAdPage = function () {
-     
+
      var fd              = new FormData();
      var name            = $scope.newName;
      var description     = $scope.newDescription;
      var cost            = $scope.newCost;
-     
+
      if (!name && !description && !cost) {
      $scope.errorMessage = "Please Enter all fields";
      }
@@ -1691,15 +1745,15 @@ adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, 
      fd.append('description', description);
      fd.append('cost', cost);
      fd.append('token', token);
-     
+
      $http.post($rootScope.STATIC_URL + 'adpage/createAdPage', fd, {
      transformRequest: angular.identity,
      headers: {'Content-Type': undefined}
-     
+
      }).success(function (response) {
      if (response.status == 1)
      {
-     
+
      //To get full active Ad Page list
      $http.post($rootScope.STATIC_URL + 'adpage/getAdPageList', {token: token}).success(function (response) {
      if (response.status == 1)
@@ -1711,19 +1765,19 @@ adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, 
      }
      });
      var index = $scope.index;
-     
+
      //console.log($scope.subAdmins.username);
      $('#newAdPage').modal('hide');
      $scope.newName                  = "";
      $scope.newDescription           = "";
      $scope.newCost                  = "";
      $scope.errorMessage             = "";
-     
+
      }
      }).error(function () {
      $scope.errorMessage = "Please Try Again";
      });
-     
+
      }
      }
      */
@@ -2174,15 +2228,19 @@ adminControllers.controller('manageAdUserCtrl', function ($scope, $routeParams, 
 adminControllers.controller('adUserDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
 
-    console.log("adUserDetailsCtrl   >>>>>>>>>>>");
-    $rootScope.adminNavigation = 1;
-    $scope.currentPage = 0;
-    $scope.pageSize = 10;
-    $scope.errorMessage = "";
-    var request = "";
-    var token = $window.sessionStorage.token;
-    var userRole = "admin";
-    var userAdId = $routeParams.userAdId;
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+console.log("adUserDetailsCtrl   >>>>>>>>>>>");
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var userAdId = $routeParams.userAdId;
+
 
     request = {userAdId: userAdId};
 
@@ -2386,24 +2444,31 @@ adminControllers.controller('manageBlogCtrl', function ($scope, $routeParams, $r
  ====================================================================================================================================*/
 adminControllers.controller('blogDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
-    $rootScope.adminNavigation = 1;
-    $scope.currentPage = 0;
-    $scope.pageSize = 10;
-    $scope.errorMessage = "";
-    var request = "";
-    var token = $window.sessionStorage.token;
-    var userRole = "admin";
-    var blogId = $routeParams.blogId;
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var blogId = $routeParams.blogId;
+
 
     request = {blogId: blogId};
 
-    //get Ad User Details
-    $http.post($rootScope.STATIC_URL + 'blog/getBlogDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
-        console.log(response);
-        if (response.status == 1)
-        {
-            $scope.blogDetails = response.data;
-        }
+
+        //get Blog Details
+        $http.post($rootScope.STATIC_URL + 'blog/getBlogDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.blogDetails = response.data;
+            }
+
 
     }).error(function () {
         $scope.errorMessage = "Please Try Again";
@@ -2436,7 +2501,9 @@ adminControllers.controller('blogDetailsCtrl', function ($scope, $routeParams, $
 
     }
 
-    //Update Ad Position details
+
+ //Update Blog details
+
     $scope.updateBlogDetails = function ()
     {
 
@@ -2492,14 +2559,19 @@ adminControllers.controller('blogDetailsCtrl', function ($scope, $routeParams, $
  ====================================================================================================================================*/
 adminControllers.controller('blogCommentsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
-    $rootScope.adminNavigation = 1;
-    $scope.currentPage = 0;
-    $scope.pageSize = 10;
-    $scope.errorMessage = "";
-    var request = "";
-    var token = $window.sessionStorage.token;
-    var userRole = "admin";
-    var blogId = $routeParams.blogId;
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var blogId = $routeParams.blogId;
+
 
     request = {blogId: blogId};
 
@@ -2690,15 +2762,19 @@ adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $r
 /*===================================================================================================================================
  Add New Poll  Controller   -----
  ====================================================================================================================================*/
-adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
 
-    $rootScope.adminNavigation = 1;
-    $scope.currentPage = 0;
-    $scope.pageSize = 10;
-    $scope.errorMessage = "";
-    var request = "";
-    var token = $window.sessionStorage.token;
-    var userRole = "admin";
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
 
 
 
@@ -2762,6 +2838,9 @@ adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $r
         else if (answerOptions.length == 0) {
             $scope.errorMessage = "Please Enter Options";
         }
+        else if (answerOptions.length < 2) {
+            $scope.errorMessage = "Please Enter Minimum 2 options";
+        }
         else
         {
 
@@ -2785,8 +2864,15 @@ adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $r
                     $scope.newTitle = "";
                     $scope.newQuestion = "";
                     $scope.newAnsOptType = "";
-                    $scope.qoptions = "";
-                    location.reload();
+                    //$scope.qoptions = "";
+                    $scope.qoptions = [];
+                    /*$scope.successMessage = "Successfully Added a New Poll";
+                    $timeout(function() {
+                        $scope.successMessage = false;
+                    }, 3000);*/
+                    $window.history.back();
+
+                   // location.reload();
                 }
             }).error(function () {
                 $scope.errorMessage = "Please Try Again";
@@ -2795,7 +2881,234 @@ adminControllers.controller('addNewPollCtrl', function ($scope, $routeParams, $r
     }
 
 
+});
 
+/*===================================================================================================================================
+Poll Details Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('pollDetailsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var pollId = $routeParams.pollId;
+
+        console.log("Poll Details -----------");
+        request = {pollId: pollId};
+
+        //get Poll Details
+        $http.post($rootScope.STATIC_URL + 'poll/getPollDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.pollDetails = response.data;
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+});
+
+
+/*===================================================================================================================================
+Poll Comments  Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('pollCommentsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var pollId = $routeParams.pollId;
+
+        request = {pollId: pollId};
+
+        //get Comment List
+        $http.post($rootScope.STATIC_URL + 'poll/getPollcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
+            console.log(response);
+            if (response.status == 1)
+            {
+                    $scope.pollComments = response.data;
+
+                    $scope.numberOfPages = function () {
+                        return Math.ceil(($scope.pollComments).length / $scope.pageSize);
+                     }
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+// Update ApprovalStatus
+    $scope.updatePollCommentApprovalStatus = function ($event, pollCommentId) {
+
+console.log("request   Entered ");
+console.log(pollCommentId);
+        var approvalStatus = $event.currentTarget.id;
+
+        if (!confirm('Are you sure to ' + approvalStatus + ' this poll?'))
+        {
+            $event.preventDefault();
+        }
+        else
+        {
+
+            request = {token: token, approvalStatus: approvalStatus, pollCommentId: pollCommentId};
+
+            $http.post($rootScope.STATIC_URL + 'poll/updatePollCommentApprovalStatus', {request: request}).success(function (response) {
+                if (response.status == 1)
+                {
+
+                    request = {pollId: pollId};
+
+                        //get Comment List
+                        $http.post($rootScope.STATIC_URL + 'poll/getPollcommentList', {request: request, token: token, userRole: userRole}).success(function (response) {
+                            console.log(response);
+                            if (response.status == 1)
+                            {
+                                    $scope.pollComments = response.data;
+
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.pollComments).length / $scope.pageSize);
+                                     }
+                            }
+
+                        }).error(function () {
+                                    $scope.errorMessage = "Please Try Again";
+                        });
+
+
+                }
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+        }
+    }
 
 
 });
+
+
+/*===================================================================================================================================
+Edit Poll Controller   -----
+ ====================================================================================================================================*/
+adminControllers.controller('editPollsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $timeout) {
+
+$scope.goBack = function($event) {
+    $window.history.back();
+}
+        $rootScope.adminNavigation = 1;
+        $scope.currentPage = 0;
+        $scope.pageSize = 10;
+        $scope.errorMessage     = "";
+        $scope.successMessage   = "";
+        var request = "";
+        var token = $window.sessionStorage.token;
+        var userRole = "admin";
+        var pollId = $routeParams.pollId;
+
+
+        console.log("....................");
+        $scope.errorMessage = "";
+        request = {pollId: pollId};
+
+        //get Poll Details
+        $http.post($rootScope.STATIC_URL + 'poll/getPollDetails', {request: request, token: token, userRole: userRole}).success(function (response) {
+
+            if (response.status == 1)
+            {
+                    $scope.editPollDetails = response.data;
+                    var resp = response.data;
+                    var respAnsOptions = resp.answerOptions.split(',');
+                    console.log(respAnsOptions);
+
+
+                    $scope.respAnsOptions = respAnsOptions;
+
+            }
+
+        }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+        });
+
+
+
+ //Update Poll details
+    $scope.updatePollDetails = function ()
+    {
+
+        var id                  = $scope.editPollDetails.id;
+        var title               = $scope.editPollDetails.title;
+        var question            = $scope.editPollDetails.question;
+        var ansOptionType       = $scope.editPollDetails.ansOptionType;
+        var answerOptions      = $scope.respAnsOptions;
+
+
+        if (!title)
+        {
+            $scope.errorMessage = "Please Enter a Title";
+        }
+        else  if (!question)
+        {
+            $scope.errorMessage = "Please Enter a Question";
+        }
+        else  if (!ansOptionType)
+        {
+            $scope.errorMessage = "Please Select a Option Type";
+        }
+        else
+        {
+            var fd = new FormData();
+            fd.append('title', title);
+            fd.append('question', question);
+            fd.append('ansOptionType', ansOptionType);
+            fd.append('answerOptions', answerOptions);
+            fd.append('id', id);
+            fd.append('token', token);
+
+            $http.post($rootScope.STATIC_URL + 'poll/updatePollDetails', fd,
+                    {
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }).success(function (response) {
+
+               $scope.successMessage = "Updated Successfully";
+                $timeout(function() {
+                    $scope.successMessage = false;
+                }, 3000);
+                //$window.history.back();
+
+                //index                            = $scope.index + $scope.extra;
+                //$scope.blogDetails.title         = title;
+                //$scope.blogDetails.description   = description;
+
+                //$('#editBlog').modal('hide');
+                //$scope.errorMessage                  = "";
+
+            }).error(function () {
+                $scope.errorMessage = "Please Try Again";
+            });
+
+
+        }
+    }
+
+});
+
+

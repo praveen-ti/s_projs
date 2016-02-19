@@ -2866,10 +2866,11 @@ $scope.goBack = function($event) {
                     $scope.newAnsOptType = "";
                     //$scope.qoptions = "";
                     $scope.qoptions = [];
-                    $scope.successMessage = "Successfully Added a New Poll";
+                    /*$scope.successMessage = "Successfully Added a New Poll";
                     $timeout(function() {
                         $scope.successMessage = false;
-                    }, 3000);
+                    }, 3000);*/
+                    $window.history.back();
 
                    // location.reload();
                 }
@@ -3087,10 +3088,11 @@ $scope.goBack = function($event) {
                         headers: {'Content-Type': undefined}
                     }).success(function (response) {
 
-                $scope.successMessage = "Updated Successfully";
+               $scope.successMessage = "Updated Successfully";
                 $timeout(function() {
                     $scope.successMessage = false;
                 }, 3000);
+                //$window.history.back();
 
                 //index                            = $scope.index + $scope.extra;
                 //$scope.blogDetails.title         = title;

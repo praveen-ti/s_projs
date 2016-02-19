@@ -25,3 +25,5 @@ INSERT INTO `poll` (`id`, `title`, `question`, `authorId`, `authorType`, `pollSt
 (2, 'Safety', 'When is an exchange safe? Do you have safety improvement suggestions?', 1, 'user', 'inactive', 'show', 'pending', 'checkbox', '2016-01-21 14:56:49', '2016-01-21 15:03:17'),
 (3, 'Number of E-mails', 'How many e-mails before you schedule your first massage?', 1, 'user', 'inactive', 'show', 'pending', 'checkbox', '2016-01-21 14:56:49', '2016-01-21 15:03:17')
 
+ALTER TABLE poll CHANGE answerType ansOptionType VARCHAR(50)
+

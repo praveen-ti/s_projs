@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h4 class="page-header">
-                            Edit CMS Page Details
+                            EDIT CMS PAGE
                         </h4>
 
                     </div>
@@ -27,7 +27,7 @@
 
                    <div class="col-sm-10">
                           <div class="form-group">
-                            <label class="col-sm-2 control-label">PageName</label>
+                            <label class="col-sm-2 control-label">Page Name</label>
                             <div class="col-sm-8">
                                 <input class="form-control" type="text" ng-model="editCmsPageDetails.pageName" name="text" />
                             </div>
@@ -37,15 +37,6 @@
                             <label class="col-sm-2 control-label">Content</label>
                             <div class="col-sm-8">
                                 <div text-angular ng-model="editCmsPageDetails.content"></div>
-                                    <!-- <textarea style="height: 250px;" class="form-control" type="text" ng-model="editCmsPageDetails.content" name="text"></textarea> -->
-                                  <!-- <div id="editor">
-
-                                        {{editCmsPageDetails.content}}
-
-                                </div> -->
-                                <!-- <textarea  id="editor" name="editor1"> {{editCmsPageDetails.content}}</textarea> -->
-
-                               <!-- <textarea  id="editor" ckeditor="editorOptions" ng-model="modelName" name="editorField">  </textarea> -->
                             </div>
                           </div>
                    </div>
@@ -63,67 +54,6 @@
     <!-- #########################################################################################################################
                              Edit CMS Page - Ends
 ##############################################################################################################################-->
-
-
-
-<script>
-   //initSample();
-  // console.log("==========CKEDITOR.instances.editor1.getData()==================");
-   //for ( instance in CKEDITOR.instances )
-    //CKEDITOR.instances[instance].updateElement();
-
-
-   //console.log(CKEDITOR.instances.editor1.getData());
-  // console.log(CKEDITOR.instances.editorField.getData());
-/*
-$( document ).ready(function() {
-    console.log( "ready!" );
-     //var val = document.getElementsByTagName('#editor iframe html .cke_editable p').value;
-
-    console.log(jQuery("#cke_1_contents iframe").val());
-});
-*/
-
-//CKEDITOR.replace( 'editor1' );
-/*
-var editor_data = CKEDITOR.instances.editor1.getData();
-console.log(editor_data);
-
-
-
-window.onload = function() {
- CKEDITOR.replace( 'editor1' );
- };
- */
-
-/*
- var editor = CKEDITOR.replace( 'editor1' );
-
-// The "change" event is fired whenever a change is made in the editor.
-editor.on( 'change', function( evt ) {
-    // getData() returns CKEditor's HTML content.
-    console.log( 'Total bytes: ' + evt.editor.getData().length );
-});
-*/
-
-/*if ( CKEDITOR.instances.editor1.getData() == '' ){
-        alert( 'There is no data available.' );
-}
-*/
-
-</script>
-<!--
-<script src="../../ckeditor/ckeditor.js"></script>
-<script src="../../ckeditor/adapters/jquery.js"></script>
-<script src="../../ckeditor/sample.js"></script>
--->
-
-
-
-
-
-
-
 
 
     </div>

@@ -27,7 +27,8 @@ module.exports = {
                 if (tokenCheck.status == 1)
                 {
 
-                    var query = "SELECT * FROM admin WHERE adminType =  '" + adminConstants.ADMIN_TYPE_SUBADMIN +"' ORDER BY createdAt DESC";
+                    var query = "SELECT * FROM admin WHERE adminType =  '" + adminConstants.ADMIN_TYPE_SUBADMIN +"' AND blockStatus != '"+adminConstants.BLOCK_STATUS_DELETE+"' ORDER BY createdAt DESC";
+                    console.log(query);
                     Admin.query(query, function (err, result) {
                         if (err)
                         {

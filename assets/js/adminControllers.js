@@ -56,8 +56,36 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
                     $window.sessionStorage.adminType = response.adminType;
                     console.log("      response.privileges");
                     console.log(response.privileges);
+                    for(var i=0;i<response.privileges.length;i++){
+
+                         if(response.privileges[i]=="Members"){
+                             $window.sessionStorage.privMembers = "members";
+                             console.log("$window.sessionStorage.privMembers ===========");
+                             console.log($window.sessionStorage.privMembers);
+                         }
+                         if(response.privileges[i]=="Packages"){
+                             $window.sessionStorage.privPackages = "packages";
+                         }
+                         if(response.privileges[i]=="Settings"){
+                             $window.sessionStorage.privSettings = "settings";
+                         }
+                         if(response.privileges[i]=="CMS Pages"){
+                             $window.sessionStorage.privCmsPages = "cmsPages";
+                         }
+                         if(response.privileges[i]=="Advertisements"){
+                             $window.sessionStorage.privAdvertisements = "advertisements";
+                         }
+                         if(response.privileges[i]=="Blog"){
+                             $window.sessionStorage.privBlog = "blog";
+                         }
+                         if(response.privileges[i]=="Poll"){
+                             $window.sessionStorage.privPoll = "poll";
+                         }
+
+                    }
+
                     //$window.sessionStorage.adminPrivileges = response.privileges;
-                    $window.sessionStorage.setItem("privileges", JSON.stringify(response.privileges));
+                    //$window.sessionStorage.setItem("privileges", JSON.stringify(response.privileges).replace(/"/g, ""));
 
 
                     $location.path('/admin/dashboard');

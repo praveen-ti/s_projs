@@ -92,7 +92,11 @@ module.exports.constants = {
         REVIEW_STATUS_APPROVED: 'approved',
         REVIEW_STATUS_NOTAPPROVED: 'notapproved'
     },
-
+    
+    report: {
+        REPORT_STATUS_APPROVED: 'approved',
+        REPORT_STATUS_NOTAPPROVED: 'notapproved'
+    },
 
     admin: {
 

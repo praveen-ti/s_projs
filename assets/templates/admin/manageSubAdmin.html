@@ -51,13 +51,13 @@
                                             </span>
                                            <!-- <span ng-show="subAdmin.blockStatus != 'delete'">
                                             </span> -->
-                                            <span>
+                                            <span ng-show="subAdmin.blockStatus == 'block' || subAdmin.blockStatus == 'active'">
                                                 <a href="javascript:void(0)" id="delete"  ng-click="updateBlockStatus($event,subAdmin.id)"> Delete</a> |
                                             </span>
-                                            <span>
+                                            <span ng-show="subAdmin.blockStatus == 'active' || subAdmin.blockStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="block"   ng-click="updateBlockStatus($event,subAdmin.id)"> Block</a>  |
                                             </span>
-                                            <span>
+                                            <span ng-show="subAdmin.blockStatus == 'block' || subAdmin.blockStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="active"   ng-click="updateBlockStatus($event,subAdmin.id)"> Active</a> |
                                             </span>
                                             <span>

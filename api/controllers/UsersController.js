@@ -10,6 +10,7 @@ var fs = require('fs');
 var userConstants = sails.config.constants.user;
 var photoConstants = sails.config.constants.photo;
 var reviewConstants = sails.config.constants.review;
+var reportConstants = sails.config.constants.report;
 
 function getUserById(uid, callback) {
     var condition = {id: uid};
@@ -1290,6 +1291,41 @@ module.exports = {
             }
         });
     },
+    addReport: function (req, res) {
+        var userId = req.body.userId;
+        var reporterId = req.body.reporterId;
+        var reportNote = req.body.reportNote;
+        var approvalStatus = reportConstants.REPORT_STATUS_NOTAPPROVED;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    var reviewData = {
+                        userId: userId,
+                        reporterId: reporterId,
+                        reportNote: reportNote,
+                        approvalStatus: approvalStatus
+                    };
+
+                    Report.create(reviewData).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, error_details: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success', data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
     blockAUser: function (req, res) {
 
         var userId = req.body.userId;
@@ -1418,6 +1454,41 @@ module.exports = {
                 if (tokenCheck.status == 1)
                 {
                     var query = "SELECT r.*, u.id AS uid, u.firstname, u.lastname FROM review AS r LEFT JOIN user AS u ON u.id = r.reviewerId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
+                    Review.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+    getUserReports: function (req, res) {
+
+        var userRole = req.body.userRole;
+        var userId = req.body.userId;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT r.*, u.id AS uid, u.firstname, u.lastname FROM report AS r LEFT JOIN user AS u ON u.id = r.reporterId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
                     Review.query(query, function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});

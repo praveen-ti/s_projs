@@ -3,7 +3,7 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <h4 class="page-header">MEMBER - REFERRALS</h4>
+                <h4 class="page-header">MEMBER - REPORT</h4>
             </div>
         </div>
 
@@ -12,8 +12,8 @@
                 <a class="btn btn-primary" href="admin/member/{{userId}}">Info</a>
                 <a class="btn btn-primary" href="admin/member/{{userId}}/review">Reviews</a>
                 <a class="btn btn-primary" href="admin/member/{{userId}}/subscription">Subscriptions</a>
-                <a class="btn btn-primary active" href="admin/member/{{userId}}/referral">Referrals</a>
-                <a class="btn btn-primary" href="admin/member/{{userId}}/report">Report</a>
+                <a class="btn btn-primary" href="admin/member/{{userId}}/referral">Referrals</a>
+                <a class="btn btn-primary active" href="admin/member/{{userId}}/report">Report</a>
                 <a class="btn btn-primary" href="admin/member/{{userId}}/photo">Photos</a>
                 <a class="btn btn-primary" href="admin/member/{{userId}}/video">Videos</a>
             </div>
@@ -32,10 +32,10 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <div ng-show="(refferedUsers.length >= 1)">
+                <div ng-show="(reports.length >= 1)">
                     <div class="form-group" style="width: 450px">
                         <label style="float: left; width: 20%">Search :</label>
-                        <input type="search" ng-model="referralName" class="form-control" style="float: right; width: 80%" />
+                        <input type="search" ng-model="reportName" class="form-control" style="float: right; width: 80%" />
                     </div>
                     <br/><br/>
 
@@ -43,40 +43,41 @@
                         <thead>
                             <tr class="info">
                                 <th class="text-center">#</a></th>
-                                <th class="text-center">Firstname</th>
-                                <th class="text-center">Lastname</th>
-                                <th class="text-center">Username</th>
-                                <th class="text-center">Email</th>
+                                <th class="text-center" style="width: 45%;">Review note</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Blacklisted</th>
+                                <th class="text-center">Posted by</th>
+                                <th class="text-center">Posted on</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="refferedUser in refferedUsers| filter:referralName | startFrom:currentPage * pageSize | limitTo:pageSize">
+                            <tr ng-repeat="report in reports| filter:reportName | startFrom:currentPage * pageSize | limitTo:pageSize">
                                 <td class="text-center">{{ (($index + 1) + (currentPage * pageSize))}}</td>
-                                <td class="text-center">{{ refferedUser.firstname}}</td>
-                                <td class="text-center">{{ refferedUser.lastname}}</td>
-                                <td class="text-center"><a href="admin/member/{{refferedUser.id}}">{{ refferedUser.username}}</a></td>
-                                <td class="text-center"><a href="admin/member/{{refferedUser.id}}">{{ refferedUser.email}}</a></td>
-                                <td class="text-center">{{ refferedUser.status}}</td>
-                                <td class="text-center">{{ refferedUser.blacklisted}}</td>
+                                <td class="text-center" style="width: 45%;">{{ report.reportNote}}</td>
+                                <td class="text-center">{{ report.approvalStatus}}</td>
+                                <td class="text-center"><a href="admin/member/{{report.uid}}">{{ report.firstname + ' ' + report.lastname}}</a></td>
+                                <td class="text-center">{{ report.createdDatetime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                                <td class="text-center">
+                                    <span ng-show="report.approvalStatus === 'notapproved'"> <a href="javascript:void(0)" ng-click="updateReportStatus($event, report.id, 'approved')"> Approve</a></span>
+                                    <span ng-show="report.approvalStatus === 'approved'"> <a href="javascript:void(0)" ng-click="updateReportStatus($event, report.id, 'notapproved')"> Disapprove</a></span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <span ng-show="(refferedUsers.length >= (pageSize + 1))">
+                    <span ng-show="(reports.length >= (pageSize + 1))">
                         <button ng-disabled="currentPage == 0" ng-click="currentPage = currentPage - 1" class="btn btn-default">
                             Previous
                         </button>
                         <span class="btn btn-default">{{currentPage + 1}}/{{numberOfPages()}}</span>
-                        <button ng-disabled="currentPage >= refferedUsers.length / pageSize - 1" ng-click="currentPage = currentPage + 1" class="btn btn-default">
+                        <button ng-disabled="currentPage >= reports.length / pageSize - 1" ng-click="currentPage = currentPage + 1" class="btn btn-default">
                             Next
                         </button>
                     </span>
                 </div>
 
-                <div ng-show="(refferedUsers.length <= 0)" class="alert alert-info">
-                    <strong>Info!</strong> No referrals found.
+                <div ng-show="(reports.length <= 0)" class="alert alert-info">
+                    <strong>Info!</strong> No reports found.
                 </div>
 
 

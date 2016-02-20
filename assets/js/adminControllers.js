@@ -476,8 +476,74 @@ adminControllers.controller('adminMemberReviewCtrl', function ($scope, $routePar
         }
     }
 
+});
 
+adminControllers.controller('adminMemberReportCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.userId = $routeParams.id;
 
+    var userParams = {
+        userId: $routeParams.id,
+        userRole: 'admin',
+        token: $window.sessionStorage.token
+    };
+
+    $http.post($rootScope.STATIC_URL + 'users/getUserBasicDetails', userParams).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.member = response.data[0];
+        }
+
+    });
+
+    var params = {
+        userId: $routeParams.id,
+        userRole: 'admin',
+        token: $window.sessionStorage.token
+    };
+
+    $http.post($rootScope.STATIC_URL + 'users/getUserReports', params).success(function (response) {
+
+        if (response.status == 1) {
+            $scope.reports = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.reports).length / $scope.pageSize);
+            }
+        }
+
+    });
+
+    $scope.updateReportStatus = function ($event, reportId, approvalStatus) {
+
+        var args = {
+            reportId: reportId,
+            approvalStatus: approvalStatus,
+            token: $window.sessionStorage.token
+        };
+
+        if (!confirm('Are you sure you want to change status to ' + approvalStatus + ' for this review?')) {
+            $event.preventDefault();
+        } else {
+
+            $http.post($rootScope.STATIC_URL + 'admins/userReportApproval', args).success(function (response) {
+
+                if (response.status === 1) {
+                    $http.post($rootScope.STATIC_URL + 'users/getUserReports', params).success(function (data) {
+                        if (data.status === 1) {
+                            $scope.reports = data.data;
+                            $scope.numberOfPages = function () {
+                                return Math.ceil(($scope.reports).length / $scope.pageSize);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+        }
+    }
 
 });
 

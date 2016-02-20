@@ -133,6 +133,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/member/:id/report', {
+                    templateUrl: 'templates/admin/memberReport.html',
+                    controller: 'adminMemberReportCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 when('/admin/member/:id/photo', {
                     templateUrl: 'templates/admin/memberPhoto.html',
                     controller: 'adminMemberPhotoCtrl',

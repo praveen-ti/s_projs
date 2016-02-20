@@ -860,6 +860,43 @@ console.log(request);
         });
 
     },
+    userReportApproval: function (req, res) {
+
+        var reportId = req.body.reportId;
+        var approvalStatus = req.body.approvalStatus;
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var criteria = {id: reportId};
+                    var data = {approvalStatus: approvalStatus};
+
+                    Report.update(criteria, data).exec(function (err, updatedData) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'some error has occured', error_details: updatedData});
+                        } else {
+
+                            if (updatedData.length == 0) {
+                                return res.json(200, {status: 2, message: "Error in review status updation"});
+                            } else {
+                                return res.json(200, {status: 1, message: "success", data: updatedData});
+                            }
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'Token expired'});
+                }
+            }
+        });
+
+    },
     /*================================================================================================================================
      Socket - Check
      =================================================================================================================================*/

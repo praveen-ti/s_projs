@@ -359,11 +359,20 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
             } else {
                 console.log('Logged - Yes, Role - Admin');
-                console.log('Logged - Yes, Role - Adminuuuuuuuuuuuuu');
                 console.log($window.sessionStorage.adminType);
                 $rootScope.adminType = $window.sessionStorage.adminType;
-                $rootScope.privileges = $window.sessionStorage.privileges;
-                console.log($window.sessionStorage.privileges);
+                //$rootScope.privileges = $window.sessionStorage.privileges;
+                //console.log($window.sessionStorage.privileges);
+
+
+                $rootScope.privMembers          = $window.sessionStorage.privMembers;
+                $rootScope.privPackages         = $window.sessionStorage.privPackages;
+                $rootScope.privSettings         = $window.sessionStorage.privSettings;
+                $rootScope.privCmsPages         = $window.sessionStorage.privCmsPages;
+                $rootScope.privAdvertisements   = $window.sessionStorage.privAdvertisements;
+                $rootScope.privBlog             = $window.sessionStorage.privBlog;
+                $rootScope.privPoll             = $window.sessionStorage.privPoll;
+
                 $rootScope.adminNavigation = 1;
             }
             console.log('Logged - Yes');
@@ -380,7 +389,18 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
             if (response.status === 1) {
                 $window.sessionStorage.isAuthenticated = 'false';
+
                 delete $window.sessionStorage.token;
+                delete $window.sessionStorage.adminType;
+
+                delete $window.sessionStorage.privMembers;
+                delete $window.sessionStorage.privPackages;
+                delete $window.sessionStorage.privSettings;
+                delete $window.sessionStorage.privCmsPages;
+                delete $window.sessionStorage.privAdvertisements;
+                delete $window.sessionStorage.privBlog;
+                delete $window.sessionStorage.privPoll;
+
                 $location.path('/admin/login');
             } else {
                 $scope.login_error_message = "Invalid login credentials";

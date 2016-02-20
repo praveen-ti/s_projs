@@ -22,7 +22,7 @@
             </li>
         </ul>
 
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <div class="collapse navbar-collapse navbar-ex1-collapse" ng-if="adminType == 'super_admin'">
             <ul class="nav navbar-nav side-nav">
                 <li>
                     <a href="admin/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
@@ -40,7 +40,7 @@
                     <a href="/admin/Privileges"><i class="fa fa-fw fa-bar-chart-o"></i> Privileges</a>
                 </li> -->
                 <li>
-                    <a href="/admin/Settings"><i class="fa fa-fw fa-bar-chart-o"></i> General Settings </a>
+                    <a href="/admin/Settings"><i class="fa fa-fw fa-bar-chart-o"></i> Settings </a>
                 </li>
                 <li>
                     <a href="/admin/manageCmsPage"><i class="fa fa-fw fa-bar-chart-o"></i> CMS Pages </a>
@@ -67,6 +67,54 @@
 
             </ul>
         </div>
+
+
+<!-- =================================================================================================
+    SUB ADMIN Starts
+ ===================================================================================================== -->
+         <div class="collapse navbar-collapse navbar-ex1-collapse" ng-if="adminType == 'sub_admin'">
+
+            <ul class="nav navbar-nav side-nav">
+                <li>
+                     <a href="admin/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                </li>
+                 <li ng-if="privMembers == 'members'">
+                    <a href="admin/members"><i class="fa fa-fw fa-users"></i> Members</a>
+                </li>
+                <li ng-if="privPackages == 'packages'">
+                    <a href="admin/package"><i class="fa fa-fw  fa-credit-card"></i> Packages</a>
+                </li>
+                <li ng-if="privSettings == 'settings'">
+                    <a href="/admin/Settings"><i class="fa fa-fw fa-bar-chart-o"></i> Settings </a>
+                </li>
+                <li ng-if="privCmsPages == 'cmsPages'">
+                    <a href="/admin/manageCmsPage"><i class="fa fa-fw fa-bar-chart-o"></i> CMS Pages </a>
+                </li>
+
+                <li ng-if="privAdvertisements == 'advertisements'">
+                    <a href="/admin/manageAdvertisement/userAdList" data-toggle="collapse" data-target="#demo">
+                                <i class="fa fa-fw fa-bar-chart-o"></i> Advertisements <i class="fa fa-fw fa-caret-down"></i>
+                    </a>
+                    <ul id="demo" class="collapse">
+                            <li>
+                                <a href="/admin/manageAdvertisement/page">Page</a>
+                            </li>
+                             <li>
+                                <a href="/admin/manageAdvertisement/position">Position</a>
+                            </li>
+                     </ul>
+                </li>
+                 <li ng-if="privBlog == 'blog'">
+                    <a href="/admin/blog/list"><i class="fa fa-fw fa-bar-chart-o"></i> Blog </a>
+                </li>
+                <li ng-if="privPoll == 'poll'">
+                    <a href="/admin/poll/list"><i class="fa fa-fw fa-bar-chart-o"></i> Poll </a>
+                </li>
+            </ul>
+        </div>
+<!-- =================================================================================================
+    SUB ADMIN Ends
+ ===================================================================================================== -->
 
     </nav>
 

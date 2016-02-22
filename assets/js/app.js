@@ -165,10 +165,10 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
-                 when('/admin/manageSubAdmin/subAdmin/:adminId', {
-                     templateUrl: 'templates/admin/subAdminDetails.html',
-                     controller: 'subAdminDetailsCtrl',
-                     access: {
+                when('/admin/manageSubAdmin/subAdmin/:adminId', {
+                    templateUrl: 'templates/admin/subAdminDetails.html',
+                    controller: 'subAdminDetailsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
@@ -189,7 +189,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
-                 when('/admin/manageCmsPage', {
+                when('/admin/manageCmsPage', {
                     templateUrl: 'templates/admin/manageCmsPage.html',
                     controller: 'manageCmsPageCtrl',
                     access: {
@@ -197,122 +197,122 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
-                 when('/admin/manageCmsPage/:cmsPageId', {
-                     templateUrl: 'templates/admin/cmsPageDetails.html',
-                     controller: 'cmsPageDetailsCtrl',
-                     access: {
+                when('/admin/manageCmsPage/:cmsPageId', {
+                    templateUrl: 'templates/admin/cmsPageDetails.html',
+                    controller: 'cmsPageDetailsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
-                 when('/admin/manageAdvertisement/page', {
-                     templateUrl: 'templates/admin/manageAdPage.html',
-                     controller: 'manageAdPageCtrl',
-                     access: {
+                when('/admin/manageAdvertisement/page', {
+                    templateUrl: 'templates/admin/manageAdPage.html',
+                    controller: 'manageAdPageCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/manageAdvertisement/page/:adPageId/adInPage', {
-                     templateUrl: 'templates/admin/adInPage.html',
-                     controller: 'adInPageCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/adInPage.html',
+                    controller: 'adInPageCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/manageAdvertisement/position', {
-                     templateUrl: 'templates/admin/manageAdPosition.html',
-                     controller: 'manageAdPositionCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/manageAdPosition.html',
+                    controller: 'manageAdPositionCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/manageAdvertisement/position/:adPositionId/adInPosition', {
-                     templateUrl: 'templates/admin/adInPosition.html',
-                     controller: 'adInPositionCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/adInPosition.html',
+                    controller: 'adInPositionCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/manageAdvertisement/userAdList', {
-                     templateUrl: 'templates/admin/manageAdUser.html',
-                     controller: 'manageAdUserCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/manageAdUser.html',
+                    controller: 'manageAdUserCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/manageAdvertisement/ad/:userAdId', {
-                     templateUrl: 'templates/admin/adUserDetails.html',
-                     controller: 'adUserDetailsCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/adUserDetails.html',
+                    controller: 'adUserDetailsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
-                 when('/admin/blog/list', {
-                     templateUrl: 'templates/admin/manageBlog.html',
-                     controller: 'manageBlogCtrl',
-                     access: {
+                when('/admin/blog/list', {
+                    templateUrl: 'templates/admin/manageBlog.html',
+                    controller: 'manageBlogCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/blog/:blogId', {
-                     templateUrl: 'templates/admin/blogDetails.html',
-                     controller: 'blogDetailsCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/blogDetails.html',
+                    controller: 'blogDetailsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
-                 when('/admin/blog/comments/:blogId', {
-                     templateUrl: 'templates/admin/blogComments.html',
-                     controller: 'blogCommentsCtrl',
-                     access: {
+                when('/admin/blog/comments/:blogId', {
+                    templateUrl: 'templates/admin/blogComments.html',
+                    controller: 'blogCommentsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/poll/list', {
-                     templateUrl: 'templates/admin/managePoll.html',
-                     controller: 'managePollCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/managePoll.html',
+                    controller: 'managePollCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/poll/addNewPoll', {
-                     templateUrl: 'templates/admin/addNewPoll.html',
-                     controller: 'addNewPollCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/addNewPoll.html',
+                    controller: 'addNewPollCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
-                 when('/admin/poll/:pollId', {
-                     templateUrl: 'templates/admin/pollDetails.html',
-                     controller: 'pollDetailsCtrl',
-                     access: {
+                when('/admin/poll/:pollId', {
+                    templateUrl: 'templates/admin/pollDetails.html',
+                    controller: 'pollDetailsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
                 when('/admin/poll/editPoll/:pollId', {
-                     templateUrl: 'templates/admin/editPoll.html',
-                     controller: 'editPollsCtrl',
-                     access: {
+                    templateUrl: 'templates/admin/editPoll.html',
+                    controller: 'editPollsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
                 }).
-                 when('/admin/poll/comments/:pollId', {
-                     templateUrl: 'templates/admin/pollComments.html',
-                     controller: 'pollCommentsCtrl',
-                     access: {
+                when('/admin/poll/comments/:pollId', {
+                    templateUrl: 'templates/admin/pollComments.html',
+                    controller: 'pollCommentsCtrl',
+                    access: {
                         requiresLogin: true,
                         role: 'admin'
                     }
@@ -348,8 +348,8 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
             if (nextRoute.access.role === 'user') {
                 $location.path("/login");
             } else {
-                $location.path("/admin/login");
                 $rootScope.adminNavigation = 0;
+                $location.path("/admin/login");
             }
             //$window.location.href = "/admin/login";
 
@@ -365,15 +365,20 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
                 //console.log($window.sessionStorage.privileges);
 
 
-                $rootScope.privMembers          = $window.sessionStorage.privMembers;
-                $rootScope.privPackages         = $window.sessionStorage.privPackages;
-                $rootScope.privSettings         = $window.sessionStorage.privSettings;
-                $rootScope.privCmsPages         = $window.sessionStorage.privCmsPages;
-                $rootScope.privAdvertisements   = $window.sessionStorage.privAdvertisements;
-                $rootScope.privBlog             = $window.sessionStorage.privBlog;
-                $rootScope.privPoll             = $window.sessionStorage.privPoll;
+                $rootScope.privMembers = $window.sessionStorage.privMembers;
+                $rootScope.privPackages = $window.sessionStorage.privPackages;
+                $rootScope.privSettings = $window.sessionStorage.privSettings;
+                $rootScope.privCmsPages = $window.sessionStorage.privCmsPages;
+                $rootScope.privAdvertisements = $window.sessionStorage.privAdvertisements;
+                $rootScope.privBlog = $window.sessionStorage.privBlog;
+                $rootScope.privPoll = $window.sessionStorage.privPoll;
 
                 $rootScope.adminNavigation = 1;
+                console.log('nextRoute');
+                console.log(nextRoute.originalPath);
+                if ((nextRoute.originalPath === '/admin' || nextRoute.originalPath === '/admin/login') && $window.sessionStorage.isAuthenticated === 'true') {
+                    $location.path("/admin/dashboard");
+                }
             }
             console.log('Logged - Yes');
         }
@@ -382,9 +387,9 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
     $rootScope.adminLogout = function () {
 
-         var angParams = {
-                token: $window.sessionStorage.token
-            };
+        var angParams = {
+            token: $window.sessionStorage.token
+        };
         $http.post($rootScope.STATIC_URL + 'admins/adminLogout', angParams).success(function (response) {
 
             if (response.status === 1) {

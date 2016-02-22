@@ -292,14 +292,14 @@ Get all Poll
                                             //query = "SELECT * FROM  poll ORDER BY createdAt DESC";
                                              query =    " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
                                                         " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
-                                                        " pl.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
+                                                        " pl.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname , usr.email"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN user usr ON pl.authorId = usr.id"+
                                                         " WHERE pl.authorType = 'user'"+
                                                         " UNION"+
                                                         " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
                                                         " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
-                                                        " pl.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
+                                                        " pl.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname , null as email"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN admin adm ON pl.authorId = adm.id"+
                                                         " WHERE pl.authorType = 'admin'"+
@@ -312,7 +312,7 @@ console.log(query);
                                                 }
                                                 else
                                                 {
-                                                    console.log(result);
+
                                                     return res.json(200, {status: 1, message: "success", data: result});
                                                 }
                                             });
@@ -423,7 +423,33 @@ console.log(query);
                                 }
                                 else
                                 {
-                                    return res.json(200, {status: 1, data: updateApprovalStatus});
+                                        //Email
+                                        var email_to        = request.returnedData.email;
+                                        var email_subject   = 'Zentiera - Poll';
+                                        var email_template  = 'approvalStatus';
+                                        var email_context   = { category: "poll", authorName : request.returnedData.authorname, email : request.returnedData.email, approvalStatus: request.returnedData.approvalStatus};
+                                        UserService.emailSend(email_to,email_subject,email_template,email_context, function(err, sendresult) {
+                                            if(err)
+                                            {
+                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
+                                                   sails.log.debug('Some error occured ' + sendresult);
+
+                                            }
+                                           else{
+
+                                                 console.log("User -> email send");
+                                                 //console.log(result);
+                                                 console.log(email_to);
+                                                 console.log(email_subject);
+                                                 console.log(email_template);
+                                                 console.log(email_context);
+
+
+                                            }
+                                            return res.json(200, {status: 1, data: updateApprovalStatus});
+
+
+                                        });
                                 }
 
                             });

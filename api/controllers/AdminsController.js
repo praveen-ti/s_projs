@@ -760,34 +760,41 @@ console.log(request);
                                                               " apl.adminId = ad.id"+
                                                               " WHERE apl.adminId = "+details.token.adminId;
                                                     */
+                                                               if(typeof privilege != "undefined"){
 
-                                                                  var query =  "SELECT name"+
-                                                                               " FROM"+
-                                                                               " admin_privilege"+
-                                                                               " WHERE"+
-                                                                               " id IN ("+privilegelog.privilegeId+")";
+                                                                      var query =  "SELECT name"+
+                                                                                   " FROM"+
+                                                                                   " admin_privilege"+
+                                                                                   " WHERE"+
+                                                                                   " id IN ("+privilegelog.privilegeId+")";
 
-                                                                            Admin.query(query, function (err, privilege) {
-                                                                                if (err)
-                                                                                {
-                                                                                    return res.json(200, {status: 2, error_details: err});
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    privileArray = [];
-                                                                                    var ctr = 0;
-                                                                                    privilege.forEach(function(factor, index){
-                                                                                            ctr ++;
-                                                                                            console.log(factor);
-                                                                                            console.log(ctr);
-                                                                                            privileArray.push(factor.name);
-                                                                                    });
+                                                                                Admin.query(query, function (err, privilege) {
+                                                                                    if (err)
+                                                                                    {
+                                                                                        return res.json(200, {status: 2, error_details: err});
+                                                                                    }
+                                                                                    else
+                                                                                    {
 
-                                                                                    console.log(privileArray);
-                                                                                    console.log(adminType);
-                                                                                    return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: privileArray});
-                                                                                }
-                                                                            });
+                                                                                                privileArray = [];
+                                                                                                var ctr = 0;
+                                                                                                privilege.forEach(function(factor, index){
+                                                                                                        ctr ++;
+                                                                                                        console.log(factor);
+                                                                                                        console.log(ctr);
+                                                                                                        privileArray.push(factor.name);
+                                                                                                });
+
+                                                                                            console.log(privileArray);
+                                                                                            console.log(adminType);
+                                                                                            return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: privileArray});
+
+                                                                                    }
+                                                                                });
+                                                                   }
+                                                                    else{
+                                                                          return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: "No Privileges"});
+                                                                     }
                                                                 }
                                                             });
 

@@ -310,14 +310,14 @@ console.log("Entered Add Blog -----------------------------");
                                 //Query to get name of author from user table or admin table
                                 query =    " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " blg.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname"+
+                                            " blg.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname, usr.email"+
                                             " FROM blog blg"+
                                             " INNER JOIN user usr ON blg.authorId = usr.id"+
                                             " WHERE blg.authorType = 'user'"+
                                             " UNION"+
                                             " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
-                                            " blg.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname"+
+                                            " blg.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname, null as email"+
                                             " FROM blog blg"+
                                             " INNER JOIN admin adm ON blg.authorId = adm.id"+
                                             " WHERE blg.authorType = 'admin'"+
@@ -433,7 +433,8 @@ console.log("updateBlogStatus ????????>>>>>><<<<<<<<    ");
   updateApprovalStatus: function(req, res) {
 
          var request = req.body.request;
-
+console.log("request--------------Update approvalStatus--------------");
+console.log(request);
         AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
 
             if (err)
@@ -457,8 +458,8 @@ console.log("updateBlogStatus ????????>>>>>><<<<<<<<    ");
                             var criteria = {
                                               id          : result.id
                                             };
-console.log(values);
-console.log(criteria);
+                        console.log(values);
+                        console.log(criteria);
                             Blog.update(criteria, values).exec(function (err, updateApprovalStatus) {
                                 if (err)
                                 {
@@ -466,7 +467,34 @@ console.log(criteria);
                                 }
                                 else
                                 {
-                                    return res.json(200, {status: 1, data: updateApprovalStatus});
+                                      //return res.json(200, {status: 1, data: updateApprovalStatus});
+                                     //Email
+                                        var email_to        = request.returnedData.email;
+                                        var email_subject   = 'Zentiera - Blog';
+                                        var email_template  = 'approvalStatus';
+                                        var email_context   = { category: "blog", authorName : request.returnedData.authorname, email : request.returnedData.email, approvalStatus: request.returnedData.approvalStatus};
+                                        UserService.emailSend(email_to,email_subject,email_template,email_context, function(err, sendresult) {
+                                            if(err)
+                                            {
+                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
+                                                   sails.log.debug('Some error occured ' + sendresult);
+
+                                            }
+                                           else{
+
+                                                 console.log("User -> email send");
+                                                 //console.log(result);
+                                                 console.log(email_to);
+                                                 console.log(email_subject);
+                                                 console.log(email_template);
+                                                 console.log(email_context);
+
+
+                                            }
+                                            return res.json(200, {status: 1, data: updateApprovalStatus});
+
+
+                                        });
                                 }
 
                             });

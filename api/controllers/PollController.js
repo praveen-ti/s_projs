@@ -295,15 +295,15 @@ Get all Poll
                                                         " pl.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname , usr.email"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN user usr ON pl.authorId = usr.id"+
-                                                        " WHERE pl.authorType = 'user'"+
-                                                        " UNION"+
+                                                        " WHERE pl.authorType = 'user' AND pl.pollStatus != '"+pollConstants.POLL_STATUS_DELETE+
+                                                        "' UNION"+
                                                         " SELECT pl.id,pl.authorType, pl.title, pl.question, pl.answerOptions,"+
                                                         " pl.pollStatus, pl.approvalStatus, pl.commentStatus, pl.ansOptionType,"+
                                                         " pl.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname , null as email"+
                                                         " FROM poll pl"+
                                                         " INNER JOIN admin adm ON pl.authorId = adm.id"+
-                                                        " WHERE pl.authorType = 'admin'"+
-                                                        " ORDER BY createdAt DESC";
+                                                        " WHERE pl.authorType = 'admin' AND pl.pollStatus != '"+pollConstants.POLL_STATUS_DELETE+
+                                                        "' ORDER BY createdAt DESC";
 console.log(query);
                                             Poll.query(query, function(err, result) {
                                                 if(err)

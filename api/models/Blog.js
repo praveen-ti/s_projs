@@ -37,7 +37,7 @@ module.exports = {
             //Admin can block a blog for a particular time
             blogStatus : {
                 type            : 'string',
-                enum            : [blogConstants.BLOG_STATUS_ACTIVE,blogConstants.BLOG_STATUS_INACTIVE],
+                enum            : [blogConstants.BLOG_STATUS_ACTIVE, blogConstants.BLOG_STATUS_INACTIVE, blogConstants.BLOG_STATUS_DELETE],
                 defaultsTo      :  blogConstants.BLOG_STATUS_ACTIVE,
             },
             //Admin can block a user's blog

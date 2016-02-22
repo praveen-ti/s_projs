@@ -313,15 +313,15 @@ console.log("Entered Add Blog -----------------------------");
                                             " blg.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname, usr.email"+
                                             " FROM blog blg"+
                                             " INNER JOIN user usr ON blg.authorId = usr.id"+
-                                            " WHERE blg.authorType = 'user'"+
-                                            " UNION"+
+                                            " WHERE blg.authorType = 'user' AND blg.blogStatus != '"+blogConstants.BLOG_STATUS_DELETE+
+                                            "' UNION"+
                                             " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                             " blg.blogStatus, blg.approvalStatus,"+
                                             " blg.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname, null as email"+
                                             " FROM blog blg"+
                                             " INNER JOIN admin adm ON blg.authorId = adm.id"+
-                                            " WHERE blg.authorType = 'admin'"+
-                                            " ORDER BY createdAt DESC";
+                                            " WHERE blg.authorType = 'admin' AND blg.blogStatus != '"+blogConstants.BLOG_STATUS_DELETE+
+                                            "' ORDER BY createdAt DESC";
 
 
                                                // var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
@@ -377,7 +377,7 @@ console.log("Entered Add Blog -----------------------------");
     updateBlogStatus: function(req, res) {
 console.log("updateBlogStatus ????????>>>>>><<<<<<<<    ");
          var request = req.body.request;
-
+console.log(request);
         AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
 
             if (err)
@@ -409,6 +409,7 @@ console.log("updateBlogStatus ????????>>>>>><<<<<<<<    ");
                                 }
                                 else
                                 {
+
                                     return res.json(200, {status: 1, data: updateBlogStatus});
                                 }
 

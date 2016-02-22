@@ -92,7 +92,7 @@ module.exports.constants = {
         REVIEW_STATUS_APPROVED: 'approved',
         REVIEW_STATUS_NOTAPPROVED: 'notapproved'
     },
-    
+
     report: {
         REPORT_STATUS_APPROVED: 'approved',
         REPORT_STATUS_NOTAPPROVED: 'notapproved'
@@ -142,6 +142,7 @@ module.exports.constants = {
 
         BLOG_STATUS_ACTIVE         : 'active',
         BLOG_STATUS_INACTIVE       : 'inactive',
+        BLOG_STATUS_DELETE         : 'delete',
 
         APPROVAL_STATUS_PENDING    : 'pending',
         APPROVAL_STATUS_APPROVED   : 'approved',
@@ -157,6 +158,7 @@ module.exports.constants = {
 
         POLL_STATUS_ACTIVE         : 'active',
         POLL_STATUS_INACTIVE       : 'inactive',
+        POLL_STATUS_DELETE         : 'delete',
 
         COMMENT_STATUS_SHOW        : 'show',
         COMMENT_STATUS_HIDE        : 'hide',

@@ -180,6 +180,7 @@ mailbox : function(req, res) {
                                                    break;
 
                                                    default:
+                                                       switchKey = "inbox";
                                                        query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"' ";
 
                                              }

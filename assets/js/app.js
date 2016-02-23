@@ -317,6 +317,14 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         role: 'admin'
                     }
                 }).
+                when('/admin/mailbox', {
+                    templateUrl: 'templates/mailboxInbox.html',
+                    controller: 'mailboxInboxCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'admin'
+                    }
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

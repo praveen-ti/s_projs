@@ -43,7 +43,7 @@ module.exports = {
          //Admin can hide the poll for a period
       pollStatus: {
             type        : 'string',
-            enum        : [pollConstants.POLL_STATUS_ACTIVE,pollConstants.POLL_STATUS_INACTIVE],
+            enum        : [pollConstants.POLL_STATUS_ACTIVE,pollConstants.POLL_STATUS_INACTIVE, pollConstants.POLL_STATUS_DELETE],
             defaultsTo  : pollConstants.POLL_STATUS_ACTIVE,
         },
 

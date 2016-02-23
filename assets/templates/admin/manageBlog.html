@@ -62,19 +62,23 @@
                                                 <a href="admin/blog/{{blog.id}}">View </a> |
                                             </span>
 
-                                           <span ng-show="blog.blogStatus == 'inactive'">
+                                           <span ng-show="blog.blogStatus == 'inactive' || blog.blogStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="active" ng-click="updateBlogStatus($event,blog.id)"> Active</a> |
                                             </span>
-                                            <span ng-show="blog.blogStatus == 'active'">
+                                            <span ng-show="blog.blogStatus == 'active' || blog.blogStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="inactive"  ng-click="updateBlogStatus($event,blog.id)"> Inactive</a> |
                                             </span>
+                                             <span ng-show="blog.blogStatus == 'active' || blog.blogStatus == 'inactive'">
+                                                <a href="javascript:void(0)" id="delete"  ng-click="updateBlogStatus($event,blog.id)"> Delete</a>
+                                            </span>
+
                                             <span>
 
                                             <!-- <span ng-show="blog.approvalStatus == 'inactive'"> -->
                                              <!--   <a href="javascript:void(0)" id="pending" ng-click="updateApprovalStatus($event,blog.id)"> Pending </a> | -->
                                            <!-- </span> -->
                                             <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'rejected')">
-                                                <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>|
+                                                | <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>|
                                              </span>
                                             <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'approved')">
                                                 <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,blog.id)"> Reject </a>

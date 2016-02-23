@@ -60,8 +60,6 @@ adminControllers.controller('adminLoginCtrl', function ($scope, $routeParams, $r
 
                          if(response.privileges[i]=="Members"){
                              $window.sessionStorage.privMembers = "members";
-                             console.log("$window.sessionStorage.privMembers ===========");
-                             console.log($window.sessionStorage.privMembers);
                          }
                          if(response.privileges[i]=="Packages"){
                              $window.sessionStorage.privPackages = "packages";

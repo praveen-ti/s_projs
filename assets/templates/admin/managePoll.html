@@ -79,18 +79,21 @@
                                            <span>
                                                 <a href="admin/poll/{{poll.id}}">View </a> |
                                             </span>
-
-                                           <span ng-show="poll.pollStatus == 'inactive'">
+                                           <span ng-show="poll.pollStatus == 'inactive' || poll.pollStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="active" ng-click="updatePollStatus($event,poll.id)"> Active</a> |
                                             </span>
-                                            <span ng-show="poll.pollStatus == 'active'">
+                                            <span ng-show="poll.pollStatus == 'active' || poll.pollStatus == 'delete'">
                                                 <a href="javascript:void(0)" id="inactive"  ng-click="updatePollStatus($event,poll.id)"> Inactive</a> |
                                             </span>
+                                             <span ng-show="poll.pollStatus == 'active' || poll.pollStatus == 'inactive'">
+                                                <a href="javascript:void(0)" id="delete"  ng-click="updatePollStatus($event,poll.id)"> Delete</a>
+                                            </span>
+
                                             <span>
 
 
                                             <span ng-show="poll.authorType != 'admin' && (poll.approvalStatus == 'rejected' || poll.approvalStatus == 'pending')">
-                                                <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,poll.id)"> Approve </a>
+                                               | <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,poll.id)"> Approve </a>
                                             </span>
                                             <span ng-show="poll.authorType != 'admin' && (poll.approvalStatus == 'approved' || poll.approvalStatus == 'pending')">
                                                 <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,poll.id)"> Reject </a>

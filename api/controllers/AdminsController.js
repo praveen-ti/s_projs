@@ -731,6 +731,8 @@ console.log(request);
                                     return res.json(200, {status: 2, message: 'some error occured', error: err});
 
                                 } else {
+
+
                                     var switchKey = adminType.adminType;
                                              switch (switchKey)
                                             {
@@ -738,6 +740,7 @@ console.log(request);
                                                    case 'super_admin':
                                                            return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: "All privileges"});
                                                    break;
+
                                                    case 'sub_admin':
                                                        Admin_privilege_log.findOne({adminId : details.token.adminId}).exec(function (err, privilegelog) {
                                                         if (err) {
@@ -760,7 +763,8 @@ console.log(request);
                                                               " apl.adminId = ad.id"+
                                                               " WHERE apl.adminId = "+details.token.adminId;
                                                     */
-                                                               if(typeof privilege != "undefined"){
+
+                                                               if(typeof privilegelog.privilegeId != "undefined"){
 
                                                                       var query =  "SELECT name"+
                                                                                    " FROM"+
@@ -785,8 +789,6 @@ console.log(request);
                                                                                                         privileArray.push(factor.name);
                                                                                                 });
 
-                                                                                            console.log(privileArray);
-                                                                                            console.log(adminType);
                                                                                             return res.json(200, {status: 1, message: 'succes', data: details , adminType: adminType.adminType, privileges: privileArray});
 
                                                                                     }

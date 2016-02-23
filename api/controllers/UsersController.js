@@ -209,62 +209,22 @@ module.exports = {
         User.findOne(values).exec(function (err, result) {
             if (err) {
 
-                sails.log.debug('Some error occured ' + err);
-                return res.json(200, {status: 2, message: 'some error occured', error_details: err});
-                //return res.view("login",{error: result});
+                return res.json(200, {status: 2, message: 'Error occured.', error: err});
 
             } else {
-                if (typeof result == "undefined")
-                {
-                    sails.log.debug({message: 'No user found'});
-                    return res.json(200, {status: 2, message: 'No user found', result: result});
-                    //req.session.error = "undefined user";
-                    //res.cookie('error', 'undefined user', { maxAge: 1, httpOnly: true });
-                    //console.log(req.session.error);
-                    //res.redirect('login');
 
+                if (typeof result == "undefined") {
 
-                }
-                else
-                {
+                    return res.json(200, {status: 2, message: 'No user found', data: result});
+
+                } else {
+
                     // Create new access token on login
                     UsertokenService.createToken(result.id, function (err, details) {
                         if (err) {
-                            return res.json(200, {status: 2, message: 'some error occured', error_details: details});
+                            return res.json(200, {status: 2, message: 'Error occured in fetching user data.', error: details});
                         } else {
-
-
-                            //Email
-                            /* var email_to        = "tittoxp@gmail.com";
-                             var email_subject   = 'FitHudl - Email verify';
-                             var email_template  = 'email_verify';
-                             var email_context   = { display_name : result.name, email : result.email, link : result+"eeeeeeeeeee"};
-                             UserService.emailSend(email_to,email_subject,email_template,email_context, function(err, sendresult) {
-                             if(err)
-                             {
-                             return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
-                             sails.log.debug('Some error occured ' + sendresult);
-                             
-                             }
-                             else{
-                             
-                             console.log("User -> email send");
-                             //console.log(result);
-                             console.log(email_to);
-                             console.log(email_subject);
-                             console.log(email_template);
-                             console.log(email_context);
-                             
-                             return res.json(200, {status: 1, message: 'succes', details: details});
-                             }
-                             
-                             });*/
-                            return res.json(200, {status: 1, message: 'succes', details: details});
-
-                            // req.session.authenticated = true;
-                            // req.session.success = "registered user";
-                            //req.session.token      = details.token.token;
-                            //res.redirect('login_home');
+                            return res.json(200, {status: 1, message: 'Success.', data: details});
                         }
                     });
 

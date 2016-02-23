@@ -33,35 +33,59 @@ module.exports.routes = {
   ***************************************************************************/
 
  '/': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
   
   '/index': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
 
   '/login': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
   
   '/sms': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
   
   '/testing': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
   
   '/profile': {
-    view: 'index'
+    view: 'index',
+    locals: {
+        layout: 'user_layout'
+    }
   },
   
   '/admin': {
-    view: 'admin'
+    view: 'admin',
+    locals: {
+        layout: 'admin_layout'
+    }
   },
   
   '/admin/*': {
-    view: 'admin'
+    view: 'admin',
+    locals: {
+        layout: 'admin_layout'
+    }
   },
 
   

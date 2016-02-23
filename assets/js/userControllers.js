@@ -99,6 +99,65 @@ userControllers.controller('loginCtrl', function ($scope, $routeParams, $rootSco
 
     $scope.requiresLogin = false;
 
+    var validateEmail = function (email)
+    {
+        var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+        if (reg.test(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    $scope.userLogin = function () {
+
+        console.log('userLogin');
+
+        var email = $scope.email;
+        var password = $scope.password;
+        var params = {
+            email: email,
+            password: password
+        };
+
+        $scope.errorMessage = null;
+
+        if (!email) {
+
+            $scope.errorMessage = "Please enter email.";
+
+        } else if (!validateEmail(email)) {
+
+            $scope.errorMessage = "Please enter correct email format.";
+
+        } else if (!password) {
+
+            $scope.errorMessage = "Please enter password.";
+
+        } else if (validateEmail(email) && password) {
+
+            $http.post($rootScope.STATIC_URL + 'users/userLogin', params).success(function (response) {
+                
+                if (response.status === 1) {
+                    //var a = response.data2
+                    $window.sessionStorage.isAuthenticated = 'true';
+                    $window.sessionStorage.token = response.data.token.token;
+                    $window.sessionStorage.adminType = "user";
+                
+                    $location.path('/profile');
+                } else {
+                    $scope.errorMessage = "Invalid login credentials.";
+                }
+
+            }).error(function (err) {
+
+                console.log("ERROR" + err);
+
+            });
+        }
+    };
+
+
 });
 
 userControllers.controller('profileCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {

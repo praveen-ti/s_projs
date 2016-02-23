@@ -1,50 +1,33 @@
-<script>
-//    var x = document.getElementById("demo");
-//
-//    function getLocation() {
-//        x.innerHTML = "";
-//        if (navigator.geolocation) {
-//            navigator.geolocation.getCurrentPosition(showPosition, showError);
-//        } else {
-//            x.innerHTML = "Geolocation is not supported by this browser.";
-//        }
-//    }
-//
-//    function showPosition(position) {
-//        x.innerHTML = "Latitude: " + position.coords.latitude +
-//                "<br>Longitude: " + position.coords.longitude +
-//                "<br>Accuracy: " + position.coords.accuracy +
-//                "<br>Altitude: " + position.coords.altitude +
-//                "<br>AltitudeAccuracy: " + position.coords.altitudeAccuracy +
-//                "<br>Heading: " + position.coords.heading +
-//                "<br>Speed: " + position.coords.speed +
-//                "<br>Timestamp: " + position.coords.timestamp;
-//    }
-//
-//    function showError(error) {
-//        switch (error.code) {
-//            case error.PERMISSION_DENIED:
-//                x.innerHTML = "User denied the request for Geolocation."
-//                break;
-//            case error.POSITION_UNAVAILABLE:
-//                x.innerHTML = "Location information is unavailable."
-//                break;
-//            case error.TIMEOUT:
-//                x.innerHTML = "The request to get user location timed out."
-//                break;
-//            case error.UNKNOWN_ERROR:
-//                x.innerHTML = "An unknown error occurred."
-//                break;
-//        }
-//    }
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script type="text/javascript">
+
+    var geocoder = new google.maps.Geocoder();
+    var address = "new york";
+
+    geocoder.geocode({'address': address}, function (results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+            var latitude = results[0].geometry.location.lat();
+            var longitude = results[0].geometry.location.lng();
+            document.getElementById("address").innerHTML="Lat : " + latitude + "; Longi : " + longitude;
+        }
+    });
+    
 </script>
 <div class="container">
-    <h3> Geolocation</h3>
-
-
+    <!-- GPS -->
+    <h3> GPS</h3>
     <input type="button" class="btn btn-default" ng-click="getLocation()" value="Enable GPS"/>
     <br/>
-    <p id="demo">{{htmlContent}}</p>
+    <p id="gps">{{htmlContent}}</p>
 
+
+    <!-- Geo location -->
+    <br/><br/>
+    <h3> Geolocation</h3>
+    <input type="text" name="address" ng-model="address"/>
+    <input type="button" class="btn btn-default" ng-click="getLatLong()" value="Submit"/>
+    <br/>
+    <p id="address">{{latlongContent}}</p>
 </div>
 

@@ -165,3 +165,21 @@ userControllers.controller('profileCtrl', function ($scope, $routeParams, $rootS
     $scope.requiresLogin = true;
 
 });
+
+/*===================================================================================================================================
+    mailboxInboxCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxInboxCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log(token);
+
+ });

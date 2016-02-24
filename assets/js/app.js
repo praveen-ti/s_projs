@@ -342,32 +342,23 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
     $rootScope.$on("$routeChangeStart", function (event, nextRoute, currentRoute) {
 
-        //if (angular.isUndefined($window.sessionStorage.isAuthenticated)) {
-        //    $window.sessionStorage.isAuthenticated = 'false';
-        //}
-
-        //console.log('$window.sessionStorage.isAuthenticated');
-        //console.log(nextRoute.access.requiresLogin);
-        //console.log($window.sessionStorage.isAuthenticated);
-        //console.log(angular.isUndefined($window.sessionStorage.token));
-
         if (nextRoute.access.requiresLogin && ($window.sessionStorage.isAuthenticated === 'false') && angular.isUndefined($window.sessionStorage.token)) {
             console.log('Logged - No');
             if (nextRoute.access.clientSide === 'USER') {
-                $location.path("/login");
+                //$location.path("/login");
+                $window.location.href = "/login";
             } else {
                 $rootScope.adminNavigation = 0;
                 $location.path("/admin/login");
+                //$window.location.href = "/admin/login";
             }
-            //$window.location.href = "/admin/login";
 
         } else {
 
             if (nextRoute.access.clientSide === 'USER') {
 
             } else {
-                console.log('Logged - Yes, Role - Admin');
-                console.log($window.sessionStorage.adminType);
+
                 $rootScope.adminType = $window.sessionStorage.adminType;
                 //$rootScope.privileges = $window.sessionStorage.privileges;
                 //console.log($window.sessionStorage.privileges);
@@ -382,8 +373,7 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
                 $rootScope.privPoll = $window.sessionStorage.privPoll;
 
                 $rootScope.adminNavigation = 1;
-                console.log('nextRoute');
-                console.log(nextRoute.originalPath);
+
                 if ((nextRoute.originalPath === '/admin' || nextRoute.originalPath === '/admin/login') && $window.sessionStorage.isAuthenticated === 'true') {
                     $location.path("/admin/dashboard");
                 }
@@ -417,6 +407,32 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
                 $location.path('/admin/login');
             } else {
                 $scope.login_error_message = "Invalid login credentials";
+            }
+
+        }).error(function () {
+
+            console.log("EROOR - Admin logout.");
+
+        });
+
+    };
+
+    $rootScope.userLogout = function () {
+
+        var angParams = {
+            token: $window.sessionStorage.token
+        };
+        $http.post($rootScope.STATIC_URL + 'users/userLogout', angParams).success(function (response) {
+
+            if (response.status === 1) {
+                $window.sessionStorage.isAuthenticated = 'false';
+
+                delete $window.sessionStorage.token;
+                delete $window.sessionStorage.adminType;
+
+                $window.location.href = '/login';
+            } else {
+                
             }
 
         }).error(function () {

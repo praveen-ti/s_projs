@@ -144,7 +144,8 @@ userControllers.controller('loginCtrl', function ($scope, $routeParams, $rootSco
                     $window.sessionStorage.token = response.data.token.token;
                     $window.sessionStorage.adminType = "user";
                 
-                    $location.path('/profile');
+                    //$location.path('/profile');
+                    $window.location.href = "/profile";
                 } else {
                     $scope.errorMessage = "Invalid login credentials.";
                 }

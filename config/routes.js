@@ -68,7 +68,7 @@ module.exports.routes = {
   },
   
   '/profile': {
-    view: 'index',
+    view: 'logged_in',
     locals: {
         layout: 'user_layout'
     }

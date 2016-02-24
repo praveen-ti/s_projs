@@ -17,7 +17,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     //controller: 'loginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/index', {
@@ -25,7 +25,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'indexCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/sms', {
@@ -33,7 +33,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'smsCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/testing', {
@@ -41,7 +41,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'testtCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/login', {
@@ -49,7 +49,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'loginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/profile', {
@@ -57,7 +57,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'profileCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'user'
+                        clientSide: 'USER'
                     }
                 }).
                 when('/admin', {
@@ -65,7 +65,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminLoginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'admin',
+                        clientSide: 'ADMIN',
                         page: 'login'
                     }
                 }).
@@ -74,7 +74,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminLoginCtrl',
                     access: {
                         requiresLogin: false,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/dashboard', {
@@ -82,7 +82,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminDashboardCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/package', {
@@ -90,7 +90,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminPackageCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/members', {
@@ -98,7 +98,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMembersCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id', {
@@ -106,7 +106,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberInfoCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/review', {
@@ -114,7 +114,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberReviewCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/subscription', {
@@ -122,7 +122,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberSubscriptionCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/referral', {
@@ -130,7 +130,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberReferralCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/report', {
@@ -138,7 +138,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberReportCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/photo', {
@@ -146,7 +146,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberPhotoCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/member/:id/video', {
@@ -154,7 +154,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adminMemberVideoCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageSubAdmin', {
@@ -162,7 +162,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageSubAdminCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageSubAdmin/subAdmin/:adminId', {
@@ -170,7 +170,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'subAdminDetailsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/Privileges', {
@@ -178,7 +178,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'privilegesCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/Settings', {
@@ -186,7 +186,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'settingsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageCmsPage', {
@@ -194,7 +194,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageCmsPageCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageCmsPage/:cmsPageId', {
@@ -202,7 +202,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'cmsPageDetailsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/page', {
@@ -210,7 +210,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageAdPageCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/page/:adPageId/adInPage', {
@@ -218,7 +218,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adInPageCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/position', {
@@ -226,7 +226,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageAdPositionCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/position/:adPositionId/adInPosition', {
@@ -234,7 +234,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adInPositionCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/userAdList', {
@@ -242,7 +242,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageAdUserCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/manageAdvertisement/ad/:userAdId', {
@@ -250,7 +250,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'adUserDetailsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/blog/list', {
@@ -258,7 +258,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'manageBlogCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/blog/:blogId', {
@@ -266,7 +266,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'blogDetailsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/blog/comments/:blogId', {
@@ -274,7 +274,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'blogCommentsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/poll/list', {
@@ -282,7 +282,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'managePollCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/poll/addNewPoll', {
@@ -290,7 +290,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'addNewPollCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/poll/:pollId', {
@@ -298,7 +298,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'pollDetailsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/poll/editPoll/:pollId', {
@@ -306,7 +306,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'editPollsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/poll/comments/:pollId', {
@@ -314,7 +314,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'pollCommentsCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 when('/admin/mailbox', {
@@ -322,7 +322,7 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                     controller: 'mailboxInboxCtrl',
                     access: {
                         requiresLogin: true,
-                        role: 'admin'
+                        clientSide: 'ADMIN'
                     }
                 }).
                 otherwise({
@@ -353,7 +353,7 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
         if (nextRoute.access.requiresLogin && ($window.sessionStorage.isAuthenticated === 'false') && angular.isUndefined($window.sessionStorage.token)) {
             console.log('Logged - No');
-            if (nextRoute.access.role === 'user') {
+            if (nextRoute.access.clientSide === 'USER') {
                 $location.path("/login");
             } else {
                 $rootScope.adminNavigation = 0;
@@ -363,7 +363,7 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
         } else {
 
-            if (nextRoute.access.role === 'user') {
+            if (nextRoute.access.clientSide === 'USER') {
 
             } else {
                 console.log('Logged - Yes, Role - Admin');

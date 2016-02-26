@@ -1,0 +1,134 @@
+<span style="color:red">
+{{listUCFolders}}
+</span>
+
+{{mailboxConversations}}
+<div class="container-fluid cstm-inbox">
+    <div class="row">
+
+   <!-- Menu Panel Starts -->
+
+            <div class="col-xs-3 col-sm-3 col-md-2 inbox">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="">  <a href="/mailbox/inbox"> <i class="fa fa-envelope-o"></i>
+                <span class="badge pull-right">{{unreadInboxMailCount.urMailCount}}</span> Inbox </a></li>
+                <li><a href="/mailbox/sent"><i class="fa fa-share-square-o"></i> Sent Mail</a></li>
+                <li><a href="/mailbox/draft"> <i class="fa fa-pencil-square-o"></i> Drafts</a></li>
+                <li><a href="/mailbox/conversations"> <i class="fa fa-comments-o"></i>  Email Conversations</a></li>
+                <li><a href="#"> <i class="fa fa-comment"></i> <span class="badge pull-right">3</span>Chat</a></li>
+                <li><a href="#"> <i class="fa fa-folder-open-o"></i>  My Folder</a>
+                    <ul style="padding-left:20px;" class="nav nav-pills nav-stacked">
+                          <div ng-repeat="listUCFolder in listUCFolders">
+                             <li id="folder_{{listUCFolder.id}}"><a href="/mailbox/folder/{{listUCFolder.name | removeSpaces}}"> <i class="fa fa-folder-open-o"></i>  {{listUCFolder.name}}</a>
+                          </div>
+                    </ul>
+                </li>
+                <li><a href="/mailbox/trash"> <i class="fa fa-trash"></i>  Trash</a></li>
+            </ul>
+        </div>
+
+   <!-- Menu Panel Ends -->
+
+
+        <div class="col-sm-9 col-md-10 cstm-box">
+
+
+            <div class="btn-group cstm-btn-group">
+                <button type="button" class="btn btn-default inbxbtn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">  <i class="fa fa-pencil-square-o"></i>
+                    New Messages
+                </button>
+            </div>
+
+            <div class="btn-group cstm-btn-group" id="trash"  ng-click="updateMailStatus($event)">
+                <button type="button" class="btn btn-default inbxbtn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">  <i class="fa fa-trash"></i>
+                    Delete
+                </button>
+            </div>
+
+            <div class="btn-group cstm-btn-group">
+                <button type="button" class="btn btn-default inbxbtn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">  <i class="fa fa-folder"></i>
+                    Move To<span class="caret"></span>
+                </button>
+               <ul class="dropdown-menu" role="menu">
+                    <li id="trash"  ng-click="updateMailStatus($event)"><a href="#">trash</a></li>
+                    <li id="delete"  ng-click="updateMailStatus($event)"><a href="#">delete</a></li>
+                    <ul>
+                        <div ng-repeat="listUCFolder in listUCFolders">
+                            <li id="folder_{{listUCFolder.id}}" ng-click="updateMailStatus($event)"><a href="#">{{listUCFolder.name}}</a></li>
+                        </div>
+                    </ul>
+                    <!--<li class="text-center"><small class="text-muted">Select messages to see more actions</small></li>-->
+                </ul>
+            </div>
+
+            <div class="btn-group cstm-btn-group">
+                <a href="#"><i class="fa fa-cog"></i></a>
+            </div>
+
+            <div class="btn-group pull-right cstm-btn-grp">
+                     <div class="text-center">
+                        <form action="" class="search-form">
+                            <div class="form-group has-feedback">
+                                <label for="search" class="sr-only">Search</label>
+                                <input type="text" class="form-control" name="search" id="search" placeholder="search">
+                                <span class="fa fa-search form-control-feedback"></span>
+                            </div>
+                        </form>
+                    </div>
+             </div>
+
+            <div class="pull-right" ng-show="(mailboxTrash.length >= (pageSize + 1))">
+                <span class="text-muted">
+                        <b>{{currentPage+1}}</b>–<b>{{numberOfPages()}}</b> of <b>{{mailboxTrash.length}}</b>
+                </span>
+                <div class="btn-group btn-group-sm cstm-pag">
+                    <button type="button" class="btn btn-default">
+                        <i class="fa fa-arrow-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                         <i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="alert alert-danger" ng-show="errorMessage">{{ errorMessage }}</p>
+
+<!-- mail starts -->
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="home">
+                    <div class="list-group" ng-repeat="mail in mailboxConversations">
+
+                           <!-- <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="mail.checked" ng-change="selectedMail()">
+                                </label>
+                            </div> -->
+                            <a href="#" class="list-group-item cstm-list-group-item">
+                                <span class="">
+                                  <img src="{{mail.profilePic}}"  style="width:100px;height:100px;"/>
+                                </span>
+                                <span class="name" style="min-width: 120px;display: inline-block;margin-left:10px;">
+                                    <!-- Mikael from Crew -->{{mail.sender}}
+                                </span>
+                                <span class="">
+                                    <!-- Launch This Year: Please Confirm Subscription --> {{mail.subject}}
+                                </span>
+                                <span class="text-muted" style="font-size: 11px;">
+                                   <!--  - Lorem Ipsum is simply dummy text --> {{mail.limitedMsg}}
+                                </span>
+                                <span class="badge">
+                                    <!--09:10 AM --> {{mail.derivedDateTime}}
+                                </span>
+                                <span class="pull-right"> <!--<span class="glyphicon glyphicon-paperclip">-->
+                                </span>
+                          </a>
+                    </div>
+                </div>
+            </div>
+<!-- mail ends -->
+
+
+        </div>
+    </div>
+</div>
+

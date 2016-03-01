@@ -47,9 +47,8 @@ module.exports.cors = {
   *                                                                          *
   ***************************************************************************/
 
-   //origin: '*',
-   //origin: 'http://192.168.1.67:2000, http://localhost:2000, http://localhost:2000/',
-   origin: 'http://localhost:2000, http://192.168.1.67:2000',
+   origin: '*',
+   //origin: 'http://localhost:2000, http://localhost:2000/, http://192.168.1.73:2000',
 
 
   /***************************************************************************
@@ -76,8 +75,9 @@ module.exports.cors = {
   *                                                                          *
   ***************************************************************************/
 
-  // headers: 'content-type'
-  headers: 'content-type, access-control-allow-origin, authorization',
+  headers: 'content-type'
+  //headers: 'content-type, access-control-allow-origin, authorization',
+  //headers: 'access-control-allow-origin'
 
    //securityLevel: 1
 

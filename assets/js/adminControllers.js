@@ -752,7 +752,7 @@ adminControllers.controller('adminMemberVideoCtrl', function ($scope, $routePara
  Manage Sub Admin Controller   -----  II
  ====================================================================================================================================*/
 
-adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, filterFilter) {
 
     $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;
@@ -764,9 +764,19 @@ adminControllers.controller('manageSubAdminCtrl', function ($scope, $routeParams
     $http.post($rootScope.STATIC_URL + 'admins/getSubadminList', {token: token}).success(function (response) {
         if (response.status == 1) {
             $scope.subAdmins = response.data;
-            $scope.numberOfPages = function () {
+            /*$scope.numberOfPages = function () {
                 return Math.ceil(($scope.subAdmins).length / $scope.pageSize);
-            }
+            }*/
+            var totalItems = $scope.subAdmins.length;
+            $scope.numberOfPages = Math.ceil(totalItems / $scope.pageSize);
+
+            $scope.$watch('searchText', function (newVal, oldVal) {
+                $scope.filtered = filterFilter($scope.subAdmins, newVal);
+                totalItems = $scope.filtered.length;
+                $scope.numberOfPages = Math.ceil(totalItems / $scope.pageSize);
+                $scope.currentPage = 0;
+            }, true);
+
         } else if (response.status == 3) {
 
             //$scope.errorMessage = "Token Expired";
@@ -1136,7 +1146,6 @@ $scope.goBack = function($event) {
 
     $scope.selectedSAPrivilege = function () {
         $scope.checkedSAPrivilege = $filter('filter')($scope.privileges, {checked: true});
-
     }
 
 
@@ -2105,6 +2114,7 @@ adminControllers.controller('manageAdPageCtrl', function ($scope, $routeParams, 
                                     });
                             }
 
+
                         }).error(function () {
                             $scope.errorMessage = "Please Try Again";
                         });
@@ -2990,7 +3000,7 @@ $scope.goBack = function($event) {
 /*===================================================================================================================================
  Manage Poll  Controller   -----
  ====================================================================================================================================*/
-adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+adminControllers.controller('managePollCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, filterFilter) {
 
     $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;

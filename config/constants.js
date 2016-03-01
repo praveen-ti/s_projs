@@ -129,8 +129,8 @@ module.exports.constants = {
         RECEIVER_STATUS_FOLDER       : 'folder',
         RECEIVER_STATUS_DELETE       : 'delete',
 
-        VIEW_STATUS_TRUE             : 'true',
-        VIEW_STATUS_FALSE            : 'false',
+        VIEW_STATUS_READ             : 'read',
+        VIEW_STATUS_UNREAD           : 'unread',
 
     },
 

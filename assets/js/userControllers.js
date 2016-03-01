@@ -3,6 +3,15 @@
 
 var userControllers = angular.module('userControllers', []);
 
+userControllers.filter('removeSpaces', [function() {
+    return function(string) {
+        if (!angular.isString(string)) {
+            return string;
+        }
+        return string.replace(/[\s]/g, '_');
+    };
+}]);
+
 userControllers.controller('indexCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
 
     $scope.requiresLogin = false;
@@ -137,13 +146,12 @@ userControllers.controller('loginCtrl', function ($scope, $routeParams, $rootSco
         } else if (validateEmail(email) && password) {
 
             $http.post($rootScope.STATIC_URL + 'users/userLogin', params).success(function (response) {
-                
+
                 if (response.status === 1) {
                     //var a = response.data2
                     $window.sessionStorage.isAuthenticated = 'true';
                     $window.sessionStorage.token = response.data.token.token;
                     $window.sessionStorage.adminType = "user";
-                
                     //$location.path('/profile');
                     $window.location.href = "/profile";
                 } else {
@@ -171,16 +179,774 @@ userControllers.controller('profileCtrl', function ($scope, $routeParams, $rootS
     mailboxInboxCtrl
  ====================================================================================================================================*/
 
-userControllers.controller('mailboxInboxCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window) {
+userControllers.controller('mailboxInboxCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
 
     $rootScope.adminNavigation = 1;
     $scope.currentPage = 0;
     $scope.pageSize = 10;
     $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray = $location.path().split("/");
+    var box      = boxArray[2];
+    console.log(boxArray);
+    console.log(box);
+    console.log("$routeParams ----------");
 
     //var adminId = $routeParams.adminId;
     var request = "";
     var token = $window.sessionStorage.token;
+    console.log("mailboxInboxCtrl ===================>>>>>>>>>>>>>>>>");
     console.log(token);
 
+    request = {box : box};
+    console.log(request);
+
+
+
+      //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+
+     //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List Inbox Mails
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxInbox = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxInbox).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+     $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxInbox, {checked: true});
+    }
+
+     //Update Mail Status
+      $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+              console.log(mailStatus);
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+console.log(mailStatus);
+console.log(folderId);
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                console.log(response);
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    $scope.mailboxInbox = response.data;
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxInbox).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+
+
+
  });
+
+
+
+
+
+ /*===================================================================================================================================
+    mailboxSentCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxSentCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray = $location.path().split("/");
+    var box      = boxArray[2];
+    console.log(boxArray);
+    console.log(box);
+    console.log("$routeParams ----------");
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log("mailboxSentCtrl ===================>>>>>>>>>>>>>>>>");
+    console.log(token);
+    request = {box : box};
+    console.log(request);
+
+
+
+       //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+      //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List Sent Mails
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxSent = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxSent).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+    $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxSent, {checked: true});
+    }
+
+     //Update Mail Status
+      $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+              console.log(mailStatus);
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+console.log(mailStatus);
+console.log(folderId);
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    $scope.mailboxSent = response.data;
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxSent).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+
+
+
+ });
+
+/*===================================================================================================================================
+    mailboxDraftCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxDraftCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray = $location.path().split("/");
+    var box      = boxArray[2];
+    console.log(boxArray);
+    console.log(box);
+    console.log("$routeParams ----------");
+
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log("mailboxDraftCtrl ===================>>>>>>>>>>>>>>>>");
+    console.log(token);
+    request = {box : box};
+    console.log(request);
+
+      //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+      //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List Sent Mails
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxDraft = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxDraft).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+    $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxDraft, {checked: true});
+    }
+
+     //Update Mail Status
+      $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+              console.log(mailStatus);
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+console.log(mailStatus);
+console.log(folderId);
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    $scope.mailboxDraft = response.data;
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxDraft).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+
+
+
+ });
+
+/*===================================================================================================================================
+    mailboxTrashCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxTrashCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray = $location.path().split("/");
+    var box      = boxArray[2];
+    console.log(boxArray);
+    console.log(box);
+    console.log("$routeParams ----------");
+
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log("mailboxTrashCtrl ===================>>>>>>>>>>>>>>>>");
+    console.log(token);
+    request = {box : box};
+    console.log(request);
+
+     //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+   //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List Sent Mails
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxTrash = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxTrash).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+    $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxTrash, {checked: true});
+    }
+
+     //Update Mail Status
+     $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    $scope.mailboxTrash = response.data;
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxTrash).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+
+
+
+ });
+
+/*===================================================================================================================================
+    mailboxFolderCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxFolderCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray   = $location.path().split("/");
+    var box        = boxArray[2];
+    var folderName = $routeParams.folderName;
+    console.log(boxArray);
+    console.log(box);
+    console.log(folderName);
+    console.log("$routeParams ----------");
+
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log("mailboxFolderCtrl ===================>>>>>>>>>>>>>>>>");
+    console.log(token);
+    request = {box : box, folderName: folderName};
+    console.log(request);
+
+       //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+       //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List Sent Mails
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxFolder = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+    $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxFolder, {checked: true});
+    }
+
+     //Update Mail Status
+     $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+              console.log(mailStatus);
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+console.log(mailStatus);
+console.log(folderId);
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter  == Folder");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    console.log("response =======>>>>>");
+                                    //$scope.mailboxFolder = response.data;
+                                    //location.reload();
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+
+
+
+ });
+
+
+ /*===================================================================================================================================
+    mailboxConversationsCtrl
+ ====================================================================================================================================*/
+
+userControllers.controller('mailboxConversationsCtrl', function ($scope, $routeParams, $rootScope, $http, $location, $window, $filter, $timeout) {
+
+    $rootScope.adminNavigation = 1;
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.errorMessage = "";
+    //var box = $routeParams.box;
+    console.log("$routeParams ----------");
+    console.log($location.path());
+    var boxArray   = $location.path().split("/");
+    var box        = boxArray[2];
+    var folderName = $routeParams.folderName;
+    console.log(boxArray);
+    console.log(box);
+    console.log(folderName);
+    console.log("$routeParams ----------");
+
+    //var adminId = $routeParams.adminId;
+    var request = "";
+    var token = $window.sessionStorage.token;
+    console.log("mailboxFolderCtrl ===================>>>>>>>>>>>>>>>>");
+    console.log(token);
+    request = {box : box, folderName: folderName};
+    console.log(request);
+
+       //Count of Unread Inbox Messages
+        $http.post($rootScope.STATIC_URL + 'mail/getUnreadInboxCount', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.unreadInboxMailCount = response.data;
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+       //List the User created Folders
+        $http.post($rootScope.STATIC_URL + 'mail/getUserFolders', {token: token}).success(function (response) {
+                if (response.status == 1)
+                {
+                    console.log(response);
+                    $scope.listUCFolders = response.data;
+                    /*$scope.numberOfPages = function () {
+                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                    }*/
+                }
+
+            }).error(function () {
+                     $scope.errorMessage = "Please Try Again";
+            });
+
+    //List All Mail Conversations
+    $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+        if (response.status == 1)
+        {
+            console.log(response);
+            $scope.mailboxConversations = response.data;
+            $scope.numberOfPages = function () {
+                return Math.ceil(($scope.mailboxConversations).length / $scope.pageSize);
+            }
+        }
+
+    }).error(function () {
+             $scope.errorMessage = "Please Try Again";
+    });
+
+
+
+  /*  $scope.selectedMail = function () {
+        $scope.checkedMail = $filter('filter')($scope.mailboxFolder, {checked: true});
+    }
+*/
+     //Update Mail Status
+ /*    $scope.updateMailStatus = function ($event) {
+              var chkMailArray = $scope.checkedMail;
+              console.log(chkMailArray);
+              var mailStatus = $event.currentTarget.id;
+              console.log(mailStatus);
+
+              var splitMailStatus = mailStatus.split('_');
+              mailStatus = splitMailStatus[0];
+              var folderId = splitMailStatus[1];
+console.log(mailStatus);
+console.log(folderId);
+                request = {mailStatus: mailStatus, chkMailArray: chkMailArray, folderId: folderId};
+
+                $http.post($rootScope.STATIC_URL + 'mail/updateMailStatus', {token: token, request: request}).success(function (response) {
+                    console.log("response Mail Status");
+                    console.log(response);
+                    if (response.status == 1)
+                    {
+                        console.log("response Enter  == Folder");
+                            //List Inbox Mails
+                            request = {box : box};
+                            $http.post($rootScope.STATIC_URL + 'mail/mailbox', {token: token, request: request}).success(function (response) {
+                                if (response.status == 1)
+                                {
+                                    console.log(response);
+                                    console.log("response =======>>>>>");
+                                    //$scope.mailboxFolder = response.data;
+                                    //location.reload();
+                                    $scope.numberOfPages = function () {
+                                        return Math.ceil(($scope.mailboxFolder).length / $scope.pageSize);
+                                    }
+                                }
+
+                            }).error(function () {
+                                     $scope.errorMessage = "Please Try Again";
+                            });
+                    }
+                    else if(response.status == 2){
+                            $scope.errorMessage = response.message;
+                            $timeout(function() {
+                                $scope.errorMessage = false;
+                            }, 3000);
+                    }
+                }).error(function () {
+                    $scope.errorMessage = "Please Try Again";
+                });
+
+      }
+*/
+
+
+ });
+
+

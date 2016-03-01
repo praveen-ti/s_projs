@@ -317,13 +317,58 @@ zentiera.config(['$routeProvider', '$locationProvider', function ($routeProvider
                         clientSide: 'ADMIN'
                     }
                 }).
-                when('/admin/mailbox', {
+                when('/mailbox/inbox', {
                     templateUrl: 'templates/mailboxInbox.html',
                     controller: 'mailboxInboxCtrl',
                     access: {
                         requiresLogin: true,
-                        clientSide: 'ADMIN'
+                        role: 'user'
                     }
+                }).
+                when('/mailbox/sent', {
+                    templateUrl: 'templates/mailboxSent.html',
+                    controller: 'mailboxSentCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
+
+                }).
+                when('/mailbox/draft', {
+                    templateUrl: 'templates/mailboxDraft.html',
+                    controller: 'mailboxDraftCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
+
+                }).
+                 when('/mailbox/trash', {
+                    templateUrl: 'templates/mailboxTrash.html',
+                    controller: 'mailboxTrashCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
+
+                }).
+                 when('/mailbox/folder/:folderName', {
+                    templateUrl: 'templates/mailboxFolder.html',
+                    controller: 'mailboxFolderCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
+
+                }).
+                when('/mailbox/conversations', {
+                    templateUrl: 'templates/mailboxConversations.html',
+                    controller: 'mailboxConversationsCtrl',
+                    access: {
+                        requiresLogin: true,
+                        role: 'user'
+                    }
+
                 }).
                 otherwise({
                     redirectTo: '/'
@@ -432,7 +477,7 @@ zentiera.run(function ($rootScope, $location, $http, $window, AuthenticationServ
 
                 $window.location.href = '/login';
             } else {
-                
+
             }
 
         }).error(function () {

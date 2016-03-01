@@ -36,7 +36,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="subAdmin in subAdmins | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                    <tr ng-repeat="subAdmin in filtered = subAdmins | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
                                        <!-- <td class="text-center">{{ $index+1 }}</td> -->
                                        <!--  <td class="text-center" ng-controller="RepeatCtrl">{{ indexNumber }}</td> -->
                                         <td class="text-center">{{ (($index + 1) + (currentPage * pageSize))}}</td>
@@ -74,7 +74,7 @@
                                     <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
                                         Previous
                                     </button>
-                                    {{currentPage+1}}/{{numberOfPages()}}
+                                    {{currentPage+1}}/{{numberOfPages}}
                                     <button ng-disabled="currentPage >= subAdmins.length/pageSize - 1" ng-click="currentPage=currentPage+1">
                                         Next
                                     </button>

@@ -66,8 +66,8 @@ module.exports = {
 
        viewStatus: {
             type: 'string',
-            enum: [mailConstants.VIEW_STATUS_TRUE, mailConstants.VIEW_STATUS_FALSE],
-            defaultsTo: mailConstants.VIEW_STATUS_FALSE,
+            enum: [mailConstants.VIEW_STATUS_READ, mailConstants.VIEW_STATUS_UNREAD],
+            defaultsTo: mailConstants.VIEW_STATUS_UNREAD,
         },
 
 

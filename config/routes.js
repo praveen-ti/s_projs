@@ -31,7 +31,7 @@ module.exports.routes = {
   * `assets` directory)                                                      *
   *                                                                          *
   ***************************************************************************/
-/*
+
  '/': {
     view: 'index',
     locals: {
@@ -94,7 +94,7 @@ module.exports.routes = {
         layout: 'admin_layout'
     }
   },
-*/
+
 
 
 

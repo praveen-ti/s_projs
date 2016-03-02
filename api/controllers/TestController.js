@@ -33,7 +33,25 @@ module.exports = {
                 console.log(result);
         });
         var from = SettingsService.key.FROM_EMAIL;
+    },
+
+   imageUpload: function (req, res) {
+//req.file('attachments').upload({dirname: '../../assets/images/attachments'},function (err, files) {
+
+            req.file('avatar').upload({dirname: '../../assets/images/attachments'},function (err, files) {
+                  if (err)
+                    return res.serverError(err);
+
+                  return res.json({
+                    message: files.length + ' file(s) uploaded successfully!',
+                    files: files
+                  });
+          });
+
+
+
     }
+
 
 
 

@@ -31,14 +31,14 @@ module.exports.routes = {
   * `assets` directory)                                                      *
   *                                                                          *
   ***************************************************************************/
-
+/*
  '/': {
     view: 'index',
     locals: {
         layout: 'user_layout'
     }
   },
-  
+
   '/index': {
     view: 'index',
     locals: {
@@ -52,43 +52,50 @@ module.exports.routes = {
         layout: 'user_layout'
     }
   },
-  
+
   '/sms': {
     view: 'index',
     locals: {
         layout: 'user_layout'
     }
   },
-  
+
   '/testing': {
     view: 'index',
     locals: {
         layout: 'user_layout'
     }
   },
-  
+
   '/profile': {
     view: 'logged_in',
     locals: {
         layout: 'user_layout'
     }
   },
-  
+
+  '/mailbox/*': {
+    view: 'logged_in',
+    locals: {
+        layout: 'user_layout'
+    }
+  },
+
   '/admin': {
     view: 'admin',
     locals: {
         layout: 'admin_layout'
     }
   },
-  
+
   '/admin/*': {
     view: 'admin',
     locals: {
         layout: 'admin_layout'
     }
   },
+*/
 
-  
 
 
   /***************************************************************************

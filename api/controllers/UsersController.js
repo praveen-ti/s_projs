@@ -289,14 +289,14 @@ module.exports = {
      ====================================================================================================================================*/
 
     userLogin: function (req, res) {
-
+console.log("userLogin  .....");
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         var values = {email: req.body.email, password: password};
 
         // Get user details
         User.findOne(values).exec(function (err, result) {
             if (err) {
-
+console.log(err);
                 return res.json(200, {status: 2, message: 'Error occured.', error: err});
 
             } else {
@@ -310,8 +310,10 @@ module.exports = {
                     // Create new access token on login
                     UsertokenService.createToken(result.id, function (err, details) {
                         if (err) {
+                            console.log(err);
                             return res.json(200, {status: 2, message: 'Error occured in fetching user data.', error: details});
                         } else {
+                            console.log(details);
                             return res.json(200, {status: 1, message: 'Success.', data: details});
                         }
                     });
@@ -373,7 +375,7 @@ module.exports = {
         });
     },
     getUserDetails: function (req, res) {
-
+console.log("Entered");
         var userId = req.body.userId;
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
@@ -1515,6 +1517,7 @@ module.exports = {
             }
         });
     },
+
     getUserReports: function (req, res) {
 
         var userRole = req.body.userRole;
@@ -1625,7 +1628,51 @@ module.exports = {
 //        });
 //
         //return res.json(200, {status: 1, message: "success", data: 'Message sent successfully.'});
-    }
+    },
+
+/*===================================================================================================================================
+     get Search Users
+ ====================================================================================================================================*/
+  getSearchUsers: function (req, res) {
+
+        var request = req.body.request;
+        var userRole = request.userRole;
+        //var userId = req.body.userId;
+        var tokenService = tokenService || {};
+
+        if (userRole === 'user') {
+            tokenService = UsertokenService;
+
+        } else if (userRole === 'admin') {
+            tokenService = AdmintokenService;
+        }
+
+        tokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1)
+                {
+                    var query = "SELECT * FROM user WHERE  username LIKE  '"+request.nameOfUser+"%' AND status = '"+userConstants.STATUS_ACTIVE+"'";
+                    User.query(query, function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: "success", data: result});
+                        }
+                    });
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+        });
+    },
+
+
+
+
 
 };
 

@@ -148,6 +148,7 @@ userControllers.controller('loginCtrl', function ($scope, $routeParams, $rootSco
             $http.post($rootScope.STATIC_URL + 'users/userLogin', params).success(function (response) {
 
                 if (response.status === 1) {
+                    console.log(response);
                     //var a = response.data2
                     $window.sessionStorage.isAuthenticated = 'true';
                     $window.sessionStorage.token = response.data.token.token;

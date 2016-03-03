@@ -17,57 +17,65 @@ Save Mail
  ====================================================================================================================================*/
 
 
-    saveMail : function(req, res) {
+ saveMail : function(req, res) {
+
+/*console.log(req.body.composeTo);
+console.log(req.body.composeSubject);
+console.log(req.body.composeMessage);
+console.log(req.body.receiverId);
+console.log(req.body.senderId);
+console.log(req.body.token);
+console.log(req.body.mailType);*/
+console.log("req.body.entryId");
+console.log(req.body.token);
+console.log(req.body.entryId);
+
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
                     {
+
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
                     }
                     else
                     {
+
                         if(tokenCheck.status == 1)
                             {
 
-var mail = '{"mail" : {"message": "'+req.body.message+
-                       '", "senderId" : '+tokenCheck.tokenDetails.userId+
-                       ', "receiverId" : '+req.body.receiverId+
-                       ', "viewStatus" : "'+req.body.viewStatus+
-                    '"}'+
-           '}';
-console.log("mail------------------");
-           console.log(mail);
-var jsonMail = JSON.parse(mail);
- console.log(jsonMail);
+
+
+
+                                if(req.body.receiverId == 'undefined'){
+                                    req.body.receiverId = 0;
+                                }
 
                                 var query = "SELECT id"+
                                             " FROM mail_conversation"+
-                                            " WHERE subjectId = "+tokenCheck.tokenDetails.userId+" AND objectId = "+req.body.receiverId+""+
+                                            " WHERE subjectId = "+tokenCheck.tokenDetails.userId+" AND objectId = "+req.body.receiverId+
                                             " OR"+
                                             " subjectId = "+req.body.receiverId+" AND objectId = "+tokenCheck.tokenDetails.userId;
 
                                 Mail_conversation.query(query, function(err, result) {
                                        if(err)
                                         {
+                                            console.log(err);
                                             return res.json(200, {status: 2, error_details: err});
                                         }
                                         else
                                         {
 
-
-                                             if(result == ""){
+                                     if(result == ""){
 
                                                    /*#######################
                                                       For new Mail conversation
                                                     ########################*/
-
-                                                     var cnvrValues = {
-                                                            subjectId            :    jsonMail.mail.senderId,
-                                                            objectId             :    jsonMail.mail.receiverId,
-                                                            requestStatus        :    req.body.requestStatus
+                                    console.log("For New Mail conversation");
+                                                    var cnvrValues = {
+                                                            subjectId            :    req.body.senderId,
+                                                            objectId             :    req.body.receiverId,
                                                            };
-                                                console.log(result);
                                                      //Save to Mail Conversation table
                                                         Mail_conversation.create(cnvrValues).exec(function(err, saveMailConversation){
                                                             if (err)
@@ -76,24 +84,54 @@ var jsonMail = JSON.parse(mail);
                                                             } else
                                                             {
 
-                                                              var mailValues = {
-                                                                    message             :    jsonMail.mail.message,
-                                                                    conversationId      :    saveMailConversation.id,
-                                                                    senderId            :    jsonMail.mail.senderId,
-                                                                    receiverId          :    jsonMail.mail.receiverId,
-                                                                    viewStatus          :    jsonMail.mail.viewStatus
-                                                                   };
-                                                                  // console.log();
-                                                                //Save Mail  to Mail table
-                                                                 Mail.create(mailValues).exec(function(err, saveMail){
+                                                                req.file('attachments').upload({dirname: '../../assets/images/attachments'},function (err, files) {
                                                                         if (err)
                                                                         {
-                                                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                                                        } else
-                                                                        {
-                                                                            return res.json(200, {status: 1, message: 'success', result: saveMail});
+                                                                            console.log("files--------ERROR -----------");
+                                                                            return res.json(200, {status: 2, message: 'some error occured', error_details: err});
                                                                         }
-                                                                 });
+                                                                        else
+                                                                        {
+                                                                            fileNameArray = [];
+                                                                            console.log(files);
+                                                                            for( var i=0;i<files.length;i++){
+                                                                                var filename = files[i].fd;
+                                                                                filename = filename.split('/');
+                                                                                fileNameArray.push(filename[filename.length-1]);
+                                                                            }
+                                                                            console.log("fileNameArray >>>>>>>>>>");
+                                                                            console.log(fileNameArray);
+                                                                            console.log("fileNameArray >>>>>>>>");
+
+
+                                                                             var mailValues = {
+                                                                                        subject             :    req.body.composeSubject,
+                                                                                        message             :    req.body.composeMessage,
+                                                                                        file                :    fileNameArray,
+                                                                                        conversationId      :    saveMailConversation.id,
+                                                                                        senderId            :    req.body.senderId,
+                                                                                        receiverId          :    req.body.receiverId,
+                                                                                        senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
+                                                                                        viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
+                                                                                       };
+
+                                                                            console.log("files--------UPLOADED ---------");
+
+                                                                            //var filePath = files[0].fd;
+                                                                           // filePath     = filePath.split("/assets/");
+                                                                           Mail.create(mailValues).exec(function(err, saveMail){
+                                                                                    if (err)
+                                                                                    {
+                                                                                        return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                                                    } else
+                                                                                    {
+                                                                                        return res.json(200, {status: 1, message: 'success', data: saveMail});
+                                                                                    }
+                                                                             });
+                                                                         }
+                                                                     });//Img Upload
+
+
                                                             }
                                                          });
 
@@ -101,30 +139,108 @@ var jsonMail = JSON.parse(mail);
 
                                              }
                                              else{
+
                                                      /*#######################
                                                       For Existed Mail conversation
                                                     ########################*/
-
+                                                    console.log("For Existed Mail conversation");
                                                      //Save Mail  to Mail table
                                                      var  mailValues = {
-                                                            message             :    jsonMail.mail.message,
+                                                            subject             :    req.body.composeSubject,
+                                                            message             :    req.body.composeMessage,
+                                                            file                :    req.body.files,
                                                             conversationId      :    result[0].id,
-                                                            senderId            :    jsonMail.mail.senderId,
-                                                            receiverId          :    jsonMail.mail.receiverId,
-                                                            viewStatus          :    jsonMail.mail.viewStatus
+                                                            senderId            :    req.body.senderId,
+                                                            receiverId          :    req.body.receiverId,
+                                                            senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
+                                                            viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
                                                            };
-                                                          //console.log(result);
-                                                          //console.log(result[0].id);
+
                                                         //Save Mail messages to Mail table
-                                                         Mail.create(mailValues).exec(function(err, saveMail){
-                                                                if (err)
+                                                                var switchKey = req.body.entryId;
+                                                                console.log("switchKey >>>>>>>>>>>>>>>");
+                                                                console.log(switchKey);
+                                                                console.log("switchKey >>>>>>>>>>>>>>>");
+                                                                switch (switchKey)
                                                                 {
-                                                                    return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                                                } else
-                                                                {
-                                                                    return res.json(200, {status: 1, message: 'success', result: saveMail});
-                                                                }
-                                                         });
+
+                                                                       case 'undefined':
+
+                                                                           console.log("nullllllll");
+                                                                           Mail.create(mailValues).exec(function(err, saveMail){
+                                                                                if (err)
+                                                                                {
+                                                                                    return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                                                                                } else
+                                                                                {
+                                                                                    return res.json(200, {status: 1, message: 'success', data: saveMail});
+                                                                                }
+                                                                            });
+                                                                       break;
+
+                                                                       default :
+
+                                                                              Mail.findOne({id: req.body.entryId}).exec(function findCB(err, findMail) {
+                                                                                    if (err)
+                                                                                    {
+                                                                                        return res.json(200, {status: 2, error_details: err});
+                                                                                    }
+                                                                                    else
+                                                                                    {
+
+                                                                        req.file('attachments').upload({dirname: '../../assets/images/attachments'},function (err, files) {
+                                                                                if (err)
+                                                                                {
+                                                                                    console.log("files--------ERROR -----------");
+                                                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: err});
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                        fileNameArray = [];
+                                                                                        console.log(files);
+                                                                                        for( var i=0;i<files.length;i++){
+                                                                                            var filename = files[i].fd;
+                                                                                            filename = filename.split('/');
+                                                                                            fileNameArray.push(filename[filename.length-1]);
+                                                                                        }
+                                                                                        console.log("fileNameArray >>>>>>>>>>");
+                                                                                        console.log(fileNameArray);
+                                                                                        console.log("fileNameArray >>>>>>>>");
+
+                                                                                        var values = {
+                                                                                            subject             :    req.body.composeSubject,
+                                                                                            message             :    req.body.composeMessage,
+                                                                                            file                :    fileNameArray,
+                                                                                            conversationId      :    result[0].id,
+                                                                                            senderId            :    req.body.senderId,
+                                                                                            receiverId          :    req.body.receiverId,
+                                                                                            senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
+                                                                                            viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
+                                                                                        };
+                                                                                        //return res.json(200, {status: 1, message: 'success'});
+                                                                                        var criteria = {id: findMail.id};
+                                                                                        Mail.update(criteria, values).exec(function (err, updatedMail) {
+                                                                                            if (err)
+                                                                                            {
+                                                                                                return res.json(200, {status: 2, error_details: err});
+                                                                                            }
+                                                                                            else
+                                                                                            {
+
+                                                                                                return res.json(200, {status: 1, data: updatedMail});
+                                                                                            }
+
+                                                                                        });
+
+                                                                             }
+                                                                         });//Img Upload
+                                                                                    }
+                                                                            });
+
+
+                                                                       break;
+                                                                 }
+
                                             }
                                         }
                                 });
@@ -133,10 +249,14 @@ var jsonMail = JSON.parse(mail);
                             }
                             else
                             {
+                                console.log("token expired");
                                 return res.json(200, {status: 3, message: 'token expired'});
                             }
                    }
          });
+
+
+
     },
 
 
@@ -413,18 +533,29 @@ console.log(request);
                     {
                         if(tokenCheck.status == 1)
                             {
-                                var chkMailArray   = request.chkMailArray;
-                                console.log("chkMailIdArray/////////////");
-                                console.log(chkMailArray);
-                                if(typeof chkMailArray == "undefined"){
-                                    return res.json(200, {status: 2, message: "Please select atleast one message"});
-                                }
-                                var chkMailIdArray = [];
-                                var rsArray = [];
-                                var ssArray = [];
                                 var switchKey     = request.mailStatus;
-                               // var switchKey   = req.param('update');
+                                // var switchKey   = req.param('update');
                                console.log("SWITCH KEY======================");
+
+                                if(switchKey == "sent"){
+
+                                    if(!request.receiverId){
+                                        return res.json(200, {status: 2, message: "Please select a Receiver"});
+                                    }
+
+                                }else{
+                                    var chkMailArray   = request.chkMailArray;
+                                    console.log("chkMailIdArray/////////////");
+                                    console.log(chkMailArray);
+                                    if(typeof chkMailArray == "undefined"){
+                                        return res.json(200, {status: 2, message: "Please select atleast one message"});
+                                    }
+                                    var chkMailIdArray = [];
+                                    var rsArray = [];
+                                    var ssArray = [];
+                                }
+
+
 
 
 /* ########## receiverStatus   STARTS #########*/
@@ -612,7 +743,39 @@ console.log("4444444444444444");
 
                                            case 'sent':
 
-                                               query += "senderStatus = '"+switchKey+"' ";
+                                               Mail.findOne({id: request.entryId}).exec(function findCB(err, result) {
+                                                    if (err)
+                                                    {
+                                                        return res.json(200, {status: 2, error_details: err});
+                                                    }
+                                                    else
+                                                    {
+                                                        var values = {
+                                                             receiverId      :   request.receiverId,
+                                                             senderStatus    :   switchKey
+
+                                                        };
+                                                        var criteria = {
+                                                                          id          : result.id
+                                                                        };
+                                             console.log(values);
+                                             console.log(criteria);
+                                                        Mail.update(criteria, values).exec(function (err, SentMail) {
+                                                            if (err)
+                                                            {
+                                                                console.log(SentMail);
+                                                                return res.json(200, {status: 2, error_details: err});
+                                                            }
+                                                            else
+                                                            {
+                                                                console.log(SentMail);
+                                                                return res.json(200, {status: 1, message: "success", mailStatus: "sent",data: SentMail});
+                                                            }
+
+                                                        });
+                                                    }
+                                               });
+
 
                                            break;
 

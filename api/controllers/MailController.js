@@ -18,7 +18,7 @@ Save Mail
 
 
  saveMail : function(req, res) {
-
+console.log("<<<<<<<<<<<<<<<, SAVE MAIL");
 /*console.log(req.body.composeTo);
 console.log(req.body.composeSubject);
 console.log(req.body.composeMessage);
@@ -138,23 +138,14 @@ console.log(req.body.entryId);
 
 
                                              }
-                                             else{
+                                             else{//Conversation Already Exists So only insert Mails
 
                                                      /*#######################
                                                       For Existed Mail conversation
                                                     ########################*/
                                                     console.log("For Existed Mail conversation");
                                                      //Save Mail  to Mail table
-                                                     var  mailValues = {
-                                                            subject             :    req.body.composeSubject,
-                                                            message             :    req.body.composeMessage,
-                                                            file                :    req.body.files,
-                                                            conversationId      :    result[0].id,
-                                                            senderId            :    req.body.senderId,
-                                                            receiverId          :    req.body.receiverId,
-                                                            senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
-                                                            viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
-                                                           };
+
 
                                                         //Save Mail messages to Mail table
                                                                 var switchKey = req.body.entryId;
@@ -167,6 +158,37 @@ console.log(req.body.entryId);
                                                                        case 'undefined':
 
                                                                            console.log("nullllllll");
+
+                                                            req.file('attachments').upload({dirname: '../../assets/images/attachments'},function (err, files) {
+                                                                if (err)
+                                                                {
+                                                                    console.log("files--------ERROR -----------");
+                                                                    return res.json(200, {status: 2, message: 'some error occured', error_details: err});
+                                                                }
+                                                                else
+                                                                {
+                                                                        fileNameArray = [];
+                                                                        console.log(files);
+                                                                        for( var i=0;i<files.length;i++){
+                                                                            var filename = files[i].fd;
+                                                                            filename = filename.split('/');
+                                                                            fileNameArray.push(filename[filename.length-1]);
+                                                                        }
+                                                                        console.log("fileNameArray >>>>>>>>>>");
+                                                                        console.log(fileNameArray);
+                                                                        console.log("fileNameArray >>>>>>>>");
+
+                                                                         var  mailValues = {
+                                                                                subject             :    req.body.composeSubject,
+                                                                                message             :    req.body.composeMessage,
+                                                                                file                :    fileNameArray,
+                                                                                conversationId      :    result[0].id,
+                                                                                senderId            :    req.body.senderId,
+                                                                                receiverId          :    req.body.receiverId,
+                                                                                senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
+                                                                                viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
+                                                                            };
+
                                                                            Mail.create(mailValues).exec(function(err, saveMail){
                                                                                 if (err)
                                                                                 {
@@ -176,6 +198,9 @@ console.log(req.body.entryId);
                                                                                     return res.json(200, {status: 1, message: 'success', data: saveMail});
                                                                                 }
                                                                             });
+                                                                    }
+                                                                });
+
                                                                        break;
 
                                                                        default :
@@ -187,7 +212,9 @@ console.log(req.body.entryId);
                                                                                     }
                                                                                     else
                                                                                     {
-
+console.log("findMail >>>>>");
+console.log(findMail);
+console.log("findMail >>>>>>");
                                                                         req.file('attachments').upload({dirname: '../../assets/images/attachments'},function (err, files) {
                                                                                 if (err)
                                                                                 {
@@ -196,6 +223,7 @@ console.log(req.body.entryId);
                                                                                 }
                                                                                 else
                                                                                 {
+                                                                                        finalArray = [];
                                                                                         fileNameArray = [];
                                                                                         console.log(files);
                                                                                         for( var i=0;i<files.length;i++){
@@ -205,12 +233,20 @@ console.log(req.body.entryId);
                                                                                         }
                                                                                         console.log("fileNameArray >>>>>>>>>>");
                                                                                         console.log(fileNameArray);
+                                                                                        console.log(findMail.file);
                                                                                         console.log("fileNameArray >>>>>>>>");
+                                                                                       // var firstFile = "['" + findMail.file + "']";
+                                                                                       var firstFile =  findMail.file ;
+                                                                                        //finalArray = firstFile.join(fileNameArray);
+
+                                                                                        console.log("finalArray +++++++++");
+                                                                                           console.log(finalArray);
+                                                                                        console.log("finalArray +++++++++++");
 
                                                                                         var values = {
                                                                                             subject             :    req.body.composeSubject,
                                                                                             message             :    req.body.composeMessage,
-                                                                                            file                :    fileNameArray,
+                                                                                            file                :    finalArray,
                                                                                             conversationId      :    result[0].id,
                                                                                             senderId            :    req.body.senderId,
                                                                                             receiverId          :    req.body.receiverId,
@@ -266,6 +302,7 @@ Get Mailbox
 mailbox : function(req, res) {
 
 var request = req.body.request;
+console.log(request);
         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -522,6 +559,7 @@ Update Mailbox
 updateMailStatus : function(req, res) {
 
 var request = req.body.request;
+console.log("request  >>>> Update Mailbox");
 console.log(request);
         UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
@@ -1359,6 +1397,9 @@ var jsonMail = JSON.parse(mail);
 
     createFolder : function(req, res) {
 
+console.log("createFolder  Enterrrrr");
+var request = req.body.request;
+console.log(request);
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -1371,18 +1412,21 @@ var jsonMail = JSON.parse(mail);
                             {
                                 //console.log(tokenCheck.tokenDetails.userId);
                                  var values = {
-                                                name                :    req.body.name,
-                                                userId              :    req.body.userId,
+                                                name                :    request.name,
+                                                userId              :    request.userId,
                                                };
+                                console.log(values);
                                  Folder.create(values).exec(function(err, result){
                                         if (err)
                                         {
                                             return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
                                         } else
                                         {
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+                                            console.log(result);
+                                            return res.json(200, {status: 1, message: 'success', data: result});
                                         }
                                     });
+
                             }
                             else
                             {

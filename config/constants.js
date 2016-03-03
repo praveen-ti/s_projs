@@ -15,7 +15,9 @@ module.exports.constants = {
         REFERRAL_CLAIMABLE: 'claimable',
         REFERRAL_CLAIMED: 'claimed',
         BLACKLIST_NO: 'no',
-        BLACKLIST_YES: 'yes'
+        BLACKLIST_YES: 'yes',
+        SIGNUP_STATUS_COMPLETED: 'completed',
+        SIGNUP_STATUS_NOTCOMPLETED: 'notcompleted'
     },
     subscription: {
         STATUS_ACTIVE: 'active',
@@ -87,161 +89,104 @@ module.exports.constants = {
         STATUS_INACTIVE: 'inactive',
         STATUS_DELETE: 'delete'
     },
-
     review: {
         REVIEW_STATUS_APPROVED: 'approved',
         REVIEW_STATUS_NOTAPPROVED: 'notapproved'
     },
-
     report: {
         REPORT_STATUS_APPROVED: 'approved',
         REPORT_STATUS_NOTAPPROVED: 'notapproved'
     },
-
     admin: {
-
-        ADMIN_TYPE_SUPERADMIN     : 'super_admin',
-        ADMIN_TYPE_SUBADMIN       : 'sub_admin',
-        BLOCK_STATUS_BLOCK        : 'block',
-        BLOCK_STATUS_ACTIVE       : 'active',
-        BLOCK_STATUS_DELETE       : 'delete',
-
+        ADMIN_TYPE_SUPERADMIN: 'super_admin',
+        ADMIN_TYPE_SUBADMIN: 'sub_admin',
+        BLOCK_STATUS_BLOCK: 'block',
+        BLOCK_STATUS_ACTIVE: 'active',
+        BLOCK_STATUS_DELETE: 'delete',
     },
-
     conversation: {
-
-        REQUEST_STATUS_ACCEPT      : 'accept',
-        REQUEST_STATUS_DECLINE     : 'decline',
-        REQUEST_STATUS_BLOCK       : 'block',
-
+        REQUEST_STATUS_ACCEPT: 'accept',
+        REQUEST_STATUS_DECLINE: 'decline',
+        REQUEST_STATUS_BLOCK: 'block',
     },
-
     mail: {
-
-        SENDER_STATUS_SENT           : 'sent',
-        SENDER_STATUS_DRAFT          : 'draft',
-        SENDER_STATUS_TRASH          : 'trash',
-        SENDER_STATUS_FOLDER         : 'folder',
-        SENDER_STATUS_DELETE         : 'delete',
-
-        RECEIVER_STATUS_INBOX        : 'inbox',
-        RECEIVER_STATUS_TRASH        : 'trash',
-        RECEIVER_STATUS_FOLDER       : 'folder',
-        RECEIVER_STATUS_DELETE       : 'delete',
-
-        VIEW_STATUS_READ             : 'read',
-        VIEW_STATUS_UNREAD           : 'unread',
-
+        SENDER_STATUS_SENT: 'sent',
+        SENDER_STATUS_DRAFT: 'draft',
+        SENDER_STATUS_TRASH: 'trash',
+        SENDER_STATUS_FOLDER: 'folder',
+        SENDER_STATUS_DELETE: 'delete',
+        RECEIVER_STATUS_INBOX: 'inbox',
+        RECEIVER_STATUS_TRASH: 'trash',
+        RECEIVER_STATUS_FOLDER: 'folder',
+        RECEIVER_STATUS_DELETE: 'delete',
+        VIEW_STATUS_READ: 'read',
+        VIEW_STATUS_UNREAD: 'unread',
     },
-
     blog: {
-
-        AUTHOR_TYPE_SUPERADMIN     : 'admin',
-        AUTHOR_TYPE_SUBADMIN       : 'sub_admin',
-        AUTHOR_TYPE_USER           : 'user',
-
-        BLOG_STATUS_ACTIVE         : 'active',
-        BLOG_STATUS_INACTIVE       : 'inactive',
-        BLOG_STATUS_DELETE         : 'delete',
-
-        APPROVAL_STATUS_PENDING    : 'pending',
-        APPROVAL_STATUS_APPROVED   : 'approved',
-        APPROVAL_STATUS_REJECTED   : 'rejected',
-
+        AUTHOR_TYPE_SUPERADMIN: 'admin',
+        AUTHOR_TYPE_SUBADMIN: 'sub_admin',
+        AUTHOR_TYPE_USER: 'user',
+        BLOG_STATUS_ACTIVE: 'active',
+        BLOG_STATUS_INACTIVE: 'inactive',
+        BLOG_STATUS_DELETE: 'delete',
+        APPROVAL_STATUS_PENDING: 'pending',
+        APPROVAL_STATUS_APPROVED: 'approved',
+        APPROVAL_STATUS_REJECTED: 'rejected',
     },
-
     poll: {
-
-        AUTHOR_TYPE_SUPERADMIN     : 'admin',
-        AUTHOR_TYPE_SUBADMIN       : 'sub_admin',
-        AUTHOR_TYPE_USER           : 'user',
-
-        POLL_STATUS_ACTIVE         : 'active',
-        POLL_STATUS_INACTIVE       : 'inactive',
-        POLL_STATUS_DELETE         : 'delete',
-
-        COMMENT_STATUS_SHOW        : 'show',
-        COMMENT_STATUS_HIDE        : 'hide',
-
-        APPROVAL_STATUS_PENDING    : 'pending',
-        APPROVAL_STATUS_APPROVED   : 'approved',
-        APPROVAL_STATUS_REJECTED   : 'rejected',
-
-        ANSWER_TYPE_RADIOBUTTON    : 'radiobutton',
-        ANSWER_TYPE_CHECKBOX       : 'checkbox',
-
-
+        AUTHOR_TYPE_SUPERADMIN: 'admin',
+        AUTHOR_TYPE_SUBADMIN: 'sub_admin',
+        AUTHOR_TYPE_USER: 'user',
+        POLL_STATUS_ACTIVE: 'active',
+        POLL_STATUS_INACTIVE: 'inactive',
+        POLL_STATUS_DELETE: 'delete',
+        COMMENT_STATUS_SHOW: 'show',
+        COMMENT_STATUS_HIDE: 'hide',
+        APPROVAL_STATUS_PENDING: 'pending',
+        APPROVAL_STATUS_APPROVED: 'approved',
+        APPROVAL_STATUS_REJECTED: 'rejected',
+        ANSWER_TYPE_RADIOBUTTON: 'radiobutton',
+        ANSWER_TYPE_CHECKBOX: 'checkbox',
     },
-
     pollDetails: {
-
-        APPROVAL_STATUS_APPROVED   : 'approved',
-        APPROVAL_STATUS_REJECTED   : 'rejected',
-
+        APPROVAL_STATUS_APPROVED: 'approved',
+        APPROVAL_STATUS_REJECTED: 'rejected',
     },
-
     adUser: {
-
-        BANNER_TYPE_THERAPEUTIC   : 'therapeutic',
-        BANNER_TYPE_SENSUAL       : 'sensual',
-
-        ADUSER_STATUS_ACTIVE      : 'active',
-        ADUSER_STATUS_INACTIVE    : 'inactive',
-        ADUSER_STATUS_DELETE      : 'delete',
-
+        BANNER_TYPE_THERAPEUTIC: 'therapeutic',
+        BANNER_TYPE_SENSUAL: 'sensual',
+        ADUSER_STATUS_ACTIVE: 'active',
+        ADUSER_STATUS_INACTIVE: 'inactive',
+        ADUSER_STATUS_DELETE: 'delete',
     },
-
-     userSettings: {
-
-        SEARCH_PROFILE_STATUS_ENABLE        : 'enable',
-        SEARCH_PROFILE_STATUS_DISABLE       : 'disable',
-
-        SENSUAL_ADSTATUS_ENABLE             :  'enable',
-        SENSUAL_ADSTATUS_DISABLE            : 'disable',
-
-        AUTO_LOGIN_ENABLE                   : 'enable',
-        AUTO_LOGIN_DISABLE                  : 'disable',
-
-        SET_OFFLINE_ENABLE                  : 'enable',
-        SET_OFFLINE_DISABLE                 : 'disable',
-
-        FAVOURITE_MAIL_STATUS_ENABLE        : 'enable',
-        FAVOURITE_MAIL_STATUS_DISABLE       : 'disable',
-
-        PROVISIT_MAIL_STATUS_ENABLE         : 'enable',
-        PROVISIT_MAIL_STATUS_DISABLE        : 'disable',
-
-        NEW_MAIL_STATUS_ENABLE              : 'enable',
-        NEW_MAIL_STATUS_DISABLE             : 'disable',
-
-        POLL_MAIL_STATUS_ENABLE             : 'enable',
-        POLL_MAIL_STATUS_DISABLE            : 'disable',
-
-
+    userSettings: {
+        SEARCH_PROFILE_STATUS_ENABLE: 'enable',
+        SEARCH_PROFILE_STATUS_DISABLE: 'disable',
+        SENSUAL_ADSTATUS_ENABLE: 'enable',
+        SENSUAL_ADSTATUS_DISABLE: 'disable',
+        AUTO_LOGIN_ENABLE: 'enable',
+        AUTO_LOGIN_DISABLE: 'disable',
+        SET_OFFLINE_ENABLE: 'enable',
+        SET_OFFLINE_DISABLE: 'disable',
+        FAVOURITE_MAIL_STATUS_ENABLE: 'enable',
+        FAVOURITE_MAIL_STATUS_DISABLE: 'disable',
+        PROVISIT_MAIL_STATUS_ENABLE: 'enable',
+        PROVISIT_MAIL_STATUS_DISABLE: 'disable',
+        NEW_MAIL_STATUS_ENABLE: 'enable',
+        NEW_MAIL_STATUS_DISABLE: 'disable',
+        POLL_MAIL_STATUS_ENABLE: 'enable',
+        POLL_MAIL_STATUS_DISABLE: 'disable',
     },
-
     adPage: {
-
-        STATUS_ACTIVE                        : 'active',
-        STATUS_INACTIVE                      : 'inactive',
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
     },
-
     adPosition: {
-
-        STATUS_ACTIVE                        : 'active',
-        STATUS_INACTIVE                      : 'inactive',
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
     },
-
     cmsPage: {
-
-        STATUS_ACTIVE                        : 'active',
-        STATUS_INACTIVE                      : 'inactive',
+        STATUS_ACTIVE: 'active',
+        STATUS_INACTIVE: 'inactive',
     },
-
-
-
-
-
-
-
 };

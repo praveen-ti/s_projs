@@ -29,6 +29,94 @@ function getUserById(uid, callback) {
 }
 
 module.exports = {
+    preSignup: function (req, res) {
+
+        var hashKey = crypto.createHash('md5').update((req.body.email + Math.floor((Math.random() * 1000) + 1))).digest("hex");
+        var email = req.body.email;
+        var signupLink = "http://192.168.1.73/ngzen/#/signup_one/" + hashKey;
+
+        console.log('hashKey');
+        console.log(hashKey);
+        console.log('email');
+        console.log(email);
+
+        //Check user exists
+        User.findOne({email: email}).exec(function (err, result) {
+            if (err) {
+
+                return res.json(200, {status: 2, message: 'Error occured.', error: err});
+
+            } else {
+
+                if (typeof result == "undefined") {
+
+                    //Create new user account here
+                    User.create({email: email, emailVerificationKey: hashKey}).exec(function (err, user) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error in creating new user account.', error: err});
+                        } else {
+                            var userId = user.id;
+
+                            //Sent email here.
+                            var email_to = email;
+                            var email_subject = 'Zentiera - User signup.';
+                            var email_template = 'signup';
+                            var email_context = {signupLink: signupLink, email: email};
+                            UserService.emailSend(email_to, email_subject, email_template, email_context, function (err, sendresult) {
+
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: sendresult});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'insert', data: user});
+                                }
+
+                            });
+
+                            //return res.json(200, {status: 1, message: 'insert', data: user});
+                        }
+                    });
+
+                } else {
+
+                    UserService.checkSignupCompleted(email, function (err, signupCompleted) {
+
+                        if (signupCompleted.signup === true) {
+
+                            return res.json(200, {status: 1, message: 'signupcompleted', data: []});
+
+                        } else {
+
+                            //Update user account here.
+                            User.update({email: email}, {emailVerificationKey: hashKey}).exec(function (err, user) {
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'Error in updating user details.', error: err});
+                                } else {
+
+                                    var email_to = email;
+                                    var email_subject = 'Zentiera - User signup.';
+                                    var email_template = 'signup';
+                                    var email_context = {signupLink: signupLink, email: email};
+                                    UserService.emailSend(email_to, email_subject, email_template, email_context, function (err, sendresult) {
+
+                                        if (err) {
+                                            return res.json(200, {status: 2, message: 'some error occured', error: sendresult});
+                                        } else {
+                                            return res.json(200, {status: 1, message: 'update', data: user});
+                                        }
+
+                                    });
+
+                                }
+                            });
+                        }
+
+                    });
+
+                }
+
+            }
+        });
+    },
     /*===================================================================================================================================
      User Sign up
      ====================================================================================================================================*/

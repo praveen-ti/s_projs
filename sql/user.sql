@@ -31,3 +31,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+ALTER TABLE `user` ADD `signupStatus` ENUM( 'completed', 'notcompleted' ) NOT NULL DEFAULT 'notcompleted' AFTER `emailVerificationKey` ;
+

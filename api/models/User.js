@@ -68,6 +68,12 @@ module.exports = {
         emailVerificationKey: {
             type: 'string'
         },
+        
+        signupStatus: {
+            type: 'string',
+            enum : [userConstants.SIGNUP_STATUS_COMPLETED, userConstants.SIGNUP_STATUS_NOTCOMPLETED],
+            defaultsTo: userConstants.SIGNUP_STATUS_NOTCOMPLETED
+        },
 
         subscriptionPackageId: {
             type: 'integer'

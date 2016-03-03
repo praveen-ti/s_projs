@@ -21,7 +21,8 @@ module.exports = {
         var transporter = nodemailer.createTransport();
         transporter.use('compile', hbs(options));
         transporter.sendMail({
-            from: email_to,
+            //from: email_to,
+            from: "devemailtestacc@gmail.com",
             to: email_to,
             subject: email_subject,
             template: email_template,
@@ -153,10 +154,10 @@ module.exports = {
         var from = "Zentiera";
         var reference = "Zentiera MSG";
         var data = "<MESSAGES><AUTHENTICATION><PRODUCTTOKEN><![CDATA[" + productToken + "]]></PRODUCTTOKEN></AUTHENTICATION><MSG><FROM><![CDATA[" + from + "]]></FROM><DCS><![CDATA[" + 8 + "]]></DCS><TO><![CDATA[" + to + "]]></TO><BODY><![CDATA[" + message + "]]></BODY><REFERENCE><![CDATA[" + reference + "]]></REFERENCE></MSG></MESSAGES>";
-        
+
         var url = "https://sgw01.cm.nl/gateway.ashx?producttoken=" + productToken + "&body=" + message + "&to=" + to + "&from=" + from + "&reference= " + reference;
-        
-        
+
+
         $.ajax({
             method: "GET",
             crossDomain: true,
@@ -168,9 +169,9 @@ module.exports = {
             console.log('error');
             callback(false, {status: 2, message: 'Error in sending SMS.'});
         });
-        
+
         callback(false, {status: 1, message: 'SMS sent successfully.'});
-        
+
 //        $.ajax({
 //            method: "POST",
 //            contentType: "application/xml",
@@ -212,6 +213,24 @@ module.exports = {
                 callback(false, {status: 1, message: 'SMS sent successfully.'});
             } else {
                 callback(false, {status: 2, message: 'Error in sending SMS.'});
+            }
+
+        });
+
+    },
+    checkSignupCompleted: function (email, callback) {
+
+        User.query('SELECT * FROM user WHERE signupStatus = ? AND email = ?', [userConstants.SIGNUP_STATUS_COMPLETED, email], function (err, results) {
+
+            if (err) {
+                callback(true, err);
+            } else {
+
+                if (typeof results[0] != "undefined") {
+                    callback(false, {status: 1, message: 'User completed signup process.', signup: true});
+                } else {
+                    callback(false, {status: 0, message: 'Not completed signup process.', signup: false});
+                }
             }
 
         });

@@ -109,7 +109,7 @@ console.log(req.body.entryId);
                                                                                         message             :    req.body.composeMessage,
                                                                                         file                :    fileNameArray,
                                                                                         conversationId      :    saveMailConversation.id,
-                                                                                        senderId            :    req.body.senderId,
+                                                                                        senderId            :    tokenCheck.tokenDetails.userId,
                                                                                         receiverId          :    req.body.receiverId,
                                                                                         senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
                                                                                         viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
@@ -183,7 +183,7 @@ console.log(req.body.entryId);
                                                                                 message             :    req.body.composeMessage,
                                                                                 file                :    fileNameArray,
                                                                                 conversationId      :    result[0].id,
-                                                                                senderId            :    req.body.senderId,
+                                                                                senderId            :    tokenCheck.tokenDetails.userId,
                                                                                 receiverId          :    req.body.receiverId,
                                                                                 senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
                                                                                 viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
@@ -253,7 +253,7 @@ console.log("findMail >>>>>>");
                                                                                             message             :    req.body.composeMessage,
                                                                                             file                :    fileNameArray,
                                                                                             conversationId      :    result[0].id,
-                                                                                            senderId            :    req.body.senderId,
+                                                                                            senderId            :    tokenCheck.tokenDetails.userId,
                                                                                             receiverId          :    req.body.receiverId,
                                                                                             senderStatus        :    mailConstants.SENDER_STATUS_DRAFT,
                                                                                             viewStatus          :    mailConstants.VIEW_STATUS_UNREAD
@@ -1188,7 +1188,7 @@ console.log(request);
                                 //console.log(tokenCheck.tokenDetails.userId);
                                  var values = {
                                                 name                :    request.name,
-                                                userId              :    request.userId,
+                                                userId              :    tokenCheck.tokenDetails.userId,
                                                };
                                 console.log(values);
                                  Folder.create(values).exec(function(err, result){
@@ -1287,6 +1287,7 @@ deleteUserFolders : function(req, res) {
  ====================================================================================================================================*/
 updateUserFolders : function(req, res) {
 
+var request = req.body.request;
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -1297,9 +1298,7 @@ updateUserFolders : function(req, res) {
                     {
                         if(tokenCheck.status == 1)
                             {
-var folderDetails = '{"folderDetails" : {"id": '+req.body.id+',"name": "'+req.body.name+'"}}';
-var jsonFolderDetails = JSON.parse(folderDetails);
-                                 Folder.findOne({id: jsonFolderDetails.folderDetails.id}).exec(function findCB(err, result) {
+                                 Folder.findOne({id: request.folderId}).exec(function findCB(err, result) {
                                     if(err)
                                     {
                                         return res.json(200, {status: 2, error_details: err});
@@ -1307,7 +1306,7 @@ var jsonFolderDetails = JSON.parse(folderDetails);
                                     else
                                     {
                                         var values = {
-                                                        name : jsonFolderDetails.folderDetails.name
+                                                        name : request.folderName
                                                      };
 
                                         var criteria = {id: result.id};
@@ -1324,7 +1323,7 @@ var jsonFolderDetails = JSON.parse(folderDetails);
                                             }
 
                                         });
-                                        //console.log(result);
+                                        console.log(result);
                                     }
                                   });
                             }

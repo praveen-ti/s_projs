@@ -233,20 +233,25 @@ console.log("findMail >>>>>>");
                                                                                         }
                                                                                         console.log("fileNameArray >>>>>>>>>>");
                                                                                         console.log(fileNameArray);
-                                                                                        console.log(findMail.file);
+                                                                                        console.log("["+findMail.file+"]");
                                                                                         console.log("fileNameArray >>>>>>>>");
-                                                                                       // var firstFile = "['" + findMail.file + "']";
-                                                                                       var firstFile =  findMail.file ;
-                                                                                        //finalArray = firstFile.join(fileNameArray);
+                                                                                        //var firstFile = "["+findMail.file+"]";
+                                                                                       //var firstFile =  findMail.file ;
+                                                                                       // var finalArray = firstFile.join(fileNameArray);
 
                                                                                         console.log("finalArray +++++++++");
                                                                                            console.log(finalArray);
+                                                                                           console.log("finalArray Extra");
+                                                                                           //var extra = "'" + finalArray.join("','") + "'";
+                                                                                           //console.log(extra);
+                                                                                          // var resultw = '\'' + finalArray.split(',').join('\',\'') + '\'';
+                                                                                           //console.log(result);
                                                                                         console.log("finalArray +++++++++++");
 
                                                                                         var values = {
                                                                                             subject             :    req.body.composeSubject,
                                                                                             message             :    req.body.composeMessage,
-                                                                                            file                :    finalArray,
+                                                                                            file                :    fileNameArray,
                                                                                             conversationId      :    result[0].id,
                                                                                             senderId            :    req.body.senderId,
                                                                                             receiverId          :    req.body.receiverId,
@@ -313,7 +318,7 @@ console.log(request);
                     {
                         if(tokenCheck.status == 1)
                             {
-
+console.log("tokenStatus-1");
                                //var switchKey = req.param('box');
                                var switchKey = request.box;
                                //var query = "SELECT * FROM  mail WHERE ";
@@ -594,181 +599,6 @@ console.log(request);
                                 }
 
 
-
-
-/* ########## receiverStatus   STARTS #########*/
-
-                          /*      var ctr = 0;
-                                //var query = "INSERT INTO mail (id,receiverStatus) VALUES ";
-                                var query = "";
-                                var switchKey     = request.mailStatus;
-                                console.log(switchKey);
-
-                          chkInboxArray.forEach(function(factor, index){
-                                        ctr ++;
-                                     console.log("factor ==========>>>>>>>");
-                                     console.log(factor);
-
-
-                               switch (switchKey)
-                                    {
-
-                                           case 'draft':
-
-                                               query += "senderStatus = '"+switchKey+"' ";
-
-                                           break;
-
-                                           case 'sent':
-
-                                               query += "senderStatus = '"+switchKey+"' ";
-
-                                           break;
-
-                                           case 'trash':
-
-                                                    if(factor.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = '"+switchKey+"' ";
-                                                    }
-                                                    else if(factor.receiverId == tokenCheck.tokenDetails.userId)
-                                                    {
-                                                        //query += "receiverStatus = '"+switchKey+"' ";
-                                                        query = "INSERT INTO mail (id,receiverStatus) VALUES"+
-                                                                " ("+factor.id+",'"+switchKey+"')"+
-                                                                " ON"+
-                                                                " DUPLICATE KEY"+
-                                                                " UPDATE receiverStatus=VALUES(receiverStatus)";
-
-                                                        if(ctr!=chkInboxArray.length){
-                                                            query += ",";
-                                                        }
-                                                    }
-
-                                           break;
-
-                                           case 'delete':
-                                           console.log("delete -- >>>>>>ssssssssssssssssss");
-                                                   if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = '"+switchKey+"' ";
-                                                    }
-                                                    else
-                                                    {
-                                                        query += "receiverStatus = '"+switchKey+"', ";
-                                                    }
-                                            console.log("delete -- >>>>>>yyyyyyyyyyyyyyyyyyyyyyyyy");
-                                           break;
-
-                                           case 'folder':
-
-                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                         query += "senderStatus = '"+switchKey+"' senderFolderId = "+jsonFolderId.folderId.id;
-                                                    }
-                                                    else
-                                                    {
-                                                        query += "receiverStatus = '"+switchKey+"', receiverFolderId = "+jsonFolderId.folderId.id;
-                                                    }
-
-                                           break;
-
-                                           case 'viewstatus':
-                                               var viewStatus = "true";
-                                               query += "viewStatus = '"+viewStatus+"' ";
-
-                                           break;
-
-                                     }
-
-                                      chkInboxIdArray.push(factor.id);
-                                }); //foreach Ends
-
-                                    //query += "WHERE id ="+factor.id;
-                                    //  query +=  " ON"+
-                                               // " DUPLICATE KEY"+
-                                               // " UPDATE receiverStatus=VALUES(receiverStatus)";
-
-                                        console.log(query);
-         */
-/* ########## receiverStatus   ENDS #########*/
-
-
-
-/*
-             var ctr = 0;
-            chkInboxArray.forEach(function(factor, index){
-                     ctr ++;
-                     chkInboxIdArray.push(factor.id);
-            });
-           // var query = "UPDATE mail SET ";
-console.log("4444444444444444");
-                               switch (switchKey)
-                                    {
-
-                                           case 'draft':
-
-                                               query += "senderStatus = '"+switchKey+"' ";
-
-                                           break;
-
-                                           case 'sent':
-
-                                               query += "senderStatus = '"+switchKey+"' ";
-
-                                           break;
-
-                                           case 'trash':
-
-                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = '"+switchKey+"' ";
-                                                    }
-                                                    else
-                                                    {
-                                                        query = "UPDATE mail SET receiverStatus = '"+switchKey+"' "+
-                                                                "WHERE id IN ("+chkInboxIdArray+")";
-                                                    }
-
-                                           break;
-
-                                           case 'delete':
-
-                                                   if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                        query += "senderStatus = '"+switchKey+"' ";
-                                                    }
-                                                    else
-                                                    {
-                                                        query += "receiverStatus = '"+switchKey+"' ";
-                                                    }
-
-                                           break;
-
-                                           case 'folder':
-
-                                                    if(req.body.senderId == tokenCheck.tokenDetails.userId){
-                                                         query += "senderStatus = '"+switchKey+"' senderFolderId = "+jsonFolderId.folderId.id;
-                                                    }
-                                                    else
-                                                    {
-                                                        query += "receiverStatus = '"+switchKey+"', receiverFolderId = "+jsonFolderId.folderId.id;
-                                                    }
-
-                                           break;
-
-                                           case 'viewstatus':
-                                               var viewStatus = "true";
-                                               query += "viewStatus = '"+viewStatus+"' ";
-
-                                           break;
-
-                                     }
-
-                                   // query += "WHERE id IN ("+chkInboxIdArray+")";
-        console.log(query);
-
-*/
-
-
-/* ##############    ###############*/
-
-
                                switch (switchKey)
                                     {
 
@@ -884,25 +714,35 @@ console.log("4444444444444444");
                                                                     console.log("??????????????");
                                                                     return res.json(200, {status: 1, message: "success--all"});
                                                      });
-                                                 /*  var ctr = 0;
+
+
+                                           break;
+
+                                           case 'delete':
+
+                                                var ctr = 0;
                                                    //foreach Starts
+
+
                                                         chkMailArray.forEach(function(factor, index){
                                                                  ctr ++;
                                                                  if(factor.senderId == tokenCheck.tokenDetails.userId){
-                                                                     ssArray.push(factor.id);
+                                                                        ssArray.push('('+factor.id+',"'+switchKey+'")');
                                                                  }
                                                                  else if(factor.receiverId == tokenCheck.tokenDetails.userId){
-                                                                     rsArray.push(factor.id);
+                                                                       rsArray.push('('+factor.id+',"'+switchKey+'")');
                                                                  }
                                                         });
-                                                   //foreach Ends
-                                                   //To run Multiple queries in one controller simultaneously
-                                                   async.parallel([
+
+                                                     async.parallel([
                                                          function(callback) {
                                                             if(rsArray.length){
-                                                                query1 = " UPDATE mail SET "+
-                                                                         " receiverStatus = '"+switchKey+
-                                                                         "' WHERE id IN ("+rsArray+")";
+
+                                                                query1 = "INSERT INTO mail (id,receiverStatus) VALUES"+rsArray+
+                                                                                " ON"+
+                                                                                " DUPLICATE KEY"+
+                                                                                " UPDATE receiverStatus=VALUES(receiverStatus)";
+
                                                                   console.log(query1);
                                                                   Mail.query(query1, function(err, result1) {
 
@@ -918,9 +758,12 @@ console.log("4444444444444444");
                                                         function(callback) {
                                                             //var query2 = "";
                                                             if(ssArray.length){
-                                                                query2 = " UPDATE mail SET "+
-                                                                         " senderStatus = '"+switchKey+
-                                                                         "' WHERE id IN ("+ssArray+")";
+                                                                query2 = "INSERT INTO mail (id,senderStatus) VALUES"+ssArray+
+                                                                                " ON"+
+                                                                                " DUPLICATE KEY"+
+                                                                                " UPDATE senderStatus=VALUES(senderStatus)";
+
+                                                                console.log(query2);
 
                                                                Mail.query(query2, function(err, result2) {
                                                                             if (err) return callback(err);
@@ -933,81 +776,14 @@ console.log("4444444444444444");
                                                         }
                                                        }
 
+
                                                    // return res.json(200, {status: 1, message: "success"});
 
                                                    ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                                                                     if (err) return res.json(200, {status: 2, message: "error"}); //If an error occured, we let express/connect handle it by calling the "next" function
                                                                     console.log("??????????????");
                                                                     return res.json(200, {status: 1, message: "success--all"});
-                                                        });
-                                                        */
-
-                                                   /* chkMailArray.forEach(function(factor, index){
-                                                                 ctr ++;
-                                                                 if(factor.senderId == tokenCheck.tokenDetails.userId){
-
-                                                                     ssArray.push('('+factor.id+',"'+switchKey+'")');
-                                                                 }
-                                                                 else if(factor.receiverId == tokenCheck.tokenDetails.userId){
-
-                                                                      rsArray.push('('+factor.id+',"'+switchKey+'")');
-                                                                 }
-
-                                                        });
-                                                        var finalArray = ssArray.concat(rsArray);
-                                                        finalArray     = finalArray.toString();
-                                                        console.log(ctr);
-                                                        console.log(ssArray);
-                                                        console.log(rsArray);
-                                                        console.log(finalArray);
-                                                        if(ssArray == ""){
-                                                                console.log("Empty ====SS");
-                                                                query = "INSERT INTO mail (id,receiverStatus) VALUES"+finalArray+
-                                                                                " ON"+
-                                                                                " DUPLICATE KEY"+
-                                                                                " UPDATE receiverStatus=VALUES(receiverStatus)";
-
-                                                        }else if(rsArray == ""){
-                                                                console.log("Empty ====RS");
-                                                                query = "INSERT INTO mail (id,senderStatus) VALUES"+finalArray+
-                                                                                " ON"+
-                                                                                " DUPLICATE KEY"+
-                                                                                " UPDATE senderStatus=VALUES(senderStatus)";
-
-                                                        }
-                                                        else{
-                                                            console.log("Both ====RS && SS");
-                                                            query = "INSERT INTO mail (id,receiverStatus,senderStatus) VALUES"+finalArray+
-                                                                                " ON"+
-                                                                                " DUPLICATE KEY"+
-                                                                                " UPDATE senderStatus=VALUES(senderStatus),"+
-                                                                                " receiverStatus=VALUES(receiverStatus)";
-
-                                                        }
-                                                        Mail.query(query, function(err, result) {
-                                                            if(err)
-                                                            {
-                                                                return res.json(200, {status: 2, error_details: err});
-                                                            }
-                                                            else
-                                                            {
-                                                                console.log("Success ===> Query");
-                                                                console.log(query);
-                                                                console.log(result);
-                                                                return res.json(200, {status: 1, message: "success", data: result});
-
-                                                            }
-                                                        });
-                                                            */
-
-
-
-
-                                           break;
-
-                                           case 'delete':
-
-
+                                                     });
 
                                            break;
 
@@ -1262,7 +1038,8 @@ Get Unread Mail count
                                var query = " SELECT COUNT(id) urMailCount"+
                                            " FROM  mail"+
                                            " WHERE  viewStatus = '"+mailConstants.VIEW_STATUS_UNREAD+
-                                           "' AND  receiverId = "+tokenCheck.tokenDetails.userId;
+                                           "' AND  receiverId = "+tokenCheck.tokenDetails.userId+
+                                           " AND receiverStatus = '"+mailConstants.RECEIVER_STATUS_INBOX+"'";
 
                                Mail.query(query, function(err, result) {
                                         if(err)
@@ -1271,8 +1048,6 @@ Get Unread Mail count
                                         }
                                         else
                                         {
-                                            console.log(query);
-                                            console.log(result);
                                             return res.json(200, {status: 1, message: "success", data: result[0]});
 
                                         }

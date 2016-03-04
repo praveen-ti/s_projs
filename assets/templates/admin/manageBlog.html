@@ -78,10 +78,10 @@
                                              <!--   <a href="javascript:void(0)" id="pending" ng-click="updateApprovalStatus($event,blog.id)"> Pending </a> | -->
                                            <!-- </span> -->
                                             <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'rejected')">
-                                                | <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>|
+                                                | <a href="javascript:void(0)" id="approved"  ng-click="updateApprovalStatus($event,blog.id)"> Approve </a>
                                              </span>
                                             <span ng-show="(blog.authorType != 'admin') && (blog.approvalStatus == 'pending' || blog.approvalStatus == 'approved')">
-                                                <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,blog.id)"> Reject </a>
+                                               | <a href="javascript:void(0)" id="rejected"  ng-click="updateApprovalStatus($event,blog.id)"> Reject </a>
                                             </span>
                                             <span>
                                                 <!-- <a href="javascript:void(0)"  ng-click="deleteAdPage($event,adPage.id)"> Delete</a> -->

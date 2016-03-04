@@ -434,8 +434,6 @@ console.log(request);
   updateApprovalStatus: function(req, res) {
 
          var request = req.body.request;
-console.log("request--------------Update approvalStatus--------------");
-console.log(request);
         AdmintokenService.checkToken(request.token, function (err, tokenCheck) {
 
             if (err)
@@ -453,14 +451,15 @@ console.log(request);
                         }
                         else
                         {
+
+                        if(result){
                             var values = {
                                         approvalStatus          :    request.approvalStatus
                             };
                             var criteria = {
                                               id          : result.id
                                             };
-                        console.log(values);
-                        console.log(criteria);
+
                             Blog.update(criteria, values).exec(function (err, updateApprovalStatus) {
                                 if (err)
                                 {
@@ -468,7 +467,6 @@ console.log(request);
                                 }
                                 else
                                 {
-                                      //return res.json(200, {status: 1, data: updateApprovalStatus});
                                      //Email
                                         var email_to        = request.returnedData.email;
                                         var email_subject   = 'Zentiera - Blog';
@@ -479,26 +477,21 @@ console.log(request);
                                             {
                                                     return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
                                                    sails.log.debug('Some error occured ' + sendresult);
-
                                             }
                                            else{
 
-                                                 console.log("User -> email send");
-                                                 //console.log(result);
-                                                 console.log(email_to);
-                                                 console.log(email_subject);
-                                                 console.log(email_template);
-                                                 console.log(email_context);
-
-
+                                                return res.json(200, {status: 1, data: updateApprovalStatus});
                                             }
-                                            return res.json(200, {status: 1, data: updateApprovalStatus});
-
 
                                         });
+
                                 }
 
                             });
+
+                         }
+
+
                         }
                     });
                 }

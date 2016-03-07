@@ -21,14 +21,6 @@ module.exports = {
           type: 'integer'
       },
       
-      dob: {
-          type: 'datetime'
-      },
-      
-      age: {
-          type: 'integer'
-      },
-      
       gender: {
           type: 'string',
           enum : [userinfoConstants.GENDER_MALE, userinfoConstants.GENDER_FEMALE, userinfoConstants.GENDER_MALE_FEMALE_COUPLE, userinfoConstants.GENDER_GAY_COUPLE, userinfoConstants.GENDER_LESBIAN_COUPLE]
@@ -62,85 +54,168 @@ module.exports = {
           type: 'string'
       },
       
-      userLevel: {
+      therapeuticMassageOne: {
+          type: 'string',
+          enum : [userinfoConstants.THERAPEUTIC, ""]
+      },
+      
+      therapeuticMassageOneDesc: {
+          type: 'string'
+      },
+      
+      sensualMassageOne: {
+          type: 'string',
+          enum : [userinfoConstants.SENSUAL, ""]
+      },
+      
+      sensualMassageOneDesc: {
+          type: 'string'
+      },
+      
+      dobOne: {
+          type: 'datetime'
+      },
+      
+      ageOne: {
+          type: 'integer'
+      },
+      
+      languageOne: {
+          type: 'string'
+      },
+      
+      bodyTypeOne: {
+          type: 'string',
+          enum : [userinfoConstants.BODYTYPE_SLIM_PALETTE, userinfoConstants.BODYTYPE_AVERAGE, userinfoConstants.BODYTYPE_GYM_FIT, userinfoConstants.BODYTYPE_MUSCULAR, userinfoConstants.BODYTYPE_FEW_POUND_AVERAGE, userinfoConstants.BODYTYPE_LARGE]
+      },
+      
+      heightOne: {
+          type: 'integer'
+      },
+      
+      drinkingHabitOne: {
+          type: 'string',
+          enum : [userinfoConstants.DRINKING_FREQUENTLY, userinfoConstants.DRINKING_OCCASIONALLY_SOCIALLY, userinfoConstants.DRINKING_NEVER, userinfoConstants.DRINKING_STOPPED_DRINKING]
+      },
+      
+      smokingHabitOne: {
+          type: 'string',
+          enum : [userinfoConstants.SMOKING_OCCASIONALLY_SOCIALLY, userinfoConstants.SMOKING_FREQUENTLY, userinfoConstants.SMOKING_NEVER, userinfoConstants.SMOKING_STOPPED_SMOKING]
+      },
+      
+      massageFrequencyOne: {
+          type: 'string',
+          enum : [userinfoConstants.MASSAGE_FREQUENCY_DAILY, userinfoConstants.MASSAGE_FREQUENCY_EVERY_WEEK, userinfoConstants.MASSAGE_FREQUENCY_EVERY_MONTH, userinfoConstants.MASSAGE_FREQUENCY_EVERY_SIX_MONTH, userinfoConstants.MASSAGE_FREQUENCY_ONCE_A_YEAR, userinfoConstants.MASSAGE_FREQUENCY_NEVER]
+      },
+      
+      levelTypeOne: {
           type: 'string',
           enum : [userinfoConstants.USER_LEVEL_PROFESSIONAL_CMT, userinfoConstants.USER_LEVEL_STUDENT, userinfoConstants.USER_LEVEL_AFICIONADO]
       },
       
-      expYear: {
+      levelTypeOneOther: {
+          type: 'string'
+      },
+      
+      experienceOne: {
           type: 'string',
           enum : [userinfoConstants.EXPERIENCE_NONE, userinfoConstants.EXPERIENCE_0_TO_1, userinfoConstants.EXPERIENCE_1_TO_2, userinfoConstants.EXPERIENCE_2_TO_5, userinfoConstants.EXPERIENCE_5_TO_10, userinfoConstants.EXPERIENCE_10_TO_20, userinfoConstants.EXPERIENCE_MORE_THAN_20]
       },
       
-      bodyType: {
+      massageStylesOne: {
           type: 'string',
-          enum : [userinfoConstants.BODYTYPE_MUSCULAR, userinfoConstants.BODYTYPE_GYMFIT, userinfoConstants.BODYTYPE_AVERAGE, userinfoConstants.BODYTYPE_SLENDER, userinfoConstants.BODYTYPE_EXTRA_POUNDS, userinfoConstants.BODYTYPE_QUESTION_NOT_IMPORTANT]
+          enum : [userinfoConstants.MASSAGE_STYLE_DEEP_TISSUE_STRONG, userinfoConstants.MASSAGE_STYLE_THAI, userinfoConstants.MASSAGE_STYLE_REFLEXOLOGY, userinfoConstants.MASSAGE_STYLE_SWEDISH, userinfoConstants.MASSAGE_STYLE_CHINESE, userinfoConstants.MASSAGE_STYLE_OTHERS]
       },
       
-      height: {
-          type: 'integer'
+      massageStylesOneOther: {
+          type: 'string'
       },
       
-      massageFrequency: {
-          type: 'string',
-          enum : [userinfoConstants.MASSAGE_FREQUENCY_DAILY, userinfoConstants.MASSAGE_FREQUENCY_ONCE_A_WEEK, userinfoConstants.MASSAGE_FREQUENCY_EVERY_WEEK, userinfoConstants.MASSAGE_FREQUENCY_ONCE_A_MONTH, userinfoConstants.MASSAGE_FREQUENCY_EVERY_MONTH, userinfoConstants.MASSAGE_FREQUENCY_EVERY_SIX_MONTH, userinfoConstants.MASSAGE_FREQUENCY_ONCE_A_YEAR]
-      },
-      
-      drinkingHabit: {
-          type: 'string',
-          enum : [userinfoConstants.DRINKING_GAVE_IT_UP, userinfoConstants.DRINKING_SOCIALLY, userinfoConstants.DRINKING_REGULARLY, userinfoConstants.DRINKING_NON_ALCOHOLIC]
-      },
-      
-      smokingHabit: {
-          type: 'string',
-          enum : [userinfoConstants.SMOKING_NEVER, userinfoConstants.SMOKING_EX_SMOKER, userinfoConstants.SMOKING_OCCASIONALLY, userinfoConstants.SMOKING_DAILY, userinfoConstants.SMOKING_SOCIALLY, userinfoConstants.SMOKING_TELL_YOU_LATER]
-      },
-      
-      trainingHours: {
+      trainingHoursOne: {
           type: 'string',
           enum : [userinfoConstants.TRAINING_HOURS_FORMAL, userinfoConstants.TRAINING_HOURS_UNDER_100, userinfoConstants.TRAINING_HOURS_101_TO_200, userinfoConstants.TRAINING_HOURS_201_TO_300, userinfoConstants.TRAINING_HOURS_301_TO_500, userinfoConstants.TRAINING_HOURS_501_TO_1000, userinfoConstants.TRAINING_HOURS_MORE_THAN_1000]
       },
       
-      languages: {
-          type: 'string'
-      },
-      
-      therapeuticStatus: {
+      therapeuticMassageTwo: {
           type: 'string',
-          enum : [userinfoConstants.THERAPEUTIC_YES, userinfoConstants.THERAPEUTIC_NO]
+          enum : [userinfoConstants.THERAPEUTIC, ""]
       },
       
-      therapeuticGender: {
+      therapeuticMassageTwoDesc: {
           type: 'string'
       },
       
-      therapeuticDesc: {
-          type: 'text'
-      },
-      
-      sensualStatus: {
+      sensualMassageTwo: {
           type: 'string',
-          enum : [userinfoConstants.SENSUAL_YES, userinfoConstants.SENSUAL_NO]
+          enum : [userinfoConstants.SENSUAL, ""]
       },
       
-      sensualGender: {
+      sensualMassageTwoDesc: {
           type: 'string'
       },
       
-      sensualDesc: {
-          type: 'text'
+      dobTwo: {
+          type: 'datetime'
       },
       
-      relationshipTypes: {
-          type: 'text'
+      ageTwo: {
+          type: 'integer'
       },
       
-      preferedMassageTypes: {
-          type: 'text'
+      languageTwo: {
+          type: 'string'
       },
       
-      serviceType: {
-          type: 'text'
+      bodyTypeTwo: {
+          type: 'string',
+          enum : [userinfoConstants.BODYTYPE_SLIM_PALETTE, userinfoConstants.BODYTYPE_AVERAGE, userinfoConstants.BODYTYPE_GYM_FIT, userinfoConstants.BODYTYPE_MUSCULAR, userinfoConstants.BODYTYPE_FEW_POUND_AVERAGE, userinfoConstants.BODYTYPE_LARGE]
+      },
+      
+      heightTwo: {
+          type: 'integer'
+      },
+      
+      drinkingHabitTwo: {
+          type: 'string',
+          enum : [userinfoConstants.DRINKING_FREQUENTLY, userinfoConstants.DRINKING_OCCASIONALLY_SOCIALLY, userinfoConstants.DRINKING_NEVER, userinfoConstants.DRINKING_STOPPED_DRINKING]
+      },
+      
+      smokingHabitTwo: {
+          type: 'string',
+          enum : [userinfoConstants.SMOKING_OCCASIONALLY_SOCIALLY, userinfoConstants.SMOKING_FREQUENTLY, userinfoConstants.SMOKING_NEVER, userinfoConstants.SMOKING_STOPPED_SMOKING]
+      },
+      
+      massageFrequencyTwo: {
+          type: 'string',
+          enum : [userinfoConstants.MASSAGE_FREQUENCY_DAILY, userinfoConstants.MASSAGE_FREQUENCY_EVERY_WEEK, userinfoConstants.MASSAGE_FREQUENCY_EVERY_MONTH, userinfoConstants.MASSAGE_FREQUENCY_EVERY_SIX_MONTH, userinfoConstants.MASSAGE_FREQUENCY_ONCE_A_YEAR, userinfoConstants.MASSAGE_FREQUENCY_NEVER]
+      },
+      
+      levelTypeTwo: {
+          type: 'string',
+          enum : [userinfoConstants.USER_LEVEL_PROFESSIONAL_CMT, userinfoConstants.USER_LEVEL_STUDENT, userinfoConstants.USER_LEVEL_AFICIONADO]
+      },
+      
+      levelTypeTwoOther: {
+          type: 'string'
+      },
+      
+      experienceTwo: {
+          type: 'string',
+          enum : [userinfoConstants.EXPERIENCE_NONE, userinfoConstants.EXPERIENCE_0_TO_1, userinfoConstants.EXPERIENCE_1_TO_2, userinfoConstants.EXPERIENCE_2_TO_5, userinfoConstants.EXPERIENCE_5_TO_10, userinfoConstants.EXPERIENCE_10_TO_20, userinfoConstants.EXPERIENCE_MORE_THAN_20]
+      },
+      
+      massageStylesTwo: {
+          type: 'string',
+          enum : [userinfoConstants.MASSAGE_STYLE_DEEP_TISSUE_STRONG, userinfoConstants.MASSAGE_STYLE_THAI, userinfoConstants.MASSAGE_STYLE_REFLEXOLOGY, userinfoConstants.MASSAGE_STYLE_SWEDISH, userinfoConstants.MASSAGE_STYLE_CHINESE, userinfoConstants.MASSAGE_STYLE_OTHERS]
+      },
+      
+      massageStylesTwoOther: {
+          type: 'string'
+      },
+      
+      trainingHoursTwo: {
+          type: 'string',
+          enum : [userinfoConstants.TRAINING_HOURS_FORMAL, userinfoConstants.TRAINING_HOURS_UNDER_100, userinfoConstants.TRAINING_HOURS_101_TO_200, userinfoConstants.TRAINING_HOURS_201_TO_300, userinfoConstants.TRAINING_HOURS_301_TO_500, userinfoConstants.TRAINING_HOURS_501_TO_1000, userinfoConstants.TRAINING_HOURS_MORE_THAN_1000]
       },
       
       lastLoggedin: {
@@ -150,8 +225,6 @@ module.exports = {
       createdAt: {
             type: 'datetime'
       }
-      
-      
 
   }
 };

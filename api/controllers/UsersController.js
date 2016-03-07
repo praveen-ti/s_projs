@@ -121,163 +121,102 @@ module.exports = {
      User Sign up
      ====================================================================================================================================*/
     userSignup: function (req, res) {
-        console.log("Signup Entered");
-        var password = crypto.createHash('md5').update(req.body.password).digest("hex");
-        values = {username: 'user' + (Math.random() * 100 | 0) + 1,
-            firstname: 'fname',
-            lastname: 'lname',
-            email: req.body.email,
-            password: password,
-            passwordResetKey: (req.body.passwordResetKey) ? req.body.passwordResetKey : '',
-            status: (req.body.status) ? req.body.status : userConstants.STATUS_ACTIVE,
-            profilePic: (req.body.profilePic) ? req.body.profilePic : '',
-            emailVerificationStatus: (req.body.emailVerificationStatus) ? req.body.emailVerificationStatus : userConstants.EMAIL_NOTVERIFIED,
-            emailVerificationKey: (req.body.emailVerificationKey) ? req.body.emailVerificationKey : '',
-            subscriptionPackageId: (req.body.subscriptionPackageId) ? req.body.subscriptionPackageId : 0,
-            subscriptionType: (req.body.subscriptionType) ? req.body.subscriptionType : userConstants.SUBSCRIPTION_FREE,
-            subscriptionExpiredDate: '',
-            adPackageId: (req.body.adPackageId) ? req.body.adPackageId : 0,
-            adExpiredDate: '',
-            referralBenefit: (req.body.referralBenefit) ? req.body.referralBenefit : userConstants.REFERRAL_UNABLE,
-            referredUserId: null,
-            refferedCount: 0,
-            blacklisted: (req.body.blacklisted) ? req.body.blacklisted : userConstants.BLACKLIST_NO,
-            createdAt: ''
-        };
-
-
 
         var userRole = req.body.userRole;
+        var user = req.body.user;
+        var userinfo = req.body.userinfo;
+        var searchPreference = req.body.searchPreference;
+
         if (userRole === 'user') {
 
-            User.create(values).exec(function (err, result) {
+            var values = {
+                username: user.username,
+                firstname: 'fname',
+                lastname: 'lname',
+                //email: user.email,
+                password: crypto.createHash('md5').update(user.password).digest("hex"),
+                passwordResetKey: '',
+                signupStatus: userConstants.SIGNUP_STATUS_COMPLETED,
+                status: userConstants.STATUS_ACTIVE,
+                emailVerificationStatus: userConstants.EMAIL_VERIFIED,
+                emailVerificationKey: '',
+                subscriptionType: userConstants.SUBSCRIPTION_FREE
+            };
+
+            User.findOne({email: user.email}).exec(function (err, result) {
+
                 if (err) {
-                    return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                    return res.json(200, {status: 2, message: 'Error occured.', error: err});
                 } else {
 
-                    var userId = result.id;
-                    var userInfo = {
-                        userId: userId,
-                        dob: '',
-                        age: 0,
-                        gender: '',
-                        telephone: '',
-                        zipcode: '',
-                        country: '',
-                        state: '',
-                        city: '',
-                        latitude: '',
-                        longitude: '',
-                        userLevel: '',
-                        expYear: '',
-                        bodyType: '',
-                        height: 0,
-                        massageFrequency: '',
-                        drinkingHabit: '',
-                        smokingHabit: '',
-                        trainingHours: '',
-                        languages: '',
-                        therapeuticStatus: '',
-                        therapeuticGender: '',
-                        therapeuticDesc: '',
-                        sensualStatus: '',
-                        sensualGender: '',
-                        sensualDesc: '',
-                        relationshipTypes: '',
-                        preferedMassageTypes: '',
-                        serviceType: '',
-                        lastLoggedin: '',
-                        createdAt: ''
-                    };
+                    if (typeof result == "undefined") {
+                        return res.json(200, {status: 1, message: 'success', data: 'Email id does not exists'});
+                    } else {
 
-                    Userinfo.create(userInfo).exec(function (err, result) {
-                        if (err) {
-                            return res.json(200, {status: 2, message: 'Some error occured', error: err});
-                        } else {
+                        User.update({email: result.email}, values).exec(function (err, userdata) {
+                            if (err) {
+                                return res.json(200, {status: 2, message: 'Error in updating user details.', error: err});
+                            } else {
+
+                                userinfo.userId = result.id;
+                                userinfo.latitude = null;
+                                userinfo.longitude = null;
+
+                                searchPreference.userId = result.id;
+
+                                console.log(JSON.stringify(searchPreference));
+
+                                Userinfo.create(userinfo).exec(function (err, userinfodata) {
+                                    if (err) {
+                                        return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                                    } else {
+
+                                        SearchPreference.create(searchPreference).exec(function (err, searchdata) {
+                                            if (err) {
+                                                return res.json(200, {status: 2, message: 'Some error occured', error: err});
+                                            } else {
+
+                                                UsertokenService.createToken(result.id, function (err, details) {
+                                                    if (err) {
+                                                        return res.json(200, {status: 2, message: 'some error occured', error: err});
+                                                    } else {
+                                                        return res.json(200, {status: 1, message: 'Success', data: details});
+
+                                                    }
+                                                });
+
+                                            }
+                                        });
+
+                                    }
+                                });
+
+                                //return res.json(200, {status: 1, message: 'success', data: userdata});
+
+                            }
+                        });
 
 
-                            UsertokenService.createToken(userId, function (err, details) {
-                                if (err) {
-                                    return res.json(200, {status: 2, message: 'some error occured', error: details});
-                                } else {
-                                    return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
-
-                                }
-                            });
-
-                        }
-                    });
+                    }
 
                 }
             });
+
+
+
+
+
+
+
 
         } else if (userRole === 'admin') {
 
             AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
                 if (err) {
-                    return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
+                    return res.json(200, {status: 2, message: 'some error occured', error: tokenCheck});
                 } else {
 
-                    User.create(values).exec(function (err, result) {
-                        if (err) {
-                            return res.json(200, {status: 2, message: 'Some error occured', error: err});
-                        } else {
-
-                            var userId = result.id;
-                            var userInfo = {
-                                userId: userId,
-                                dob: '',
-                                age: 0,
-                                gender: '',
-                                telephone: '',
-                                zipcode: '',
-                                country: '',
-                                state: '',
-                                city: '',
-                                latitude: '',
-                                longitude: '',
-                                userLevel: '',
-                                expYear: '',
-                                bodyType: '',
-                                height: 0,
-                                massageFrequency: '',
-                                drinkingHabit: '',
-                                smokingHabit: '',
-                                trainingHours: '',
-                                languages: '',
-                                therapeuticStatus: '',
-                                therapeuticGender: '',
-                                therapeuticDesc: '',
-                                sensualStatus: '',
-                                sensualGender: '',
-                                sensualDesc: '',
-                                relationshipTypes: '',
-                                preferedMassageTypes: '',
-                                serviceType: '',
-                                lastLoggedin: '',
-                                createdAt: ''
-                            };
-
-                            Userinfo.create(userInfo).exec(function (err, result) {
-                                if (err) {
-                                    return res.json(200, {status: 2, message: 'Some error occured', error: err});
-                                } else {
-
-                                    //var userId = result.id;
-                                    UsertokenService.createToken(userId, function (err, details) {
-                                        if (err) {
-                                            return res.json(200, {status: 2, message: 'some error occured', error: details});
-                                        } else {
-                                            return res.json(200, {status: 1, message: 'Success', resultlogdetails: details});
-
-                                        }
-                                    });
-
-                                }
-                            });
-
-                        }
-                    });
+                    return res.json(200, {status: 1, message: 'Success', data: 'No action performed.'});
 
                 }
             });
@@ -289,14 +228,14 @@ module.exports = {
      ====================================================================================================================================*/
 
     userLogin: function (req, res) {
-console.log("userLogin  .....");
+        console.log("userLogin  .....");
         var password = crypto.createHash('md5').update(req.body.password).digest("hex");
         var values = {email: req.body.email, password: password};
 
         // Get user details
         User.findOne(values).exec(function (err, result) {
             if (err) {
-console.log(err);
+                console.log(err);
                 return res.json(200, {status: 2, message: 'Error occured.', error: err});
 
             } else {
@@ -360,7 +299,7 @@ console.log(err);
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT u.* FROM user AS u LEFT JOIN userinfo AS ui ON u.id = ui.userId WHERE 1 ORDER BY u.id DESC";
+                    var query = "SELECT u.*, ui.levelTypeOne FROM user AS u LEFT JOIN userinfo AS ui ON u.id = ui.userId WHERE u.signupStatus = '" + userConstants.SIGNUP_STATUS_COMPLETED + "' ORDER BY u.id DESC";
                     User.query(query, function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});
@@ -375,7 +314,7 @@ console.log(err);
         });
     },
     getUserDetails: function (req, res) {
-console.log("Entered");
+        console.log("Entered");
         var userId = req.body.userId;
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
@@ -1137,6 +1076,34 @@ console.log("Entered");
         });
 
     },
+    updatePhotoStatus: function (req, res) {
+
+        var photoId = req.body.photoId;
+        var status = req.body.status;
+
+        AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    Photos.update({id: photoId}, {status: status}).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'Success', data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
     deletePhoto: function (req, res) {
         var photoId = req.body.photoId;
         var userId = req.body.userId;
@@ -1503,7 +1470,7 @@ console.log("Entered");
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT r.*, u.id AS uid, u.firstname, u.lastname FROM review AS r LEFT JOIN user AS u ON u.id = r.reviewerId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
+                    var query = "SELECT r.*, u.id AS uid, u.username FROM review AS r LEFT JOIN user AS u ON u.id = r.reviewerId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
                     Review.query(query, function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});
@@ -1517,7 +1484,6 @@ console.log("Entered");
             }
         });
     },
-
     getUserReports: function (req, res) {
 
         var userRole = req.body.userRole;
@@ -1539,7 +1505,7 @@ console.log("Entered");
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT r.*, u.id AS uid, u.firstname, u.lastname FROM report AS r LEFT JOIN user AS u ON u.id = r.reporterId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
+                    var query = "SELECT r.*, u.id AS uid, u.username FROM report AS r LEFT JOIN user AS u ON u.id = r.reporterId WHERE r.userId = " + userId + " ORDER BY r.id DESC";
                     Review.query(query, function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});
@@ -1629,11 +1595,10 @@ console.log("Entered");
 //
         //return res.json(200, {status: 1, message: "success", data: 'Message sent successfully.'});
     },
-
-/*===================================================================================================================================
+    /*===================================================================================================================================
      get Search Users
- ====================================================================================================================================*/
-  getSearchUsers: function (req, res) {
+     ====================================================================================================================================*/
+    getSearchUsers: function (req, res) {
 
         var request = req.body.request;
         var userRole = request.userRole;
@@ -1655,7 +1620,7 @@ console.log("Entered");
 
                 if (tokenCheck.status == 1)
                 {
-                    var query = "SELECT * FROM user WHERE  username LIKE  '"+request.nameOfUser+"%' AND status = '"+userConstants.STATUS_ACTIVE+"'";
+                    var query = "SELECT * FROM user WHERE  username LIKE  '" + request.nameOfUser + "%' AND status = '" + userConstants.STATUS_ACTIVE + "'";
                     User.query(query, function (err, result) {
                         if (err) {
                             return res.json(200, {status: 2, message: 'Error', error: err});
@@ -1669,10 +1634,5 @@ console.log("Entered");
             }
         });
     },
-
-
-
-
-
 };
 

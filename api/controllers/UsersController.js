@@ -11,6 +11,7 @@ var userConstants = sails.config.constants.user;
 var photoConstants = sails.config.constants.photo;
 var reviewConstants = sails.config.constants.review;
 var reportConstants = sails.config.constants.report;
+var settings = sails.config.settings.data;
 
 function getUserById(uid, callback) {
     var condition = {id: uid};
@@ -33,12 +34,8 @@ module.exports = {
 
         var hashKey = crypto.createHash('md5').update((req.body.email + Math.floor((Math.random() * 1000) + 1))).digest("hex");
         var email = req.body.email;
-        var signupLink = "http://192.168.1.73/ngzen/#/signup_one/" + hashKey;
-
-        console.log('hashKey');
-        console.log(hashKey);
-        console.log('email');
-        console.log(email);
+        //var signupLink = "http://192.168.1.73/zentiera-web/#/signup_one/" + hashKey;
+        var signupLink = settings.STATIS_URL + 'signup_one/' + hashKey;
 
         //Check user exists
         User.findOne({email: email}).exec(function (err, result) {
@@ -202,13 +199,6 @@ module.exports = {
                 }
             });
 
-
-
-
-
-
-
-
         } else if (userRole === 'admin') {
 
             AdmintokenService.checkToken(req.body.token, function (err, tokenCheck) {
@@ -276,6 +266,25 @@ module.exports = {
                 return res.json(200, {status: 1, message: 'success', result: result});
                 //res.redirect('login');
             }
+        });
+
+    },
+    checkSignupKey: function (req, res) {
+
+        var emailVerificationKey = req.body.emailVerificationKey;
+
+        User.query('SELECT u.* FROM user AS u WHERE u.emailVerificationKey = ? LIMIT 1', [emailVerificationKey], function (err, user) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Some error occured', error: err});
+            } else {
+                if (typeof user[0] != "undefined") {
+                    return res.json(200, {status: 1, message: 'Email verification key exists', data: user[0]});
+                } else {
+                    return res.json(200, {status: 0, message: 'No email verification key exists', data: false});
+                }
+            }
+
         });
 
     },

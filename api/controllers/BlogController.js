@@ -122,7 +122,9 @@ console.log("Entered Add Blog -----------------------------");
 
                                                         query = "SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                                                     " blg.blogStatus, blg.approvalStatus,"+
-                                                                    " CONCAT( usr.firstname, ' ', usr.lastname ) username"+
+                                                                    " CONCAT( usr.firstname, ' ', usr.lastname ) username,"+
+                                                                    " CONCAT( MONTHNAME( blg.createdAt ) ,  ' ', DAY( blg.createdAt ) ,  ' ,', YEAR( blg.createdAt ) ) as blogDate,"+
+                                                                    " DATE_FORMAT( blg.createdAt,  '%l:%i %p' ) blogTime"+
                                                                     " FROM blog blg"+
                                                                     " INNER JOIN user usr ON blg.authorId = usr.id"+
                                                                     " WHERE blg.id = "+result.id;
@@ -132,7 +134,9 @@ console.log("Entered Add Blog -----------------------------");
 
                                                       query = "SELECT blg.id,blg.authorType, blg.title, blg.description,"+
                                                                 " blg.blogStatus, blg.approvalStatus,"+
-                                                                " CONCAT( adm.firstname, ' ', adm.lastname ) username"+
+                                                                " CONCAT( adm.firstname, ' ', adm.lastname ) username,"+
+                                                                " CONCAT( MONTHNAME( blg.createdAt ) ,  ' ', DAY( blg.createdAt ) ,  ' ,', YEAR( blg.createdAt ) ) as blogDate,"+
+                                                                " DATE_FORMAT( blg.createdAt,  '%l:%i %p' ) blogTime"+
                                                                 " FROM blog blg"+
                                                                 " INNER JOIN admin adm ON blg.authorId = adm.id"+
                                                                 " WHERE blg.id = "+result.id;
@@ -301,6 +305,23 @@ console.log("Entered Add Blog -----------------------------");
                                 switch (switchKey)
                                     {
                                      case 'user' :
+                                     //Query to get name of author from user table or admin table
+                                    query = " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                            " blg.blogStatus, blg.approvalStatus,"+
+                                            " blg.createdAt, CONCAT( usr.firstname, ' ', usr.lastname ) authorname, usr.email"+
+                                            " FROM blog blg"+
+                                            " INNER JOIN user usr ON blg.authorId = usr.id"+
+                                            " WHERE blg.authorType = 'user' AND blg.blogStatus = '"+blogConstants.BLOG_STATUS_ACTIVE+
+                                            "' AND blg.approvalStatus = '"+blogConstants.APPROVAL_STATUS_APPROVED+
+                                            "' UNION"+
+                                            " SELECT blg.id,blg.authorType, blg.title, blg.description,"+
+                                            " blg.blogStatus, blg.approvalStatus,"+
+                                            " blg.createdAt, CONCAT( adm.firstname, ' ', adm.lastname ) authorname, null as email"+
+                                            " FROM blog blg"+
+                                            " INNER JOIN admin adm ON blg.authorId = adm.id"+
+                                            " WHERE blg.authorType = 'admin' AND blg.blogStatus = '"+blogConstants.BLOG_STATUS_ACTIVE+
+                                            "' AND blg.approvalStatus = '"+blogConstants.APPROVAL_STATUS_APPROVED+
+                                            "' ORDER BY createdAt DESC";
 
                                      break;
 
@@ -325,7 +346,12 @@ console.log("Entered Add Blog -----------------------------");
 
 
                                                // var query ="SELECT * FROM  blog ORDER BY createdAt DESC";
-                                                console.log(query);
+
+
+                                     break;
+                                    }
+
+                                     console.log(query);
                                                 Blog.query(query, function(err, result) {
                                                     if(err)
                                                     {
@@ -337,9 +363,6 @@ console.log("Entered Add Blog -----------------------------");
                                                         return res.json(200, {status: 1, message: "success", data: result});
                                                     }
                                                 });
-
-                                     break;
-                                    }
 
                                 //console.log(userRole);
                                 /*var query ="SELECT * FROM  blog WHERE"+
@@ -511,29 +534,10 @@ console.log(request);
     addBlogComment : function(req, res) {
 
 
-        //var userRole = req.body.userRole;
-        //var tokenService = tokenService || {};
-        //var authorId = "";
-       // var approvalStatus = "";
-
-        //if (userRole == 'user') {
-        //    tokenService = UsertokenService;
-
-        //} else if (userRole == 'admin') {
-        //    tokenService = AdmintokenService;
-        //}
+    var request = req.body.request;
 
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
-                                    //Assigning value to authorId
-                                    /*if (userRole == 'user') {
-                                        authorId = tokenCheck.tokenDetails.userId;
-                                        approvalStatus = "pending";
-
-                                    } else if (userRole == 'admin') {
-                                        authorId = tokenCheck.tokenDetails.adminId;
-                                        approvalStatus = "accept";
-                                    }*/
                     if(err)
                     {
                          return res.json(200, {status: 2, message: 'some error occured', error_details: tokenCheck});
@@ -544,10 +548,10 @@ console.log(request);
                             {
 
                                  var values = {
-                                                blogId               :       req.body.blogId,
-                                                comment              :       req.body.comment,
+                                                blogId               :       request.blogId,
+                                                comment              :       request.comment,
                                                 userId               :       tokenCheck.tokenDetails.userId,
-                                                approvalStatus       :       req.body.approvalStatus,
+                                                approvalStatus       :       blogConstants.APPROVAL_STATUS_APPROVED,
                                               };
                                  Blog_comment.create(values).exec(function(err, result){
                                         if (err)
@@ -556,7 +560,7 @@ console.log(request);
                                         } else
                                         {
                                             console.log(result);
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+                                            return res.json(200, {status: 1, message: 'success', data: result});
                                         }
                                     });
 
@@ -620,6 +624,7 @@ getBlogcommentList : function(req, res) {
         var userRole = req.body.userRole;
         var tokenService = tokenService || {};
         var authorId = "";
+        var query = "";
 
         if (userRole == 'user') {
             tokenService = UsertokenService;
@@ -638,11 +643,35 @@ getBlogcommentList : function(req, res) {
                         if(tokenCheck.status == 1)
                             {
 
-                               var query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) name, usr.username,"+
+                               var switchKey = userRole;
+                               switch(switchKey){
+
+                                   case 'admin':
+
+                                         query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) name, usr.username,"+
                                            " usr.profilePic,blgcmt.id, blgcmt.comment, blgcmt.approvalStatus"+
                                            " FROM blog_comment blgcmt"+
                                            " INNER JOIN user usr ON blgcmt.userId = usr.id"+
+                                           " WHERE blgcmt.blogId = "+request.blogId+
                                            " ORDER BY blgcmt.createdAt DESC ";
+                                   break;
+
+                                   case 'user':
+                                       query = "SELECT CONCAT( usr.firstname,  ' ', usr.lastname ) name, usr.username,"+
+                                           " usr.profilePic,blgcmt.id, blgcmt.comment, blgcmt.approvalStatus,"+
+                                           " CONCAT( MONTHNAME( blgcmt.createdAt ) ,  ' ', DAY( blgcmt.createdAt ) ,  ' ,', YEAR( blgcmt.createdAt ) ) as commentDate,"+
+                                           " DATE_FORMAT( blgcmt.createdAt,  '%l:%i %p' ) commentTime"+
+                                           " FROM blog_comment blgcmt"+
+                                           " INNER JOIN user usr ON blgcmt.userId = usr.id"+
+                                           " WHERE blgcmt.blogId = "+request.blogId+
+                                           " AND blgcmt.approvalStatus = '"+blogConstants.APPROVAL_STATUS_APPROVED+
+                                           "' ORDER BY blgcmt.createdAt DESC ";
+
+                                   break;
+
+
+                                }
+console.log(query);
 
                                 Blog_comment.query(query, function(err, result) {
                                     if(err)

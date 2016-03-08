@@ -754,6 +754,7 @@ console.log("kkkkkkkkkkk");
                                            " usr.profilePic,pldtl.id, pldtl.pollComment, pldtl.approvalStatus"+
                                            " FROM poll_details pldtl"+
                                            " INNER JOIN user usr ON pldtl.userId = usr.id"+
+                                           " WHERE blgcmt.blogId = "+request.pollId+
                                            " ORDER BY pldtl.createdAt DESC ";
 
                                 Poll_details.query(query, function(err, result) {

@@ -626,9 +626,10 @@ console.log(request);
                                                         var criteria = {
                                                                           id          : result.id
                                                                         };
-                                             console.log(values);
-                                             console.log(criteria);
-                                                        Mail.update(criteria, values).exec(function (err, SentMail) {
+                                              console.log("values and Criteria");
+                                              console.log(values);
+                                              console.log(criteria);
+                                              Mail.update(criteria, values).exec(function (err, SentMail) {
                                                             if (err)
                                                             {
                                                                 console.log(SentMail);
@@ -636,13 +637,54 @@ console.log(request);
                                                             }
                                                             else
                                                             {
-                                                                console.log(SentMail);
-                                                                return res.json(200, {status: 1, message: "success", mailStatus: "sent",data: SentMail});
-                                                            }
 
-                                                        });
-                                                    }
-                                               });
+                                                            User.findOne({id: request.receiverId}).exec(function findCB(err, receiverDetails) {
+                                                                if (err)
+                                                                {
+                                                                    return res.json(200, {status: 2, error_details: err});
+                                                                }
+                                                                else
+                                                                {
+
+
+                                                                    //Email
+                                                                    console.log("receiverDetails----->>>>>");
+                                                                    console.log(receiverDetails);
+                                                                    var email_to        = receiverDetails.email;
+                                                                    var email_subject   = 'Zentiera - Sent Message';
+                                                                    var email_template  = 'inboxMessage';
+                                                                    var email_context   = { category: "sent-Email", email : receiverDetails.email, receiverName: receiverDetails.firstname+" "+receiverDetails.lastname, senderName: request.senderName};
+                                                                    UserService.emailSend(email_to,email_subject,email_template,email_context, function(err, sendresult) {
+                                                                        if(err)
+                                                                        {
+                                                                                return res.json(200, {status: 2, message: 'some error occured', error_details: sendresult});
+                                                                                sails.log.debug('Some error occured ' + sendresult);
+
+                                                                        }
+                                                                       else{
+
+                                                                             console.log("User -> Email for Message sent");
+                                                                             //console.log(result);
+                                                                             console.log(email_to);
+                                                                             console.log(email_subject);
+                                                                             console.log(email_template);
+                                                                             console.log(email_context);
+
+                                                                             console.log(SentMail);
+                                                                             return res.json(200, {status: 1, message: "success", mailStatus: "sent",data: SentMail});
+                                                                        }
+
+                                                                });
+
+
+                                                            }
+                                                            });
+
+                                                       }
+                                                     });
+
+                                               }
+                                             });
 
 
                                            break;

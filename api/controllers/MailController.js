@@ -716,6 +716,10 @@ console.log(chkMailArray);
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
                                                             }
+                                                            else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -735,7 +739,11 @@ console.log(chkMailArray);
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -786,6 +794,10 @@ console.log(chkMailArray);
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
                                                             }
+                                                            else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -805,7 +817,11 @@ console.log(chkMailArray);
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -921,7 +937,11 @@ console.log("request.folderId");
                                                                             //return res.json(200, {status: 1, message: "success", data1: result1});
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
-                                                            }
+                                                             }
+                                                             else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -941,7 +961,11 @@ console.log("request.folderId");
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                             }
+                                                             else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -1353,6 +1377,10 @@ console.log(findSend);
                                                                             callback();
                                                                     });
                                                             }
+                                                            else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -1370,7 +1398,11 @@ console.log(findSend);
                                                                             callback();
                                                                 });
 
-                                                        }
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
                                                    ], function(err) { //This function gets called after the two tasks have called their "task callbacks"

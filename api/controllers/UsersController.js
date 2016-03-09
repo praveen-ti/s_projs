@@ -288,6 +288,25 @@ module.exports = {
         });
 
     },
+    checkUsername: function (req, res) {
+
+        var username = req.body.username;
+
+        User.query('SELECT u.* FROM user AS u WHERE u.username = ? LIMIT 1', [username], function (err, user) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Some error occured', error: err});
+            } else {
+                if (typeof user[0] != "undefined") {
+                    return res.json(200, {status: 1, message: 'username_exists', data: user[0].username});
+                } else {
+                    return res.json(200, {status: 1, message: 'no_username', data: ''});
+                }
+            }
+
+        });
+
+    },
     getAllMembers: function (req, res) {
 
         var userRole = req.body.userRole;

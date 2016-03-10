@@ -313,11 +313,10 @@ module.exports = {
         var random = Math.random().toString();
         var hashKey = crypto.createHash('md5').update(current_date + random).digest('hex');
         var email = req.body.email;
-        //var changePasswordLink = "http://192.168.1.77/zentiera-web/#/changepassword/" + hashKey;
         var changePasswordLink = settings.STATIS_URL + "changepassword/" + hashKey;
 
         //Check user exists
-        User.findOne({email: email}).exec(function (err, result) {
+        User.findOne({email: email, signupStatus: userConstants.SIGNUP_STATUS_COMPLETED}).exec(function (err, result) {
 
             if (err) {
                 return res.json(200, {status: 2, message: 'Error occured.', error: err});
@@ -377,7 +376,7 @@ module.exports = {
         var hashkey = req.body.hashKey;
 
         User.update({passwordResetKey: hashkey}, {password: password, passwordResetKey: null}).exec(function (err, user) {
-            
+
             if (err) {
                 return res.json(200, {status: 2, message: 'Error in updating password.', error: err});
             } else {

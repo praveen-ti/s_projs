@@ -307,6 +307,92 @@ module.exports = {
         });
 
     },
+    forgotPassword: function (req, res) {
+
+        var current_date = (new Date()).valueOf().toString();
+        var random = Math.random().toString();
+        var hashKey = crypto.createHash('md5').update(current_date + random).digest('hex');
+        var email = req.body.email;
+        //var changePasswordLink = "http://192.168.1.77/zentiera-web/#/changepassword/" + hashKey;
+        var changePasswordLink = settings.STATIS_URL + "changepassword/" + hashKey;
+
+        //Check user exists
+        User.findOne({email: email}).exec(function (err, result) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured.', error: err});
+            } else {
+
+                if (typeof result != "undefined") {
+                    User.update({email: email}, {passwordResetKey: hashKey}).exec(function (err, user) {
+
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error in creating Key.', error: err});
+                        } else {
+                            var email_to = email;
+                            var email_subject = 'Zentiera - Forgot Password.';
+                            var email_template = 'forgotPassword';
+                            var email_context = {changePasswordLink: changePasswordLink, email: email};
+
+                            UserService.emailSend(email_to, email_subject, email_template, email_context, function (err, sendresult) {
+
+                                if (err) {
+                                    return res.json(200, {status: 2, message: 'some error occured', error: sendresult});
+                                } else {
+                                    return res.json(200, {status: 1, message: 'update', data: user});
+                                }
+
+                            });
+                        }
+
+                    });
+
+                } else {
+                    return res.json(200, {status: 1, message: 'email_notexist', data: email});
+                }
+            }
+        });
+    },
+    checkPasswordResetKey: function (req, res) {
+
+        var hashkey = req.body.hashKey;
+
+        User.findOne({passwordResetKey: hashkey}).exec(function (err, result) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error in creating Key.', error: err});
+            } else {
+
+                if (typeof result != "undefined") {
+                    return res.json(200, {status: 1, message: 'Success.'});
+                } else {
+                    return res.json(200, {status: 3, message: 'Expired.'});
+                }
+            }
+        });
+    },
+    changeOldPassword: function (req, res) {
+
+        var password = crypto.createHash('md5').update(req.body.password).digest("hex");
+        var hashkey = req.body.hashKey;
+
+        User.update({passwordResetKey: hashkey}, {password: password, passwordResetKey: null}).exec(function (err, user) {
+            
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error in updating password.', error: err});
+            } else {
+
+                if (typeof user != "undefined") {
+                    return res.json(200, {status: 1, message: 'Password changed successfully.', data: ''});
+                } else {
+                    return res.json(200, {status: 3, message: 'No password reset key exists.', data: ''});
+                }
+
+            }
+
+        });
+
+    },
     getAllMembers: function (req, res) {
 
         var userRole = req.body.userRole;

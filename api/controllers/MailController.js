@@ -341,7 +341,9 @@ console.log("tokenStatus-1");
                                                                 " CONCAT( MONTHNAME( ml.createdAt ) ,  ' ', DAY( ml.createdAt ) ,  ' ,', YEAR( ml.createdAt ) )"+
                                                                 " END AS derivedDateTime"+
                                                                 " FROM mail ml"+
-                                                                " INNER JOIN user usr ON ml.senderId = usr.id"+
+                                                                //" INNER JOIN user usr ON ml.senderId = usr.id"+
+                                                                " INNER JOIN user usr ON"+
+                                                                " ml.receiverId = "+tokenCheck.tokenDetails.userId+" AND ml.senderId = usr.id"+
                                                                 " WHERE ml.receiverId = "+tokenCheck.tokenDetails.userId+
                                                                 " AND ml.receiverStatus =  '"+switchKey+"'"+
                                                                 " ORDER BY ml.createdAt DESC ";
@@ -351,7 +353,11 @@ console.log("tokenStatus-1");
                                                        query = " SELECT ml.id, ml.subject, ml.file, ml.senderStatus ,"+
                                                                 " ml.viewStatus, ml.senderId, ml.receiverId,"+
                                                                 " LEFT( ml.message, 50 ) limitedMsg,"+
-                                                                " CONCAT( usr.firstname,' ', usr.lastname ) sender,"+
+                                                                //" CONCAT( usr.firstname,' ', usr.lastname ) sender,"+
+                                                                " CONCAT('Draft') sender,"+
+
+
+
                                                                 " DATE_FORMAT( ml.createdAt,  '%l:%i %p' ) mailTime,"+
                                                                 " CASE"+
                                                                 " DATE_FORMAT( ml.createdAt,  '%Y-%m-%d' )"+
@@ -363,7 +369,8 @@ console.log("tokenStatus-1");
                                                                 " CONCAT( MONTHNAME( ml.createdAt ) ,  ' ', DAY( ml.createdAt ) ,  ' ,', YEAR( ml.createdAt ) )"+
                                                                 " END AS derivedDateTime"+
                                                                 " FROM mail ml"+
-                                                                " INNER JOIN user usr ON ml.senderId = usr.id"+
+                                                                " INNER JOIN user usr ON"+
+                                                                " ml.senderId ="+tokenCheck.tokenDetails.userId+" AND ml.receiverId = usr.id"+
                                                                 " WHERE ml.senderId = "+tokenCheck.tokenDetails.userId+
                                                                 " AND ml.senderStatus =  '"+switchKey+"'"+
                                                                 " ORDER BY ml.createdAt DESC ";
@@ -374,7 +381,7 @@ console.log("tokenStatus-1");
                                                         query = " SELECT ml.id, ml.subject, ml.file, ml.senderStatus ,"+
                                                                 " ml.viewStatus, ml.senderId, ml.receiverId,"+
                                                                 " LEFT( ml.message, 50 ) limitedMsg,"+
-                                                                " CONCAT( usr.firstname,' ', usr.lastname ) sender,"+
+                                                                " CONCAT('To: ', usr.firstname, ' ', usr.lastname ) sender,"+
                                                                 " DATE_FORMAT( ml.createdAt,  '%l:%i %p' ) mailTime,"+
                                                                 " CASE"+
                                                                 " DATE_FORMAT( ml.createdAt,  '%Y-%m-%d' )"+
@@ -386,7 +393,8 @@ console.log("tokenStatus-1");
                                                                 " CONCAT( MONTHNAME( ml.createdAt ) ,  ' ', DAY( ml.createdAt ) ,  ' ,', YEAR( ml.createdAt ) )"+
                                                                 " END AS derivedDateTime"+
                                                                 " FROM mail ml"+
-                                                                " INNER JOIN user usr ON ml.senderId = usr.id"+
+                                                                " INNER JOIN user usr ON"+
+                                                                " ml.senderId ="+tokenCheck.tokenDetails.userId+" AND ml.receiverId = usr.id"+
                                                                 " WHERE ml.senderId = "+tokenCheck.tokenDetails.userId+
                                                                 " AND ml.senderStatus =  '"+switchKey+"'"+
                                                                 " ORDER BY ml.createdAt DESC ";
@@ -478,6 +486,7 @@ console.log("tokenStatus-1");
                                                                     " FROM ("+
                                                                     " SELECT ml.id, ml.subject, ml.message, ml.file,"+
                                                                     " ml.conversationId, ml.createdAt,"+
+                                                                    " ml.receiverId, ml.senderId,"+
                                                                     " LEFT( ml.message, 50 ) limitedMsg,"+
                                                                     " MONTHNAME( ml.createdAt ) crMonth,"+
                                                                     " DAY( ml.createdAt ) crDay,"+
@@ -503,32 +512,12 @@ console.log("tokenStatus-1");
                                                                     " ORDER BY ml.createdAt DESC"+
                                                                     " )cnvFull"+
                                                                     " INNER JOIN user usr"+
-                                                                    " WHERE usr.id = "+tokenCheck.tokenDetails.userId+
+                                                                    //" WHERE usr.id = "+tokenCheck.tokenDetails.userId+
+                                                                    " WHERE (cnvFull.senderId = "+tokenCheck.tokenDetails.userId+" AND cnvFull.receiverId = usr.id)"+
+                                                                    " OR (cnvFull.receiverId = "+tokenCheck.tokenDetails.userId+" AND cnvFull.senderId = usr.id)"+
                                                                     " GROUP BY cnvFull.conversationId DESC";
                                                    break;
 
-                                                   default:
-                                                       switchKey = "inbox";
-                                                       //query +=  "receiverId = "+tokenCheck.tokenDetails.userId+" AND  receiverStatus =  '"+switchKey+"' ";
-                                                       query =  " SELECT ml.id, ml.subject, ml.file, ml.receiverStatus ,"+
-                                                                " ml.viewStatus, ml.senderId, ml.receiverId,"+
-                                                                " LEFT( ml.message, 50 ) limitedMsg,"+
-                                                                " CONCAT( usr.firstname,' ', usr.lastname ) sender,"+
-                                                                " DATE_FORMAT( ml.createdAt,  '%l:%i %p' ) mailTime,"+
-                                                                " CASE"+
-                                                                " DATE_FORMAT( ml.createdAt,  '%Y-%m-%d' )"+
-                                                                " WHEN"+
-                                                                " DATE_FORMAT( NOW() ,'%Y-%m-%d')"+
-                                                                " THEN"+
-                                                                " CONCAT('TODAY','-',DATE_FORMAT( ml.createdAt,  '%l:%i %p' ))"+
-                                                                " ELSE"+
-                                                                " CONCAT( MONTHNAME( ml.createdAt ) ,  ' ', DAY( ml.createdAt ) ,  ' ,', YEAR( ml.createdAt ) )"+
-                                                                " END AS derivedDateTime"+
-                                                                " FROM mail ml"+
-                                                                " INNER JOIN user usr ON ml.senderId = usr.id"+
-                                                                " WHERE ml.receiverId = "+tokenCheck.tokenDetails.userId+
-                                                                " AND ml.receiverStatus =  '"+switchKey+"'"+
-                                                                " ORDER BY ml.createdAt DESC ";
                                              }
                            //query += "ORDER BY createdAt DESC";
             console.log(query);
@@ -694,7 +683,8 @@ console.log(request);
 
                                                   var ctr = 0;
                                                    //foreach Starts
-
+console.log("chkMailArray");
+console.log(chkMailArray);
 
                                                         chkMailArray.forEach(function(factor, index){
                                                                  ctr ++;
@@ -726,6 +716,10 @@ console.log(request);
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
                                                             }
+                                                            else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -745,7 +739,11 @@ console.log(request);
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -796,6 +794,10 @@ console.log(request);
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
                                                             }
+                                                            else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -815,7 +817,11 @@ console.log(request);
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -931,7 +937,11 @@ console.log("request.folderId");
                                                                             //return res.json(200, {status: 1, message: "success", data1: result1});
                                                                             //return res.json(200, {status: 1, message: "success--1st"});
                                                                     });
-                                                            }
+                                                             }
+                                                             else{
+
+                                                                   callback();
+                                                                }
                                                         },
                                                         function(callback) {
                                                             //var query2 = "";
@@ -951,7 +961,11 @@ console.log("request.folderId");
                                                                             //return res.json(200, {status: 1, message: "success --2nd"});
                                                                 });
 
-                                                        }
+                                                             }
+                                                             else{
+
+                                                                   callback();
+                                                                }
                                                        }
 
 
@@ -1296,6 +1310,9 @@ console.log(request);
  ====================================================================================================================================*/
 deleteUserFolders : function(req, res) {
 
+var request = req.body.request;
+var ssArray = [];
+var rsArray = [];
          UsertokenService.checkToken(req.body.token, function(err, tokenCheck) {
 
                     if(err)
@@ -1306,23 +1323,109 @@ deleteUserFolders : function(req, res) {
                     {
                         if(tokenCheck.status == 1)
                             {
-                                 Folder.destroy({id: req.body.id, userId: req.body.userId}, function(err, result){
-                                        if (err)
-                                        {
-                                            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
-                                        } else
-                                        {
-                                            return res.json(200, {status: 1, message: 'success', result: result});
+/* ############## */
+
+console.log("delete folder enter");
+console.log(request.folderId);
+var findSend = {senderFolderId: request.folderId, senderStatus: mailConstants.SENDER_STATUS_FOLDER};
+console.log(findSend);
+
+    Folder.destroy({id: request.folderId, userId: request.userId}, function(err, result){
+        if (err)
+        {
+            return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+        } else
+        {
+             var query = "SELECT * FROM mail WHERE"+
+                         "(senderFolderId = "+request.folderId+" AND senderStatus = '"+mailConstants.SENDER_STATUS_FOLDER+"' )"+
+                         "OR"+
+                         "(receiverFolderId = "+request.folderId+" AND receiverStatus = '"+mailConstants.RECEIVER_STATUS_FOLDER+"')";
+
+             Mail.query(query, function(err, result){
+                    if (err)
+                    {
+                        return res.json(200, {status: 2, message: 'Some error occured', errorDetails: err});
+                    } else
+                    {
+                                                   result.forEach(function(factor, index){
+                                                                 //ctr ++;
+                                                                 if(factor.senderId == tokenCheck.tokenDetails.userId){
+                                                                        ssArray.push('('+factor.id+',"'+mailConstants.SENDER_STATUS_TRASH+'")');
+                                                                 }
+                                                                 else if(factor.receiverId == tokenCheck.tokenDetails.userId){
+                                                                       rsArray.push('('+factor.id+',"'+mailConstants.RECEIVER_STATUS_TRASH+'")');
+                                                                 }
+                                                        });
+                console.log("RRRRRR");
+                console.log(ssArray);
+                console.log(rsArray);
+                console.log("RRRRRR");
+                                                     async.parallel([
+                                                         function(callback) {
+                                                            if(rsArray.length){
+
+                                                                var query1 = "INSERT INTO mail (id,receiverStatus) VALUES"+rsArray+
+                                                                                " ON"+
+                                                                                " DUPLICATE KEY"+
+                                                                                " UPDATE receiverStatus=VALUES(receiverStatus)";
+
+                                                                  console.log(query1);
+                                                                  Mail.query(query1, function(err, result1) {
+
+                                                                            if (err) return callback(err);
+                                                                            console.log("result1 ===>");
+                                                                            callback();
+                                                                    });
+                                                            }
+                                                            else{
+
+                                                                   callback();
+                                                                }
+                                                        },
+                                                        function(callback) {
+                                                            //var query2 = "";
+                                                            if(ssArray.length){
+                                                                var query2 = "INSERT INTO mail (id,senderStatus) VALUES"+ssArray+
+                                                                                " ON"+
+                                                                                " DUPLICATE KEY"+
+                                                                                " UPDATE senderStatus=VALUES(senderStatus)";
+
+                                                                console.log(query2);
+
+                                                               Mail.query(query2, function(err, result2) {
+                                                                            if (err) return callback(err);
+                                                                            console.log("result2 ===>");
+                                                                            callback();
+                                                                });
+
+                                                           }
+                                                           else{
+
+                                                                   callback();
+                                                                }
+                                                       }
+
+                                                   ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                                                                    if (err) return res.json(200, {status: 2, message: "error"}); //If an error occured, we let express/connect handle it by calling the "next" function
+                                                                    console.log("??????????????");
+                                                                    return res.json(200, {status: 1, message: "success--all"});
+                                                     });
                                         }
                                     });
-                            }
-                            else
-                            {
-                                return res.json(200, {status: 3, message: 'token expired'});
-                            }
-                   }
-         });
-    },
+
+
+                             }
+                         });
+
+
+                }
+                else
+                {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+             }
+       });
+   },
 
 /*===================================================================================================================================
                                                    update user's Folder

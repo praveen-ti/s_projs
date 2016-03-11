@@ -156,9 +156,6 @@ module.exports = {
                             } else {
 
                                 userinfo.userId = result.id;
-                                userinfo.latitude = null;
-                                userinfo.longitude = null;
-
                                 searchPreference.userId = result.id;
 
                                 console.log(JSON.stringify(searchPreference));

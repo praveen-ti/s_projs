@@ -236,7 +236,7 @@ module.exports = {
                         }
                     });
                 }
-                
+
             });
 
         } else {
@@ -507,6 +507,34 @@ module.exports = {
 
         });
     },
+    getUserSearchPreferences: function (req, res) {
+        var userId = req.body.userId;
+        var userRole = req.body.userRole;
+        var tokenService = tokenService || {};
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    SearchPreference.findOne({userId: userId}).exec(function findCB(err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success', data: result});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
     getUserBasicDetails: function (req, res) {
 
         var userId = req.body.userId;
@@ -534,6 +562,35 @@ module.exports = {
                             return res.json(200, {status: 2, message: 'Error', error: err});
                         } else {
                             return res.json(200, {status: 1, message: "success", data: user});
+                        }
+                    });
+
+                } else {
+                    return res.json(200, {status: 3, message: 'token expired'});
+                }
+            }
+
+        });
+    },
+    updateSearchPreference: function (req, res) {
+
+        var userId = req.body.userId;
+        var searchPreference = req.body.searchPreference;
+        var status = req.body.status;
+
+        UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+            if (err) {
+                return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+            } else {
+
+                if (tokenCheck.status == 1) {
+
+                    SearchPreference.update({userId: userId}, searchPreference).exec(function (err, result) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'Success', data: result});
                         }
                     });
 

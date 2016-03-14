@@ -211,6 +211,41 @@ module.exports = {
         }
     },
     /*===================================================================================================================================
+     User Profile Edit
+     ====================================================================================================================================*/
+    userProfileEdit: function (req, res) {
+
+        var userRole = req.body.userRole;
+        var userinfo = req.body.userinfo;
+        var userId = req.body.userId;
+        var searchPreference = req.body.searchPreference;
+
+        if (userRole === 'user') {
+
+            UsertokenService.checkToken(req.body.token, function (err, tokenCheck) {
+
+                if (err) {
+                    return res.json(200, {status: 2, message: 'Error occured in token check', error: tokenCheck});
+                } else {
+
+                    Userinfo.update({userId: userId}, userinfo).exec(function (err, userdata) {
+                        if (err) {
+                            return res.json(200, {status: 2, message: 'Error in updating profile details.', error: err});
+                        } else {
+                            return res.json(200, {status: 1, message: 'success', data: userdata});
+                        }
+                    });
+                }
+                
+            });
+
+        } else {
+
+            return res.json(200, {status: 1, message: 'Invalid user role.', data: 'No action performed.'});
+
+        }
+    },
+    /*===================================================================================================================================
      User Login
      ====================================================================================================================================*/
 
